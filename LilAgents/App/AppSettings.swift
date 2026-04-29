@@ -398,7 +398,7 @@ extension AppSettings {
     /// CLI (which Orion spawns for chat) reads `~/.claude.json`,
     /// so any MCP added here becomes available to Orion.
     ///
-    /// Backs up `~/.claude.json` to `~/.claude.json.liljustin-backup`
+    /// Backs up `~/.claude.json` to `~/.claude.json.orion-backup`
     /// before writing. If Claude Desktop's config is missing or
     /// either file fails to parse as JSON, returns a descriptive
     /// error and leaves files untouched.
@@ -444,7 +444,7 @@ extension AppSettings {
 
         // Backup existing Code config before mutating.
         if fm.fileExists(atPath: claudeCodeConfigURL.path) {
-            let backupURL = claudeCodeConfigURL.appendingPathExtension("liljustin-backup")
+            let backupURL = claudeCodeConfigURL.appendingPathExtension("orion-backup")
             try? fm.removeItem(at: backupURL)
             try? fm.copyItem(at: claudeCodeConfigURL, to: backupURL)
         }

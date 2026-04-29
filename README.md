@@ -31,7 +31,7 @@ Drag the Orion icon into the **Applications** shortcut inside the mounted DMG wi
 Orion is unsigned (free side-project, no Apple Developer ID), so macOS Gatekeeper will block it on first launch. Open **Terminal** and paste:
 
 ```bash
-xattr -dr com.apple.quarantine /Applications/LilJustin.app
+xattr -dr com.apple.quarantine /Applications/Orion.app
 ```
 
 Then double-click Orion in Applications. Orion appears above your Dock.

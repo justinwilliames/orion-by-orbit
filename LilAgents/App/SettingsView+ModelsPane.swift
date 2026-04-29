@@ -46,7 +46,7 @@ extension SettingsView {
 
             SettingsSectionCard(title: "Connectors & extensions", subtitle: "Share MCP servers between Claude Desktop and Orion.") {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Orion chats through the Claude Code CLI, which uses a separate MCP registry from Claude Desktop. This button copies any MCP servers you've set up in Claude Desktop into Claude Code's config (~/.claude.json) so Orion can use them too. Existing entries are never overwritten — only missing ones are added. A backup is written to ~/.claude.json.liljustin-backup before any change.")
+                    Text("Orion chats through the Claude Code CLI, which uses a separate MCP registry from Claude Desktop. This button copies any MCP servers you've set up in Claude Desktop into Claude Code's config (~/.claude.json) so Orion can use them too. Existing entries are never overwritten — only missing ones are added. A backup is written to ~/.claude.json.orion-backup before any change.")
                         .settingsCaption()
 
                     HStack(spacing: 12) {

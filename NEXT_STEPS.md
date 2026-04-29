@@ -22,7 +22,7 @@ These are easier in the Xcode UI than via hand-editing `project.pbxproj`. Open `
    Product → Scheme → Manage Schemes → select `LilAgents` → rename to `Orion`.
 
 2. **Set the bundle identifier.**
-   Click the `LilAgents` target → Signing & Capabilities tab → set Bundle Identifier to something like `team.yourorbit.LilJustin` or `com.justinwilliames.Orion`. The current value is whatever Ben Shih had — you cannot ship under his identifier.
+   Click the `LilAgents` target → Signing & Capabilities tab → set Bundle Identifier to something like `team.yourorbit.Orion` or `com.justinwilliames.Orion`. The current value is whatever Ben Shih had — you cannot ship under his identifier.
 
 3. **Set the signing team.**
    Same tab → Team → select your Apple Developer account. Without this, the app will only run unsigned via Xcode (fine for local development).

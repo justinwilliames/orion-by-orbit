@@ -1,11 +1,11 @@
 name: Build Orion
 
-# Builds an unsigned LilJustin.app, wraps it in a .dmg, and (when triggered by
+# Builds an unsigned Orion.app, wraps it in a .dmg, and (when triggered by
 # a v*.*.* tag) attaches the .dmg to a GitHub Release.
 #
 # No Apple Developer ID required. The output is unsigned — users will see a
 # Gatekeeper prompt on first launch and need to bypass it once with
-# `xattr -dr com.apple.quarantine /Applications/LilJustin.app` (documented in
+# `xattr -dr com.apple.quarantine /Applications/Orion.app` (documented in
 # the README and in each release's auto-generated body).
 
 on:
@@ -127,8 +127,8 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGN_REQUIRED=NO \
             CODE_SIGN_ENTITLEMENTS="" \
-            PRODUCT_NAME=LilJustin \
-            PRODUCT_BUNDLE_IDENTIFIER=team.yourorbit.LilJustin \
+            PRODUCT_NAME=Orion \
+            PRODUCT_BUNDLE_IDENTIFIER=team.yourorbit.Orion \
             MARKETING_VERSION="${{ steps.version.outputs.marketing_version }}" \
             CURRENT_PROJECT_VERSION="${{ steps.version.outputs.build_number }}" \
             ONLY_ACTIVE_ARCH=NO
@@ -137,9 +137,9 @@ jobs:
         id: locate
         run: |
           set -e
-          APP_PATH=$(find build -name "LilJustin.app" -type d | head -n 1)
+          APP_PATH=$(find build -name "Orion.app" -type d | head -n 1)
           if [ -z "$APP_PATH" ]; then
-            echo "::error::Could not find LilJustin.app under build/"
+            echo "::error::Could not find Orion.app under build/"
             find build -name "*.app" -type d
             exit 1
           fi
@@ -153,14 +153,14 @@ jobs:
           set -e
           APP_PATH="${{ steps.locate.outputs.app_path }}"
           VERSION="${GITHUB_REF_NAME:-dev-$(date +%Y%m%d-%H%M%S)}"
-          DMG_NAME="LilJustin-${VERSION}.dmg"
+          DMG_NAME="Orion-${VERSION}.dmg"
 
           mkdir -p dist dmg-staging
           cp -R "$APP_PATH" dmg-staging/
           ln -s /Applications dmg-staging/Applications
 
           hdiutil create \
-            -volname "LilJustin" \
+            -volname "Orion" \
             -srcfolder dmg-staging \
             -ov \
             -format UDZO \
@@ -338,7 +338,7 @@ jobs:
             ### 3. ⚠️ REQUIRED — run this in Terminal
 
             ```bash
-            xattr -dr com.apple.quarantine /Applications/LilJustin.app
+            xattr -dr com.apple.quarantine /Applications/Orion.app
             ```
 
             One-time per install. Right-click → **Open** also works, as does System Settings → Privacy & Security → "Open Anyway".
@@ -393,7 +393,7 @@ jobs:
             Open the **Terminal** app (Spotlight → "Terminal") and paste this exact command, then press Enter:
 
             ```bash
-            xattr -dr com.apple.quarantine /Applications/LilJustin.app
+            xattr -dr com.apple.quarantine /Applications/Orion.app
             ```
 
             This removes Apple's "downloaded from internet" quarantine flag from the app. **Without this step, double-clicking Orion will fail.** It's a one-time command per install — you don't need to do it again unless you re-download.

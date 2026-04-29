@@ -373,7 +373,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
     }
 
     private func showPostUpdateGatekeeperHelpDialog(previous: String, current: String) {
-        let command = "xattr -dr com.apple.quarantine /Applications/LilJustin.app"
+        let command = "xattr -dr com.apple.quarantine /Applications/Orion.app"
 
         let alert = NSAlert()
         alert.messageText = "Orion updated to \(current)"
