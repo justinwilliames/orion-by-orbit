@@ -91,9 +91,21 @@ extension WalkerCharacter {
                     hideBubble()
                     ambientBubbleExpiresAt = 0
                     nextAmbientBubbleAt = now + TimeInterval.random(in: WalkerCharacter.minAmbientGap...WalkerCharacter.maxAmbientGap)
+                } else {
+                    // Still in the linger window — keep the bubble visible
+                    // and track Orion's X as he walks. Without this, the
+                    // bubble would persist (per v0.2.4) but stay anchored
+                    // to the X position where Orion was standing when the
+                    // line first fired, drifting away from him as he
+                    // moves. setFrameOrigin keeps the existing bubble
+                    // size; we only update X (Y is constant — Orion
+                    // walks horizontally along the Dock).
+                    if let bubble = thinkingBubbleWindow, bubble.isVisible {
+                        let bubbleW = bubble.frame.width
+                        let x = window.frame.midX - bubbleW / 2
+                        bubble.setFrameOrigin(NSPoint(x: x, y: bubble.frame.origin.y))
+                    }
                 }
-                // Otherwise: still in the linger window — leave the
-                // bubble visible even as the character walks past it.
             } else {
                 hideBubble()
             }
