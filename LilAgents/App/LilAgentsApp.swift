@@ -113,8 +113,14 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
     func setupMenuBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem?.button {
-            button.image = NSImage(named: "MenuBarIcon") ?? NSImage(systemSymbolName: "figure.walk", accessibilityDescription: "Orion")
-            button.image?.isTemplate = false
+            button.image = NSImage(named: "MenuBarIcon") ?? NSImage(systemSymbolName: "sparkles", accessibilityDescription: "Orion")
+            // isTemplate = true → AppKit auto-tints the alpha channel
+            // black in light-mode menu bars, white in dark-mode menu
+            // bars. macOS standard. Without this the icon stays a fixed
+            // colour and stops being legible against the wrong-mode
+            // wallpaper. Requires the MenuBarIcon asset to be monochrome
+            // (alpha-only); SF Symbols already template-render correctly.
+            button.image?.isTemplate = true
             button.toolTip = "Open Orion"
         }
 
