@@ -3,6 +3,16 @@ import Foundation
 extension ClaudeSession {
     func finishCLIResponse(_ outputText: String, conversationKey: String) {
         let response = prepareAssistantResponse(outputText)
+        // Diagnostic: when the structured-JSON parser fails, the raw
+        // JSON envelope leaks to the user (Sir's 2026-04-30 screenshot
+        // bug). Log when the markdown fallback path was used so
+        // Console.app filtered to "[Orion]" reveals which inputs
+        // bypass strict parsing — locks in evidence for follow-up
+        // regression tests.
+        if response.parsedFromStructuredJSON == false {
+            let preview = String(outputText.prefix(400))
+            NSLog("[Orion] structured-JSON parse FAILED — falling back to markdown extraction. inputPrefix=\(preview)")
+        }
         publishPendingExperts(fallbackText: response.displayText)
         SessionDebugLogger.logMultiline("assistant", header: "finishCLIResponse()", body: response.displayText)
         let composeSummary = "Composing the final answer"
@@ -13,7 +23,7 @@ extension ClaudeSession {
         finishTurn()
     }
 
-    func prepareAssistantResponse(_ outputText: String) -> (messages: [Message], displayText: String) {
+    func prepareAssistantResponse(_ outputText: String) -> (messages: [Message], displayText: String, parsedFromStructuredJSON: Bool) {
         if let payload = parseStructuredAssistantResponse(from: outputText) {
             let segments: [AssistantSegment]
             if let focusedExpert {
@@ -45,7 +55,21 @@ extension ClaudeSession {
             }
 
             let displayText = segments.map(\.markdown).joined(separator: "\n\n").trimmingCharacters(in: .whitespacesAndNewlines)
-            return (assistantMessages(from: segments), displayText)
+            return (assistantMessages(from: segments), displayText, true)
+        }
+
+        // Last-ditch markdown extraction. When the JSON envelope is
+        // broken — unescaped quotes inside markdown, mid-stream
+        // truncation, prose mixed with JSON — we'd previously dump
+        // the entire raw output to the user as the fallback message.
+        // That's the bug Sir caught in his 2026-04-30 screenshot.
+        // Now: regex out the first `markdown` field's value and use
+        // that as the prose body. Better degraded UX than raw JSON.
+        if let extracted = extractFallbackMessageMarkdown(from: outputText)?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !extracted.isEmpty {
+            let linkified = CitationLinkifier.linkify(extracted)
+            let fallbackMessage = Message(role: .assistant, text: linkified, speaker: justinSpeaker(), followUpExpert: nil)
+            return ([fallbackMessage], linkified, false)
         }
 
         let structuredNames = structuredExpertSuggestionNames(from: outputText)
@@ -65,7 +89,7 @@ extension ClaudeSession {
         let cleaned = cleanedAssistantText(outputText)
         let linkified = CitationLinkifier.linkify(cleaned)
         let fallbackMessage = Message(role: .assistant, text: linkified, speaker: justinSpeaker(), followUpExpert: nil)
-        return ([fallbackMessage], linkified)
+        return ([fallbackMessage], linkified, false)
     }
 
     func parseStructuredAssistantResponse(from outputText: String) -> (segments: [AssistantSegment], suggestedExperts: [ResponderExpert], suggestExpertPrompt: Bool)? {

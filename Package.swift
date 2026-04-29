@@ -46,6 +46,7 @@ let package = Package(
             sources: [
                 "LilAgents/Session/MarkdownToSlack.swift",
                 "LilAgents/Session/MarkdownToHTML.swift",
+                "LilAgents/Session/StructuredJSONParser.swift",
                 "LilAgents/Memory/MemoryEntry.swift",
                 "LilAgents/Memory/SensitivityFilter.swift",
                 "LilAgents/App/BusinessContext.swift",
