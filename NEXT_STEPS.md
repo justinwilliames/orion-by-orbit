@@ -129,10 +129,10 @@ Expect this cleanup to take 2–3 hours of focused Swift refactoring. Don't both
 
 The prompt in `ClaudeSessionState.swift` deliberately:
 
-- Tells the model to **never volunteer your CV or name former employers**. Working history is explicitly out of scope — the credibility frame is Orbit's depth (95 guides, structured methodologies), not the founder's resume. Without this guard, models will reach for it confidently.
+- Frames Orion as **Orbit's assistant for the dock**, NOT as Justin Williames. The prompt explicitly tells the model it is not the founder, never speaks in first person as Justin, and refers to Justin in third person if relevant. The credibility frame is Orbit's depth (95 guides, structured methodologies), not a fabricated personal CV.
 - Tells the model to **never break character** when asked what model it is.
 - **Mirrors the Caldwell working style** from your `CLAUDE.md` — direct, no sycophancy, willing to disagree. Side effect: Orion will tell users when they're wrong, including potentially in ways that feel blunt to people who aren't expecting it.
-- **Forces JSON output** with a single message in the `kind: "lenny"` schema. The string `"lenny"` is the internal parser key inherited from upstream and renaming it would break the transcript renderer. If you ever do v2 cleanup, you can rename the parser kind too.
+- **Forces JSON output** with a single message in the `kind: "orion"` schema (renamed from `"lenny"` during the upstream rebrand). If you fork further, the parser key lives in `ClaudeSessionCLIParsing+Structured.swift`.
 
 If you want to test the prompt without rebuilding the app, paste the prompt into Claude or ChatGPT directly and chat — the personality will come through.
 

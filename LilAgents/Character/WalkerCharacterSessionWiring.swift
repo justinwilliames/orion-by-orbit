@@ -324,7 +324,14 @@ extension WalkerCharacter {
     }
     func updatePopoverPosition() {
         guard let popover = popoverWindow, isIdleForPopover else { return }
-        guard let screen = NSScreen.main else { return }
+        // Anchor to the screen that owns the Dock (where Orion lives),
+        // not NSScreen.main — main returns the screen with the focused
+        // window, which on a multi-monitor setup is whichever display
+        // the user just clicked. The popover would jump screens with
+        // every app switch. controller.activeScreen returns the Dock
+        // screen by default; falls back to main if the controller
+        // isn't reachable yet.
+        guard let screen = controller?.activeScreen ?? NSScreen.main else { return }
 
         let charFrame = window.frame
         let popoverSize = popover.frame.size

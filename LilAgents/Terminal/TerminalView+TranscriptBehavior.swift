@@ -226,9 +226,9 @@ extension TerminalView {
         let t = theme
         let greeting: String
         if requiresInitialConnectionSetup {
-            greeting = "Orion here — founder of Orbit, on your desktop. Connect Claude Code or Codex in Settings and we'll get into it."
+            greeting = "Orion here — Orbit's assistant for your dock. Connect Claude Code or Codex in Settings and we'll get into it."
         } else {
-            greeting = "Orion here — founder of Orbit. Ask about lifecycle, deliverability, Braze, retention economics — anything from the Orbit playbook. I'll lead with the sharpest answer and go deeper if you want it."
+            greeting = "Orion here — Orbit's assistant for your dock. Ask about lifecycle, deliverability, Braze, retention economics — anything from the Orbit playbook. I'll lead with the sharpest answer and go deeper if you want it."
         }
         _ = archiveMode
         let attrText = NSAttributedString(string: greeting, attributes: [

@@ -38,7 +38,7 @@ private enum ExpertSwitcherCatalog {
             ExpertSwitcherEntry(
                 id: "orion",
                 name: "Orion",
-                title: "Founder of Orbit",
+                title: "Orbit's assistant",
                 avatarPath: nil,
                 destination: .orion
             )
@@ -427,7 +427,7 @@ extension WalkerCharacter {
 
     func refreshPopoverHeader() {
         popoverTitleLabel?.stringValue = focusedExpert?.name ?? resolvedTheme.titleString
-        popoverSubtitleLabel?.stringValue = focusedExpert?.title ?? "Founder of Orbit, on your desktop."
+        popoverSubtitleLabel?.stringValue = focusedExpert?.title ?? "Orbit's assistant for your dock."
         popoverReturnButton?.isHidden = (focusedExpert == nil)
         terminalView?.setReturnToLennyVisible(focusedExpert != nil)
         updatePopoverExpertSwitcherState()
@@ -538,7 +538,7 @@ extension WalkerCharacter {
         switcherButton.isEnabled = false
         popoverExpertSwitcherButton = switcherButton
 
-        let subtitle = NSTextField(labelWithString: focusedExpert?.title ?? "Founder of Orbit, on your desktop.")
+        let subtitle = NSTextField(labelWithString: focusedExpert?.title ?? "Orbit's assistant for your dock.")
         subtitle.translatesAutoresizingMaskIntoConstraints = false
         subtitle.font = NSFont.systemFont(ofSize: 11, weight: .regular)
         subtitle.textColor = t.textDim.withAlphaComponent(0.75)

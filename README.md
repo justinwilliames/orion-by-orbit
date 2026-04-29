@@ -2,9 +2,9 @@
 
 # Orion
 
-### The founder of [Orbit](https://get.yourorbit.team), on your desktop.
+### [Orbit](https://get.yourorbit.team)'s assistant for your dock.
 
-A free macOS dock companion that talks like Justin Williames — the founder of Orbit. Click him, ask anything about lifecycle marketing, deliverability, Braze, retention. Direct, no-fluff answers in the founder voice, with real Orbit guides cited as sources.
+A free macOS dock companion built by Orbit. Click Orion, ask anything about lifecycle marketing, deliverability, Braze, or retention. Direct, no-fluff answers in the Orbit voice, with real Orbit guides cited as sources.
 
 [![Latest release](https://img.shields.io/github/v/release/justinwilliames-sketch/orion-by-orbit?include_prereleases&label=latest&color=6366F1)](https://github.com/justinwilliames-sketch/orion-by-orbit/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-6366F1)](LICENSE)
@@ -42,7 +42,7 @@ Then double-click Orion in Applications. Orion appears above your Dock.
 
 ## What you can ask
 
-Click Orion. The popover shows 4 random prompt chips drawn from Orbit's full guide library — try one, or type your own. He answers in the founder voice, grounded in actual Orbit guide content with sources cited.
+Click Orion. The popover shows 4 random prompt chips drawn from Orbit's full guide library — try one, or type your own. Orion answers in the Orbit voice, grounded in actual Orbit guide content with sources cited.
 
 Some examples of what he'll handle well:
 
@@ -115,7 +115,7 @@ git commit -am "Refresh Orbit guides corpus"
 
 The script pulls from `https://get.yourorbit.team/api/guides/export`, validates the payload, and writes the new JSON in place. The retrieval is keyword-overlap scoring inside [`LilAgents/Session/OrbitGuidesCorpus.swift`](LilAgents/Session/OrbitGuidesCorpus.swift) — no embeddings, no network calls at runtime.
 
-To fork this for your own founder companion:
+To fork this for your own dock assistant:
 
 1. Swap the system prompt for your voice and domain.
 2. Swap the bundled corpus JSON for your own knowledge base in the same export shape.

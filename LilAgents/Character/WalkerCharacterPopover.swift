@@ -28,7 +28,7 @@ extension WalkerCharacter {
         }
 
         let welcome = """
-        Orion — founder of Orbit, on your desktop.
+        Orion — Orbit's assistant for your dock.
 
         Ask about lifecycle, deliverability, Braze, retention. The Orbit playbook, in dock form.
         """
@@ -113,12 +113,28 @@ extension WalkerCharacter {
         restoreTranscriptState()
 
         updatePopoverPosition()
-        popoverWindow?.orderFrontRegardless()
-        popoverWindow?.makeKey()
+        // After the new-chat close-and-reopen cycle, orderFrontRegardless +
+        // makeKey didn't reliably leave the window key — keystrokes hit the
+        // popover but Enter never fired the input field's action because
+        // Orion (an LSUIElement app) wasn't the active app. Activating
+        // explicitly + using makeKeyAndOrderFront makes the popover the
+        // single point of focus regardless of whether we're opening fresh
+        // or coming through a close-and-reopen.
+        NSApp.activate(ignoringOtherApps: true)
+        popoverWindow?.makeKeyAndOrderFront(nil)
         syncPopoverPinState()
 
+        // makeFirstResponder runs on the next tick so the window's
+        // key-window transition has time to commit before we install
+        // the input field as first responder. Without the delay, the
+        // responder assignment can race the activation and leave focus
+        // on whatever was previously responder (a chip button, the
+        // close button) — which is what the new-chat "Enter does
+        // nothing" symptom reduces to.
         if let terminal = terminalView {
-            popoverWindow?.makeFirstResponder(terminal.inputField)
+            DispatchQueue.main.async { [weak self] in
+                self?.popoverWindow?.makeFirstResponder(terminal.inputField)
+            }
         }
 
         refreshPopoverEventMonitors()
@@ -151,7 +167,11 @@ extension WalkerCharacter {
     }
 
     @objc func expandToggleTapped() {
-        guard let popover = popoverWindow, let screen = NSScreen.main else { return }
+        // Same activeScreen treatment as updatePopoverPosition — the
+        // expand-toggle's height calculation reads visibleFrame, which
+        // is screen-specific. Using NSScreen.main would size against
+        // whichever monitor has the focused window, not the Dock screen.
+        guard let popover = popoverWindow, let screen = controller?.activeScreen ?? NSScreen.main else { return }
         isPopoverExpanded = !isPopoverExpanded
 
         let charFrame = window.frame

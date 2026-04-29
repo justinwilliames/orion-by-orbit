@@ -149,9 +149,9 @@ extension SettingsView {
                 }
             }
 
-            SettingsSectionCard(title: "About Orion", subtitle: "Founder of Orbit, on your desktop.") {
+            SettingsSectionCard(title: "About Orion", subtitle: "Orbit's assistant for your dock.") {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Orion is the dock-pinned companion version of Orbit's founder. Ask him about lifecycle marketing, deliverability, Braze, retention economics — anything from the Orbit playbook.")
+                    Text("Orion is Orbit's lifecycle assistant for your dock — same Orbit voice, narrower surface than the full MCP extension. Ask about lifecycle marketing, deliverability, Braze, retention economics — anything from the Orbit playbook.")
                         .settingsCaption()
 
                     Link("Orbit · The lifecycle marketing OS for Claude", destination: URL(string: "https://get.yourorbit.team")!)
