@@ -7,7 +7,8 @@ import PackageDescription
 // This Package exists only to compile and run the regression tests
 // that protect the pure-logic modules from the kinds of bugs that
 // shipped in v0.1.38–v0.1.42 (Slack copy markup, citation
-// linkification, sensitive-data leakage, bubble width math).
+// linkification, sensitive-data leakage, bubble width math) and
+// v0.2.x (structured JSON leak, persona drift).
 //
 // Why a separate Package and not an XCTest target inside the
 // project: adding an XCTest target via direct pbxproj edits is
@@ -20,10 +21,23 @@ import PackageDescription
 // AppKit / SwiftUI / framework-bundle dependencies. UI-layer code
 // is tested by hand or via release smoke checks; this surface
 // catches the silent-correctness regressions.
+//
+// Dependencies:
+//   - swift-snapshot-testing (Point-Free) — golden-file testing
+//     for the markdown renderers and parser pipeline outputs. We
+//     use the .lines strategy (text snapshots, no image diffing)
+//     so the suite stays headless / Linux-compatible / fast. First
+//     run records the snapshot; subsequent runs assert equality.
+//     When a snapshot file is intentionally outdated, delete it,
+//     re-run, commit the regenerated snapshot. CI checks them in
+//     as part of the regular `swift test` pipeline.
 let package = Package(
     name: "LilJustinTests",
     platforms: [
         .macOS(.v14)
+    ],
+    dependencies: [
+        .package(url: "https://github.com/pointfreeco/swift-snapshot-testing", from: "1.17.0")
     ],
     targets: [
         .target(
@@ -55,7 +69,10 @@ let package = Package(
         ),
         .testTarget(
             name: "LilJustinCoreTests",
-            dependencies: ["LilJustinCore"],
+            dependencies: [
+                "LilJustinCore",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing")
+            ],
             path: "Tests/LilJustinCoreTests"
         )
     ]
