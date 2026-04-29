@@ -101,6 +101,24 @@ extension WalkerCharacter {
             }
             self.terminalView?.deferredExpertSuggestions = []
 
+            // Sir's report: "I can't send follow up messages after the
+            // initial response from Orion." Root cause: replayConversation
+            // tears down and rebuilds every transcript bubble, and the
+            // selectable NSTextField backing each assistant bubble can
+            // claim first-responder during the rebuild. The input field
+            // looks focused (cursor blinks), but Enter actually goes to
+            // the bubble's text view, which has no action. Restoring
+            // first-responder to the input field on every turn completion
+            // makes the next message reliably submittable. Async so the
+            // replay finishes its layout pass first.
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self,
+                      let popover = self.popoverWindow,
+                      popover.isVisible,
+                      let inputField = self.terminalView?.inputField else { return }
+                popover.makeFirstResponder(inputField)
+            }
+
             // Generate two follow-up chips. Skipped on expert focus
             // (those flows have their own suggestion UI), and bailed
             // out on chitchat replies under 40 words — no point asking
