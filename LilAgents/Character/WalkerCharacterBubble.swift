@@ -69,7 +69,34 @@ extension WalkerCharacter {
                 showBubble(text: currentPhrase, isCompletion: false)
             }
         } else if !showingCompletion {
-            hideBubble()
+            // Ambient bubbles run on their own linger schedule
+            // (ambientBubbleExpiresAt, set by showAmbientLine, expires
+            // after ambientBubbleLinger seconds — currently 25s). Sir's
+            // report: "his little messages pop up and disappear really
+            // quickly." Root cause: this branch unconditionally hid the
+            // bubble whenever the character was idle / walking and not
+            // showing completion — including the entire walk that
+            // followed a pause where an ambient bubble had just fired.
+            // The bubble was killed mid-read the moment Orion took a
+            // step.
+            //
+            // Now: respect the ambient linger here too. Hide only when
+            // the ambient window has actually expired (or was never
+            // set), and reset the cooldown when we do. tickAmbientBubble
+            // doesn't run during walks (movement ticks only call it
+            // while paused), so this is the single place ambient expiry
+            // gets checked while the character is walking.
+            if ambientBubbleExpiresAt > 0 {
+                if now >= ambientBubbleExpiresAt {
+                    hideBubble()
+                    ambientBubbleExpiresAt = 0
+                    nextAmbientBubbleAt = now + TimeInterval.random(in: WalkerCharacter.minAmbientGap...WalkerCharacter.maxAmbientGap)
+                }
+                // Otherwise: still in the linger window — leave the
+                // bubble visible even as the character walks past it.
+            } else {
+                hideBubble()
+            }
         }
     }
 
