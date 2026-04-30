@@ -113,64 +113,10 @@ class CharacterContentView: NSView {
 
         let menu = NSMenu()
 
-        // ── Quick productivity tools ────────────────────────────────────
-        let pomoItem = NSMenuItem(
-            title: PomodoroController.shared.menuTitle,
-            action: #selector(togglePomodoro),
-            keyEquivalent: ""
-        )
-        pomoItem.target = self
-        menu.addItem(pomoItem)
-
-        let noteItem = NSMenuItem(title: "Quick note…", action: #selector(showQuickNote), keyEquivalent: "")
-        noteItem.target = self
-        menu.addItem(noteItem)
-
-        let viewNotesItem = NSMenuItem(title: "View past notes", action: #selector(viewNotes), keyEquivalent: "")
-        viewNotesItem.target = self
-        menu.addItem(viewNotesItem)
-
-        let countItem = NSMenuItem(title: "Word + char count (clipboard)", action: #selector(showClipboardCount), keyEquivalent: "")
-        countItem.target = self
-        menu.addItem(countItem)
-
-        let openItem = NSMenuItem(title: "Open ~/Orbit folder", action: #selector(openOrbitFolder), keyEquivalent: "")
-        openItem.target = self
-        menu.addItem(openItem)
-
-        // Orbit apps submenu — local versions of the small-form-factor
-        // tools from get-orbit.
-        let appsMenu = NSMenu()
-        let appSampleSize = NSMenuItem(title: "Sample size calculator", action: #selector(openSampleSize), keyEquivalent: "")
-        appSampleSize.target = self; appsMenu.addItem(appSampleSize)
-        let appSignificance = NSMenuItem(title: "A/B significance", action: #selector(openSignificance), keyEquivalent: "")
-        appSignificance.target = self; appsMenu.addItem(appSignificance)
-        let appEmailSize = NSMenuItem(title: "Email size checker", action: #selector(openEmailSize), keyEquivalent: "")
-        appEmailSize.target = self; appsMenu.addItem(appEmailSize)
-        let appPercentage = NSMenuItem(title: "Percentage calculator", action: #selector(openPercentage), keyEquivalent: "")
-        appPercentage.target = self; appsMenu.addItem(appPercentage)
-
-        appsMenu.addItem(NSMenuItem.separator())
-
-        for entry in OrbitWebTools.entries {
-            let item = NSMenuItem(title: "\(entry.name)  ↗", action: #selector(openWebApp(_:)), keyEquivalent: "")
-            item.target = self
-            item.representedObject = entry.slug
-            appsMenu.addItem(item)
-        }
-
-        appsMenu.addItem(NSMenuItem.separator())
-        let allWebApps = NSMenuItem(title: "All Orbit apps  ↗", action: #selector(openAllApps), keyEquivalent: "")
-        allWebApps.target = self
-        appsMenu.addItem(allWebApps)
-
-        let appsItem = NSMenuItem(title: "Orbit apps", action: nil, keyEquivalent: "")
-        appsItem.submenu = appsMenu
-        menu.addItem(appsItem)
-
-        menu.addItem(NSMenuItem.separator())
-
-        // ── Character behaviour ─────────────────────────────────────────
+        // Right-click is for character-level controls only. Productivity
+        // tools (Pomodoro, notes, calculators, web apps) live in the
+        // toolbox button inside the chat popover — UI-driven, not
+        // menu navigation.
         let dontMoveItem = NSMenuItem(title: "Don't move", action: #selector(toggleMovementLocked(_:)), keyEquivalent: "")
         dontMoveItem.target = self
         dontMoveItem.state = character.movementLocked ? .on : .off
@@ -313,52 +259,5 @@ class CharacterContentView: NSView {
     @objc private func toggleMovementLocked(_ sender: NSMenuItem) {
         guard let character else { return }
         character.setMovementLocked(!character.movementLocked)
-    }
-
-    // MARK: Quick-tool menu actions
-
-    @objc private func togglePomodoro() {
-        PomodoroController.shared.toggle()
-    }
-
-    @objc private func showQuickNote() {
-        QuickNoteController.shared.show()
-    }
-
-    @objc private func showClipboardCount() {
-        ClipboardCounter.showCount()
-    }
-
-    @objc private func openOrbitFolder() {
-        OpenOrbitFolder.reveal()
-    }
-
-    @objc private func viewNotes() {
-        NotesBrowserController.shared.show()
-    }
-
-    @objc private func openSampleSize() {
-        SampleSizeController.shared.show()
-    }
-
-    @objc private func openSignificance() {
-        SignificanceController.shared.show()
-    }
-
-    @objc private func openEmailSize() {
-        EmailSizeController.shared.show()
-    }
-
-    @objc private func openPercentage() {
-        PercentageController.shared.show()
-    }
-
-    @objc private func openWebApp(_ sender: NSMenuItem) {
-        guard let slug = sender.representedObject as? String else { return }
-        OrbitWebTools.open(slug: slug)
-    }
-
-    @objc private func openAllApps() {
-        OrbitWebTools.openAppsIndex()
     }
 }

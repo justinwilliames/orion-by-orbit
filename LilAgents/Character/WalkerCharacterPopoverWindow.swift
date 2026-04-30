@@ -777,107 +777,55 @@ extension WalkerCharacter {
         }
     }
 
-    /// Toolbox button → popup menu with the productivity quick tools.
-    /// Same actions as the right-click menu on the dock character; this
-    /// surfaces them inside the chat popover so they're reachable
-    /// without dismissing the popover first.
+    /// Toolbox button → toggle the in-popover SwiftUI overlay covering
+    /// the chat surface. Rebuilds chrome on close. No menu navigation.
     @objc func toolboxButtonTapped(_ sender: NSButton) {
-        let menu = NSMenu()
-
-        let pomo = NSMenuItem(
-            title: PomodoroController.shared.menuTitle,
-            action: #selector(toolboxTogglePomodoro),
-            keyEquivalent: ""
-        )
-        pomo.target = self
-        menu.addItem(pomo)
-
-        menu.addItem(NSMenuItem.separator())
-
-        let newNote = NSMenuItem(title: "New quick note…", action: #selector(toolboxShowQuickNote), keyEquivalent: "")
-        newNote.target = self
-        menu.addItem(newNote)
-
-        let viewNotes = NSMenuItem(title: "View past notes", action: #selector(toolboxViewNotes), keyEquivalent: "")
-        viewNotes.target = self
-        menu.addItem(viewNotes)
-
-        menu.addItem(NSMenuItem.separator())
-
-        // Orbit apps submenu — local versions of the small-form-factor
-        // tools from get-orbit.
-        let appsMenu = NSMenu()
-        let mkApp: (String, Selector) -> NSMenuItem = { [weak self] title, sel in
-            let item = NSMenuItem(title: title, action: sel, keyEquivalent: "")
-            item.target = self
-            return item
+        if let overlay = popoverToolboxOverlay, !overlay.isHidden {
+            hideToolboxOverlay()
+        } else {
+            showToolboxOverlay()
         }
-        appsMenu.addItem(mkApp("Sample size calculator", #selector(toolboxOpenSampleSize)))
-        appsMenu.addItem(mkApp("A/B significance", #selector(toolboxOpenSignificance)))
-        appsMenu.addItem(mkApp("Email size checker", #selector(toolboxOpenEmailSize)))
-        appsMenu.addItem(mkApp("Percentage calculator", #selector(toolboxOpenPercentage)))
+    }
 
-        appsMenu.addItem(NSMenuItem.separator())
+    private func showToolboxOverlay() {
+        guard let popoverWindow,
+              let container = popoverWindow.contentView else { return }
 
-        // Tools too big or UI-heavy for a small panel — open in browser
-        // instead. The ↗ suffix flags the entry as external.
-        for entry in OrbitWebTools.entries {
-            let item = NSMenuItem(title: "\(entry.name)  ↗", action: #selector(toolboxOpenWebApp(_:)), keyEquivalent: "")
-            item.target = self
-            item.representedObject = entry.slug
-            appsMenu.addItem(item)
+        let overlay: NSView
+        if let existing = popoverToolboxOverlay {
+            overlay = existing
+            overlay.isHidden = false
+        } else {
+            // Title bar is 52pt; the overlay covers everything below it.
+            let titleBarHeight: CGFloat = 52
+            let frame = NSRect(
+                x: 0,
+                y: 0,
+                width: container.bounds.width,
+                height: container.bounds.height - titleBarHeight
+            )
+            let hosting = NSHostingView(rootView: ToolboxRootView(onClose: { [weak self] in
+                self?.hideToolboxOverlay()
+            }))
+            hosting.frame = frame
+            hosting.autoresizingMask = [.width, .height]
+            container.addSubview(hosting, positioned: .above, relativeTo: nil)
+            popoverToolboxOverlay = hosting
+            overlay = hosting
         }
-
-        appsMenu.addItem(NSMenuItem.separator())
-        let allItem = NSMenuItem(title: "All Orbit apps  ↗", action: #selector(toolboxOpenAllApps), keyEquivalent: "")
-        allItem.target = self
-        appsMenu.addItem(allItem)
-
-        let appsItem = NSMenuItem(title: "Orbit apps", action: nil, keyEquivalent: "")
-        appsItem.submenu = appsMenu
-        menu.addItem(appsItem)
-
-        // Anchor the menu under the button instead of at the cursor so
-        // it visually attaches to the toolbox icon.
-        let location = NSPoint(x: 0, y: sender.bounds.height + 4)
-        menu.popUp(positioning: nil, at: location, in: sender)
+        // Re-create the SwiftUI root each show so transient state
+        // (selection, drafts) starts fresh and live properties (Pomodoro
+        // phase) reflect current values rather than stale captures.
+        if let hosting = overlay as? NSHostingView<ToolboxRootView> {
+            hosting.rootView = ToolboxRootView(onClose: { [weak self] in
+                self?.hideToolboxOverlay()
+            })
+        }
+        overlay.needsDisplay = true
     }
 
-    @objc func toolboxTogglePomodoro() {
-        PomodoroController.shared.toggle()
-    }
-
-    @objc func toolboxShowQuickNote() {
-        QuickNoteController.shared.show()
-    }
-
-    @objc func toolboxViewNotes() {
-        NotesBrowserController.shared.show()
-    }
-
-    @objc func toolboxOpenSampleSize() {
-        SampleSizeController.shared.show()
-    }
-
-    @objc func toolboxOpenSignificance() {
-        SignificanceController.shared.show()
-    }
-
-    @objc func toolboxOpenEmailSize() {
-        EmailSizeController.shared.show()
-    }
-
-    @objc func toolboxOpenPercentage() {
-        PercentageController.shared.show()
-    }
-
-    @objc func toolboxOpenWebApp(_ sender: NSMenuItem) {
-        guard let slug = sender.representedObject as? String else { return }
-        OrbitWebTools.open(slug: slug)
-    }
-
-    @objc func toolboxOpenAllApps() {
-        OrbitWebTools.openAppsIndex()
+    private func hideToolboxOverlay() {
+        popoverToolboxOverlay?.isHidden = true
     }
 
     @objc func toggleExpertSwitcher() {

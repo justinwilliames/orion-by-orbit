@@ -114,7 +114,7 @@
 		BC0000010000000000000015 /* QuickTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000015 /* QuickTools.swift */; };
 		BC0000010000000000000016 /* CalendarTooltipProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000016 /* CalendarTooltipProvider.swift */; };
 		BC0000010000000000000017 /* NotesBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000017 /* NotesBrowser.swift */; };
-		BC0000010000000000000018 /* OrbitApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000018 /* OrbitApps.swift */; };
+		BC0000010000000000000019 /* Toolbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000019 /* Toolbox.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -226,7 +226,7 @@
 		BC0000020000000000000015 /* QuickTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickTools.swift; sourceTree = "<group>"; };
 		BC0000020000000000000016 /* CalendarTooltipProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTooltipProvider.swift; sourceTree = "<group>"; };
 		BC0000020000000000000017 /* NotesBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesBrowser.swift; sourceTree = "<group>"; };
-		BC0000020000000000000018 /* OrbitApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbitApps.swift; sourceTree = "<group>"; };
+		BC0000020000000000000019 /* Toolbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -419,7 +419,7 @@
 			children = (
 				BC0000020000000000000015 /* QuickTools.swift */,
 				BC0000020000000000000017 /* NotesBrowser.swift */,
-				BC0000020000000000000018 /* OrbitApps.swift */,
+				BC0000020000000000000019 /* Toolbox.swift */,
 			);
 			path = QuickTools;
 			sourceTree = "<group>";
@@ -635,7 +635,7 @@
 				BC0000010000000000000015 /* QuickTools.swift in Sources */,
 				BC0000010000000000000016 /* CalendarTooltipProvider.swift in Sources */,
 				BC0000010000000000000017 /* NotesBrowser.swift in Sources */,
-				BC0000010000000000000018 /* OrbitApps.swift in Sources */,
+				BC0000010000000000000019 /* Toolbox.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -53,6 +53,9 @@ final class WalkerCharacter {
     var popoverReturnButton: NSButton?
     var popoverSettingsButton: HoverButton?
     var popoverToolboxButton: HoverButton?
+    /// The SwiftUI toolbox overlay (added on first toolbox-button tap,
+    /// reused thereafter). nil when not yet built.
+    var popoverToolboxOverlay: NSView?
     var popoverExpandButton: HoverButton?
     var popoverPinButton: HoverButton?
     var popoverCloseButton: HoverButton?
