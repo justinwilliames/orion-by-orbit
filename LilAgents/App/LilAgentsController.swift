@@ -34,10 +34,43 @@ class LilAgentsController {
         setupDebugLine()
         startDisplayLink()
         registerDockRefreshObservers()
+        wireQuickToolHooks()
 
         if !UserDefaults.standard.bool(forKey: Self.onboardingKey) {
             triggerOnboarding()
         }
+    }
+
+    /// Hook PomodoroController and CalendarTooltipProvider into the
+    /// character — the controllers don't depend on AppKit types
+    /// directly, so the wiring lives here.
+    private func wireQuickToolHooks() {
+        PomodoroController.shared.onPhaseStart = { [weak self] _, statusText in
+            guard let bruce = self?.characters.first, !statusText.isEmpty else { return }
+            bruce.currentPhrase = statusText
+            bruce.showBubble(text: statusText, isCompletion: false)
+        }
+        PomodoroController.shared.onPhaseEnd = { [weak self] _, completionText in
+            guard let bruce = self?.characters.first else { return }
+            bruce.currentPhrase = completionText
+            bruce.showingCompletion = true
+            bruce.completionBubbleExpiry = CACurrentMediaTime() + 6.0
+            bruce.showBubble(text: completionText, isCompletion: true)
+            bruce.playCompletionSound()
+        }
+        PomodoroController.shared.onTooltipRefresh = { [weak self] tooltipText in
+            // Surface the live remaining time via the character's hover
+            // tooltip so the user can peek without a bubble nagging them.
+            self?.characters.first?.window?.contentView?.toolTip = tooltipText
+        }
+
+        CalendarTooltipProvider.shared.onTooltipText = { [weak self] text in
+            // Calendar tooltip and Pomodoro tooltip share the same hover
+            // surface — Pomodoro takes priority while running.
+            if PomodoroController.shared.isRunning { return }
+            self?.characters.first?.window?.contentView?.toolTip = text
+        }
+        CalendarTooltipProvider.shared.start()
     }
 
     private func triggerOnboarding() {

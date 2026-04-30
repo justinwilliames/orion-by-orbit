@@ -111,6 +111,8 @@
 		BC0000010000000000000012 /* BubbleWidthMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000012 /* BubbleWidthMath.swift */; };
 		BC0000010000000000000013 /* MarkdownToHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000013 /* MarkdownToHTML.swift */; };
 		BC0000010000000000000014 /* StructuredJSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000014 /* StructuredJSONParser.swift */; };
+		BC0000010000000000000015 /* QuickTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000015 /* QuickTools.swift */; };
+		BC0000010000000000000016 /* CalendarTooltipProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000016 /* CalendarTooltipProvider.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -219,6 +221,8 @@
 		BC0000020000000000000012 /* BubbleWidthMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleWidthMath.swift; sourceTree = "<group>"; };
 		BC0000020000000000000013 /* MarkdownToHTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownToHTML.swift; sourceTree = "<group>"; };
 		BC0000020000000000000014 /* StructuredJSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredJSONParser.swift; sourceTree = "<group>"; };
+		BC0000020000000000000015 /* QuickTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickTools.swift; sourceTree = "<group>"; };
+		BC0000020000000000000016 /* CalendarTooltipProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTooltipProvider.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -260,6 +264,8 @@
 				A10000060000000000000014 /* Support */,
 				BC0000060000000000000001 /* Memory */,
 				BC0000060000000000000002 /* Speech */,
+				BC0000060000000000000003 /* QuickTools */,
+				BC0000060000000000000004 /* Integrations */,
 				A10000020000000000000007 /* Assets.xcassets */,
 				A10000020000000000000010 /* Sounds */,
 				A10000120000000000000001 /* CharacterSprites */,
@@ -402,6 +408,22 @@
 				A10000020000000000000021 /* CharacterContentView.swift */,
 			);
 			path = Support;
+			sourceTree = "<group>";
+		};
+		BC0000060000000000000003 /* QuickTools */ = {
+			isa = PBXGroup;
+			children = (
+				BC0000020000000000000015 /* QuickTools.swift */,
+			);
+			path = QuickTools;
+			sourceTree = "<group>";
+		};
+		BC0000060000000000000004 /* Integrations */ = {
+			isa = PBXGroup;
+			children = (
+				BC0000020000000000000016 /* CalendarTooltipProvider.swift */,
+			);
+			path = Integrations;
 			sourceTree = "<group>";
 		};
 		BC0000060000000000000001 /* Memory */ = {
@@ -604,6 +626,8 @@
 				BC0000010000000000000012 /* BubbleWidthMath.swift in Sources */,
 				BC0000010000000000000013 /* MarkdownToHTML.swift in Sources */,
 				BC0000010000000000000014 /* StructuredJSONParser.swift in Sources */,
+				BC0000010000000000000015 /* QuickTools.swift in Sources */,
+				BC0000010000000000000016 /* CalendarTooltipProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

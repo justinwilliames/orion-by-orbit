@@ -81,6 +81,10 @@
     <string>Orion spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files on network shares when you mention them.</string>
     <key>NSAppleEventsUsageDescription</key>
     <string>Orion uses Apple Events to launch Terminal for the post-update Gatekeeper helper, and to invoke the Claude Code / Codex CLI on your behalf.</string>
+    <key>NSCalendarsUsageDescription</key>
+    <string>Orion reads your upcoming calendar events to show the next one as a quiet hover-tooltip on his sprite. Events are read locally — nothing is sent off-device.</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>Orion reads your upcoming calendar events to show the next one as a quiet hover-tooltip on his sprite. Events are read locally — nothing is sent off-device.</string>
 
     <!-- Voice dictation via SFSpeechRecognizer. Required by macOS for the
          microphone-input prompt and the speech-recognition-permission prompt.

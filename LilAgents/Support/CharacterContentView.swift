@@ -87,6 +87,16 @@ class CharacterContentView: NSView {
     private var didDrag = false
     private let dragThreshold: CGFloat = 4
 
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        registerForDraggedTypes([.fileURL, .URL, .string, .tiff, .png])
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        registerForDraggedTypes([.fileURL, .URL, .string, .tiff, .png])
+    }
+
     override func updateTrackingAreas() {
         super.updateTrackingAreas()
         trackingAreas.forEach { removeTrackingArea($0) }
@@ -103,6 +113,30 @@ class CharacterContentView: NSView {
 
         let menu = NSMenu()
 
+        // ── Quick productivity tools ────────────────────────────────────
+        let pomoItem = NSMenuItem(
+            title: PomodoroController.shared.menuTitle,
+            action: #selector(togglePomodoro),
+            keyEquivalent: ""
+        )
+        pomoItem.target = self
+        menu.addItem(pomoItem)
+
+        let noteItem = NSMenuItem(title: "Quick note…", action: #selector(showQuickNote), keyEquivalent: "")
+        noteItem.target = self
+        menu.addItem(noteItem)
+
+        let countItem = NSMenuItem(title: "Word + char count (clipboard)", action: #selector(showClipboardCount), keyEquivalent: "")
+        countItem.target = self
+        menu.addItem(countItem)
+
+        let openItem = NSMenuItem(title: "Open ~/Orbit folder", action: #selector(openOrbitFolder), keyEquivalent: "")
+        openItem.target = self
+        menu.addItem(openItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        // ── Character behaviour ─────────────────────────────────────────
         let dontMoveItem = NSMenuItem(title: "Don't move", action: #selector(toggleMovementLocked(_:)), keyEquivalent: "")
         dontMoveItem.target = self
         dontMoveItem.state = character.movementLocked ? .on : .off
@@ -119,6 +153,34 @@ class CharacterContentView: NSView {
         menu.addItem(quitItem)
 
         return menu
+    }
+
+    // MARK: Drag-and-drop
+
+    override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        // Accept anything that the chat composer would accept — file URLs,
+        // remote URLs, plain text, images. The composer's existing
+        // attachment parser does the validation downstream.
+        return .copy
+    }
+
+    override func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
+        return .copy
+    }
+
+    override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        guard let character else { return false }
+        // Open the chat popover (creating it if needed), then queue the
+        // dropped attachments via the existing TerminalView pipeline so
+        // they appear as chips in the composer. The user fills in their
+        // question in the composer as normal.
+        character.openPopover()
+        DispatchQueue.main.async {
+            guard let terminal = character.terminalView else { return }
+            let attachments = terminal.attachments(from: sender.draggingPasteboard)
+            terminal.queueAttachments(attachments)
+        }
+        return true
     }
 
     override func hitTest(_ point: NSPoint) -> NSView? {
@@ -217,5 +279,23 @@ class CharacterContentView: NSView {
     @objc private func toggleMovementLocked(_ sender: NSMenuItem) {
         guard let character else { return }
         character.setMovementLocked(!character.movementLocked)
+    }
+
+    // MARK: Quick-tool menu actions
+
+    @objc private func togglePomodoro() {
+        PomodoroController.shared.toggle()
+    }
+
+    @objc private func showQuickNote() {
+        QuickNoteController.shared.show()
+    }
+
+    @objc private func showClipboardCount() {
+        ClipboardCounter.showCount()
+    }
+
+    @objc private func openOrbitFolder() {
+        OpenOrbitFolder.reveal()
     }
 }
