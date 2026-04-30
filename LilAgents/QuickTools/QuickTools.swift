@@ -1,5 +1,6 @@
 import AppKit
 import Foundation
+import SwiftUI
 
 // Quick productivity tools surfaced from Orion's right-click menu.
 // Designed to be light-touch — none of these grab focus or fire popups
@@ -165,69 +166,110 @@ final class PomodoroController {
 
 // MARK: - Quick Note
 
-/// Borderless panel for capturing a one-line thought. Saves to
-/// `~/Orbit/notes/YYYY-MM-DD.md` with each entry timestamped, so a day's
-/// notes accumulate in one file rather than fragmenting the workspace.
+/// SwiftUI capture view for the floating Quick Note panel. Multi-line
+/// TextEditor — Return inserts a newline as expected; saving is the
+/// explicit Save button (or ⌘↩). Esc cancels without writing.
+private struct QuickNoteCaptureView: View {
+    @State private var text: String = ""
+    @FocusState private var editorFocused: Bool
+
+    var onSave: (String) -> Void
+    var onCancel: () -> Void
+
+    private var canSave: Bool {
+        !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ZStack(alignment: .topLeading) {
+                TextEditor(text: $text)
+                    .font(.system(size: 14))
+                    .scrollContentBackground(.hidden)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 8)
+                    .focused($editorFocused)
+
+                if text.isEmpty {
+                    Text("What's the note? Multi-line is fine. ⌘↩ to save, Esc to cancel.")
+                        .font(.system(size: 14))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 16)
+                        .allowsHitTesting(false)
+                }
+            }
+            .frame(minHeight: 120)
+
+            Divider()
+
+            HStack(spacing: 10) {
+                Spacer()
+                Button("Cancel") { onCancel() }
+                    .keyboardShortcut(.cancelAction)
+                Button("Save") { onSave(text) }
+                    .keyboardShortcut(.return, modifiers: .command)
+                    .buttonStyle(.borderedProminent)
+                    .disabled(!canSave)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+        }
+        .frame(minWidth: 480, minHeight: 200)
+        .onAppear { editorFocused = true }
+    }
+}
+
+/// Floating panel host for the Quick Note capture view. Saves entries
+/// to `~/Orbit/notes/YYYY-MM-DD.md`, one timestamped line per entry,
+/// so a day's notes accumulate in a single file rather than
+/// fragmenting the workspace.
 @MainActor
 final class QuickNoteController: NSObject, NSWindowDelegate {
     static let shared = QuickNoteController()
 
     private var panel: NSPanel?
-    private var textField: NSTextField?
 
     private override init() { super.init() }
 
     func show() {
-        if panel != nil { panel?.makeKeyAndOrderFront(nil); return }
+        if let existing = panel {
+            NSApp.activate(ignoringOtherApps: true)
+            existing.makeKeyAndOrderFront(nil)
+            return
+        }
 
         let panel = NSPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 480, height: 80),
-            styleMask: [.titled, .closable, .borderless, .nonactivatingPanel, .fullSizeContentView],
+            contentRect: NSRect(x: 0, y: 0, width: 520, height: 220),
+            styleMask: [.titled, .closable, .resizable, .nonactivatingPanel, .fullSizeContentView],
             backing: .buffered,
             defer: false
         )
         panel.title = "Quick note"
-        panel.titleVisibility = .hidden
         panel.titlebarAppearsTransparent = true
         panel.isReleasedWhenClosed = false
         panel.level = .floating
-        panel.isMovableByWindowBackground = true
         panel.delegate = self
-
-        let container = NSView(frame: panel.contentLayoutRect)
-        container.wantsLayer = true
-        container.layer?.backgroundColor = NSColor(calibratedWhite: 0.10, alpha: 0.96).cgColor
-        container.layer?.cornerRadius = 12
-        panel.contentView = container
-
-        let field = NSTextField(frame: NSRect(x: 16, y: 24, width: 448, height: 32))
-        field.placeholderString = "What's the note? (Enter to save, Esc to cancel)"
-        field.font = NSFont.systemFont(ofSize: 14)
-        field.textColor = .white
-        field.backgroundColor = .clear
-        field.isBordered = false
-        field.focusRingType = .none
-        field.target = self
-        field.action = #selector(saveNote(_:))
-        container.addSubview(field)
+        panel.contentView = NSHostingView(rootView: QuickNoteCaptureView(
+            onSave: { [weak self] text in self?.commit(text) },
+            onCancel: { [weak self] in self?.close() }
+        ))
 
         if let screen = NSScreen.main {
             let frame = screen.visibleFrame
-            let x = frame.midX - 240
-            let y = frame.midY + 80
-            panel.setFrame(NSRect(x: x, y: y, width: 480, height: 80), display: true)
+            let x = frame.midX - 260
+            let y = frame.midY + 30
+            panel.setFrame(NSRect(x: x, y: y, width: 520, height: 220), display: true)
         }
 
         self.panel = panel
-        self.textField = field
 
         NSApp.activate(ignoringOtherApps: true)
         panel.makeKeyAndOrderFront(nil)
-        field.becomeFirstResponder()
     }
 
-    @objc private func saveNote(_ sender: NSTextField) {
-        let text = sender.stringValue.trimmingCharacters(in: .whitespacesAndNewlines)
+    private func commit(_ raw: String) {
+        let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { close(); return }
 
         let fm = FileManager.default
@@ -238,9 +280,17 @@ final class QuickNoteController: NSObject, NSWindowDelegate {
         let day = ISO8601DateFormatter.dayFormatter.string(from: Date())
         let file = dir.appendingPathComponent("\(day).md")
         let stamp = ISO8601DateFormatter.timeFormatter.string(from: Date())
-        let line = "- \(stamp) — \(text)\n"
+        // Multi-line notes are indented under the bullet so the
+        // ~/Orbit/notes/YYYY-MM-DD.md file stays a clean Markdown
+        // bulleted list when read back.
+        let body = text
+            .components(separatedBy: "\n")
+            .enumerated()
+            .map { idx, line in idx == 0 ? line : "  \(line)" }
+            .joined(separator: "\n")
+        let entry = "- \(stamp) — \(body)\n"
 
-        if let data = line.data(using: .utf8) {
+        if let data = entry.data(using: .utf8) {
             if fm.fileExists(atPath: file.path),
                let handle = try? FileHandle(forWritingTo: file) {
                 _ = try? handle.seekToEnd()
@@ -256,10 +306,12 @@ final class QuickNoteController: NSObject, NSWindowDelegate {
 
     private func close() {
         panel?.orderOut(nil)
+        panel = nil
     }
 
     func windowShouldClose(_ sender: NSWindow) -> Bool {
-        true
+        panel = nil
+        return true
     }
 }
 
