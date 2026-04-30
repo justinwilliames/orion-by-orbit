@@ -468,56 +468,16 @@ extension WalkerCharacter {
     /// genuinely idle. Asks the LLM (when enabled) for a fresh line,
     /// or falls back to the hardcoded pool if the LLM is off / fails.
     func tickAmbientBubble() {
-        let now = CACurrentMediaTime()
-
-        // Ambient bubbles are forbidden during chat, sleep, expert
-        // focus, or while a model turn is in flight.
-        if popoverWindow?.isVisible == true || isClaudeBusy || isSleeping || isCompanionAvatar || focusedExpert != nil {
-            if ambientBubbleExpiresAt > 0 {
-                hideBubble()
-                ambientBubbleExpiresAt = 0
-                nextAmbientBubbleAt = now + TimeInterval.random(in: WalkerCharacter.minAmbientGap...WalkerCharacter.maxAmbientGap)
-            }
-            return
-        }
-
-        if showingCompletion { return }
-
-        // If an ambient is currently showing, expire it on schedule.
+        // Ambient bubbles (motivational quotes, craft tips, mood lines)
+        // disabled per Sir — they read as invasive next to the legitimate
+        // status / thinking / completion bubbles. If one is currently on
+        // screen from a prior session, hide it on the next tick. To
+        // re-enable, restore the previous body (see git history) — the
+        // pickAmbientMode / generateAmbientLineViaLLM / fallback pools and
+        // line arrays below all remain compiled.
         if ambientBubbleExpiresAt > 0 {
-            if now >= ambientBubbleExpiresAt {
-                hideBubble()
-                ambientBubbleExpiresAt = 0
-                nextAmbientBubbleAt = now + TimeInterval.random(in: WalkerCharacter.minAmbientGap...WalkerCharacter.maxAmbientGap)
-            }
-            return
-        }
-
-        // Time to fire a new ambient?
-        guard now >= nextAmbientBubbleAt else { return }
-
-        // Block re-entry while the LLM call is in flight.
-        guard !isAmbientLLMRequestInFlight else { return }
-
-        // Pick the mode ONCE per bubble cycle. Both the LLM path and
-        // the fallback path read this same value, so a single bubble
-        // never advances `lastTwoAmbientModes` twice (which would
-        // weaken the anti-streak guard) and the fallback line — when
-        // the LLM call fails — always matches the voice the LLM was
-        // asked for in the first place.
-        let mode = Self.pickAmbientMode()
-
-        if AppSettings.useAmbientLLMEnabled {
-            isAmbientLLMRequestInFlight = true
-            generateAmbientLineViaLLM(mode: mode) { [weak self] line in
-                guard let self else { return }
-                self.isAmbientLLMRequestInFlight = false
-                let chosen = line ?? self.pickFallbackAmbientLine(mode: mode)
-                self.showAmbientLine(chosen, at: CACurrentMediaTime())
-            }
-        } else {
-            let chosen = pickFallbackAmbientLine(mode: mode)
-            showAmbientLine(chosen, at: now)
+            hideBubble()
+            ambientBubbleExpiresAt = 0
         }
     }
 
