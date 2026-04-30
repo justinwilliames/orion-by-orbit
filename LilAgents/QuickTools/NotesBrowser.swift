@@ -227,7 +227,6 @@ struct NotesBrowserView: View {
 /// Singleton owner of the floating browser window. Reuses the same
 /// NSPanel across menu invocations so the user's split-pane sizing
 /// and selection persist within a session.
-@MainActor
 final class NotesBrowserController: NSObject, NSWindowDelegate {
     static let shared = NotesBrowserController()
 

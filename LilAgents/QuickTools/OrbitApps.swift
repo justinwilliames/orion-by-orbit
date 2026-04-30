@@ -17,7 +17,6 @@ import SwiftUI
 
 // MARK: - Generic panel host
 
-@MainActor
 private final class OrbitAppPanel<Content: View>: NSObject, NSWindowDelegate {
     var panel: NSPanel?
 
@@ -160,7 +159,6 @@ private struct SampleSizeView: View {
     }
 }
 
-@MainActor
 final class SampleSizeController {
     static let shared = SampleSizeController()
     private let panel = OrbitAppPanel<SampleSizeView>()
@@ -269,7 +267,6 @@ private struct SignificanceView: View {
     }
 }
 
-@MainActor
 final class SignificanceController {
     static let shared = SignificanceController()
     private let panel = OrbitAppPanel<SignificanceView>()
@@ -396,7 +393,6 @@ private struct EmailSizeView: View {
     }
 }
 
-@MainActor
 final class EmailSizeController {
     static let shared = EmailSizeController()
     private let panel = OrbitAppPanel<EmailSizeView>()
@@ -493,7 +489,6 @@ private struct PercentageView: View {
     }
 }
 
-@MainActor
 final class PercentageController {
     static let shared = PercentageController()
     private let panel = OrbitAppPanel<PercentageView>()
@@ -512,7 +507,6 @@ final class PercentageController {
 /// doesn't pretend the local set is the whole list. Each opens
 /// `https://get.yourorbit.team/apps/<slug>` in the user's default
 /// browser.
-@MainActor
 enum OrbitWebTools {
     /// Display name → slug. Order is the menu order.
     static let entries: [(name: String, slug: String)] = [

@@ -14,7 +14,6 @@ import SwiftUI
 /// of each phase, the per-turn completion bubble + sound at phase end.
 /// Mid-phase, the remaining time is exposed via the character's hover
 /// tooltip — quiet but on-demand.
-@MainActor
 final class PomodoroController {
     static let shared = PomodoroController()
 
@@ -224,7 +223,6 @@ private struct QuickNoteCaptureView: View {
 /// to `~/Orbit/notes/YYYY-MM-DD.md`, one timestamped line per entry,
 /// so a day's notes accumulate in a single file rather than
 /// fragmenting the workspace.
-@MainActor
 final class QuickNoteController: NSObject, NSWindowDelegate {
     static let shared = QuickNoteController()
 
@@ -336,7 +334,6 @@ private extension ISO8601DateFormatter {
 /// Reads the current clipboard text and surfaces character/word counts
 /// via a transient NSAlert. Useful for subject lines / push copy where
 /// length matters more than nuance.
-@MainActor
 enum ClipboardCounter {
     static func showCount() {
         let pb = NSPasteboard.general
@@ -362,7 +359,6 @@ enum ClipboardCounter {
 /// `revealNotes` variant scopes to the notes subdirectory — used by the
 /// "View past notes" menu item so the user lands directly where the
 /// daily .md files live instead of having to drill in.
-@MainActor
 enum OpenOrbitFolder {
     static func reveal() {
         revealDirectory(named: nil)

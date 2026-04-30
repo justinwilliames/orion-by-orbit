@@ -34,14 +34,7 @@ class LilAgentsController {
         setupDebugLine()
         startDisplayLink()
         registerDockRefreshObservers()
-        // start() is called from AppDelegate.applicationDidFinishLaunching
-        // which AppKit always invokes on the main thread, so the
-        // MainActor.assumeIsolated assertion is satisfied. The bridge is
-        // needed because PomodoroController + CalendarTooltipProvider are
-        // @MainActor-isolated singletons but this method itself is not.
-        MainActor.assumeIsolated {
-            wireQuickToolHooks()
-        }
+        wireQuickToolHooks()
 
         if !UserDefaults.standard.bool(forKey: Self.onboardingKey) {
             triggerOnboarding()
@@ -50,9 +43,7 @@ class LilAgentsController {
 
     /// Hook PomodoroController and CalendarTooltipProvider into the
     /// character — the controllers don't depend on AppKit types
-    /// directly, so the wiring lives here. `@MainActor` because both
-    /// callees are MainActor-isolated singletons that touch UI.
-    @MainActor
+    /// directly, so the wiring lives here.
     private func wireQuickToolHooks() {
         PomodoroController.shared.onTickRefresh = { [weak self] text, phase in
             guard let bruce = self?.characters.first else { return }

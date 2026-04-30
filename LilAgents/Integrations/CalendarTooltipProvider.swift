@@ -10,7 +10,6 @@ import Foundation
 /// Polling cadence is 5 minutes — calendar events don't change often
 /// enough to justify tighter loops, and EventKit access on macOS will
 /// happily evict the cache between calls.
-@MainActor
 final class CalendarTooltipProvider {
     static let shared = CalendarTooltipProvider()
 
