@@ -317,7 +317,7 @@ jobs:
           prerelease: true
           make_latest: "false"  # don't displace tagged semver releases as 'Latest' on the repo homepage
           body: |
-            **Orion — the founder of [Orbit](https://get.yourorbit.team), on your desktop.** This is the rolling latest dev build, refreshed on every push to `main`. For tagged stable releases see the [Releases list](https://github.com/justinwilliames-sketch/orion-by-orbit/releases).
+            **Orion — Orbit's assistant for your macOS dock.** This is the rolling latest dev build, refreshed on every push to `main`. For tagged stable releases see the [Releases list](https://github.com/justinwilliames-sketch/orion-by-orbit/releases).
 
             Built from commit [`${{ github.sha }}`](https://github.com/justinwilliames-sketch/orion-by-orbit/commit/${{ github.sha }}).
 
@@ -370,7 +370,7 @@ jobs:
           prerelease: false
           make_latest: "true"
           body: |
-            **Orion — the founder of [Orbit](https://get.yourorbit.team), on your desktop.**
+            **Orion — Orbit's assistant for your macOS dock.**
 
             > [!IMPORTANT]
             > **You MUST run a Terminal command before this app will open.**
