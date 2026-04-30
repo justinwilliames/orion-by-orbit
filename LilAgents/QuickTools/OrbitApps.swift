@@ -502,3 +502,38 @@ final class PercentageController {
         panel.show(title: "Percentage", size: CGSize(width: 420, height: 360), content: PercentageView())
     }
 }
+
+
+// MARK: - Web tool launcher
+
+/// The remaining Orbit web apps that are too big or too UI-heavy to
+/// port cleanly into a small floating panel. Surfaced in the menu as
+/// "open in browser" entries (with the ↗ suffix) so the toolbox
+/// doesn't pretend the local set is the whole list. Each opens
+/// `https://get.yourorbit.team/apps/<slug>` in the user's default
+/// browser.
+@MainActor
+enum OrbitWebTools {
+    /// Display name → slug. Order is the menu order.
+    static let entries: [(name: String, slug: String)] = [
+        ("Subject line scorer", "subject-line"),
+        ("Slop detector", "slop-detector"),
+        ("Push notification preview", "push-preview"),
+        ("IP warmup planner", "ip-warmup"),
+        ("LTV / payback calculator", "ltv-payback"),
+        ("Deliverability check", "deliverability"),
+        ("Liquid template builder", "liquid-builder"),
+        ("Liquid date helpers", "liquid-dates"),
+        ("Braze name generator", "namer"),
+    ]
+
+    static func open(slug: String) {
+        guard let url = URL(string: "https://get.yourorbit.team/apps/\(slug)") else { return }
+        NSWorkspace.shared.open(url)
+    }
+
+    static func openAppsIndex() {
+        guard let url = URL(string: "https://get.yourorbit.team/apps") else { return }
+        NSWorkspace.shared.open(url)
+    }
+}

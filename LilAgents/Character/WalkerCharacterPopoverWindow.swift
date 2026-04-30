@@ -817,6 +817,22 @@ extension WalkerCharacter {
         appsMenu.addItem(mkApp("Email size checker", #selector(toolboxOpenEmailSize)))
         appsMenu.addItem(mkApp("Percentage calculator", #selector(toolboxOpenPercentage)))
 
+        appsMenu.addItem(NSMenuItem.separator())
+
+        // Tools too big or UI-heavy for a small panel — open in browser
+        // instead. The ↗ suffix flags the entry as external.
+        for entry in OrbitWebTools.entries {
+            let item = NSMenuItem(title: "\(entry.name)  ↗", action: #selector(toolboxOpenWebApp(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = entry.slug
+            appsMenu.addItem(item)
+        }
+
+        appsMenu.addItem(NSMenuItem.separator())
+        let allItem = NSMenuItem(title: "All Orbit apps  ↗", action: #selector(toolboxOpenAllApps), keyEquivalent: "")
+        allItem.target = self
+        appsMenu.addItem(allItem)
+
         let appsItem = NSMenuItem(title: "Orbit apps", action: nil, keyEquivalent: "")
         appsItem.submenu = appsMenu
         menu.addItem(appsItem)
@@ -853,6 +869,15 @@ extension WalkerCharacter {
 
     @objc func toolboxOpenPercentage() {
         PercentageController.shared.show()
+    }
+
+    @objc func toolboxOpenWebApp(_ sender: NSMenuItem) {
+        guard let slug = sender.representedObject as? String else { return }
+        OrbitWebTools.open(slug: slug)
+    }
+
+    @objc func toolboxOpenAllApps() {
+        OrbitWebTools.openAppsIndex()
     }
 
     @objc func toggleExpertSwitcher() {

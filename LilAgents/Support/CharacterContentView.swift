@@ -149,6 +149,21 @@ class CharacterContentView: NSView {
         appEmailSize.target = self; appsMenu.addItem(appEmailSize)
         let appPercentage = NSMenuItem(title: "Percentage calculator", action: #selector(openPercentage), keyEquivalent: "")
         appPercentage.target = self; appsMenu.addItem(appPercentage)
+
+        appsMenu.addItem(NSMenuItem.separator())
+
+        for entry in OrbitWebTools.entries {
+            let item = NSMenuItem(title: "\(entry.name)  ↗", action: #selector(openWebApp(_:)), keyEquivalent: "")
+            item.target = self
+            item.representedObject = entry.slug
+            appsMenu.addItem(item)
+        }
+
+        appsMenu.addItem(NSMenuItem.separator())
+        let allWebApps = NSMenuItem(title: "All Orbit apps  ↗", action: #selector(openAllApps), keyEquivalent: "")
+        allWebApps.target = self
+        appsMenu.addItem(allWebApps)
+
         let appsItem = NSMenuItem(title: "Orbit apps", action: nil, keyEquivalent: "")
         appsItem.submenu = appsMenu
         menu.addItem(appsItem)
@@ -336,5 +351,14 @@ class CharacterContentView: NSView {
 
     @objc private func openPercentage() {
         PercentageController.shared.show()
+    }
+
+    @objc private func openWebApp(_ sender: NSMenuItem) {
+        guard let slug = sender.representedObject as? String else { return }
+        OrbitWebTools.open(slug: slug)
+    }
+
+    @objc private func openAllApps() {
+        OrbitWebTools.openAppsIndex()
     }
 }
