@@ -802,6 +802,25 @@ extension WalkerCharacter {
         viewNotes.target = self
         menu.addItem(viewNotes)
 
+        menu.addItem(NSMenuItem.separator())
+
+        // Orbit apps submenu — local versions of the small-form-factor
+        // tools from get-orbit.
+        let appsMenu = NSMenu()
+        let mkApp: (String, Selector) -> NSMenuItem = { [weak self] title, sel in
+            let item = NSMenuItem(title: title, action: sel, keyEquivalent: "")
+            item.target = self
+            return item
+        }
+        appsMenu.addItem(mkApp("Sample size calculator", #selector(toolboxOpenSampleSize)))
+        appsMenu.addItem(mkApp("A/B significance", #selector(toolboxOpenSignificance)))
+        appsMenu.addItem(mkApp("Email size checker", #selector(toolboxOpenEmailSize)))
+        appsMenu.addItem(mkApp("Percentage calculator", #selector(toolboxOpenPercentage)))
+
+        let appsItem = NSMenuItem(title: "Orbit apps", action: nil, keyEquivalent: "")
+        appsItem.submenu = appsMenu
+        menu.addItem(appsItem)
+
         // Anchor the menu under the button instead of at the cursor so
         // it visually attaches to the toolbox icon.
         let location = NSPoint(x: 0, y: sender.bounds.height + 4)
@@ -818,6 +837,22 @@ extension WalkerCharacter {
 
     @objc func toolboxViewNotes() {
         NotesBrowserController.shared.show()
+    }
+
+    @objc func toolboxOpenSampleSize() {
+        SampleSizeController.shared.show()
+    }
+
+    @objc func toolboxOpenSignificance() {
+        SignificanceController.shared.show()
+    }
+
+    @objc func toolboxOpenEmailSize() {
+        EmailSizeController.shared.show()
+    }
+
+    @objc func toolboxOpenPercentage() {
+        PercentageController.shared.show()
     }
 
     @objc func toggleExpertSwitcher() {

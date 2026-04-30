@@ -138,6 +138,21 @@ class CharacterContentView: NSView {
         openItem.target = self
         menu.addItem(openItem)
 
+        // Orbit apps submenu — local versions of the small-form-factor
+        // tools from get-orbit.
+        let appsMenu = NSMenu()
+        let appSampleSize = NSMenuItem(title: "Sample size calculator", action: #selector(openSampleSize), keyEquivalent: "")
+        appSampleSize.target = self; appsMenu.addItem(appSampleSize)
+        let appSignificance = NSMenuItem(title: "A/B significance", action: #selector(openSignificance), keyEquivalent: "")
+        appSignificance.target = self; appsMenu.addItem(appSignificance)
+        let appEmailSize = NSMenuItem(title: "Email size checker", action: #selector(openEmailSize), keyEquivalent: "")
+        appEmailSize.target = self; appsMenu.addItem(appEmailSize)
+        let appPercentage = NSMenuItem(title: "Percentage calculator", action: #selector(openPercentage), keyEquivalent: "")
+        appPercentage.target = self; appsMenu.addItem(appPercentage)
+        let appsItem = NSMenuItem(title: "Orbit apps", action: nil, keyEquivalent: "")
+        appsItem.submenu = appsMenu
+        menu.addItem(appsItem)
+
         menu.addItem(NSMenuItem.separator())
 
         // ── Character behaviour ─────────────────────────────────────────
@@ -305,5 +320,21 @@ class CharacterContentView: NSView {
 
     @objc private func viewNotes() {
         NotesBrowserController.shared.show()
+    }
+
+    @objc private func openSampleSize() {
+        SampleSizeController.shared.show()
+    }
+
+    @objc private func openSignificance() {
+        SignificanceController.shared.show()
+    }
+
+    @objc private func openEmailSize() {
+        EmailSizeController.shared.show()
+    }
+
+    @objc private func openPercentage() {
+        PercentageController.shared.show()
     }
 }
