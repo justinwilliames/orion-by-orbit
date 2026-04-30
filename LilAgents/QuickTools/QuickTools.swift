@@ -21,13 +21,24 @@ final class PomodoroController {
         case idle
         case focus
         case shortBreak
+        case longBreak
     }
 
     static let focusDuration: TimeInterval = 25 * 60
     static let shortBreakDuration: TimeInterval = 5 * 60
+    static let longBreakDuration: TimeInterval = 20 * 60
+    /// Classical Pomodoro: every Nth focus phase ends with a long break
+    /// instead of a short one. Four cycles per group is the textbook
+    /// number — long enough to feel earned, short enough that the long
+    /// break arrives within a couple of hours of starting.
+    static let focusesPerLongBreak: Int = 4
 
     private(set) var phase: Phase = .idle
     private(set) var phaseEndsAt: Date?
+    /// Tracks completed focus phases within the current group of N. Reset
+    /// when the long break fires (start of next group) and when the user
+    /// manually stops the timer.
+    private(set) var completedFocusCycles: Int = 0
     private var timer: Timer?
 
     /// Wired by LilAgentsController so the Pomodoro can drive Orion's
@@ -57,6 +68,7 @@ final class PomodoroController {
         timer = nil
         phase = .idle
         phaseEndsAt = nil
+        completedFocusCycles = 0
         onTickRefresh?("", .idle)
     }
 
@@ -90,13 +102,25 @@ final class PomodoroController {
         let just = phase
         switch just {
         case .focus:
-            onPhaseEnd?(just, "Focus done — 5 min break")
-            beginPhase(.shortBreak, duration: Self.shortBreakDuration)
+            completedFocusCycles += 1
+            if completedFocusCycles >= Self.focusesPerLongBreak {
+                // End of a 4-cycle group → long break, then reset the
+                // counter so the next group starts fresh.
+                completedFocusCycles = 0
+                onPhaseEnd?(just, "Focus done — long break (you've earned it)")
+                beginPhase(.longBreak, duration: Self.longBreakDuration)
+            } else {
+                onPhaseEnd?(just, "Focus done — 5 min break (\(completedFocusCycles)/\(Self.focusesPerLongBreak))")
+                beginPhase(.shortBreak, duration: Self.shortBreakDuration)
+            }
         case .shortBreak:
-            onPhaseEnd?(just, "Break done — start another focus?")
-            phase = .idle
-            phaseEndsAt = nil
-            onTickRefresh?("", .idle)
+            // Auto-loop into the next focus phase. The user manually
+            // stops the Pomodoro by clicking the menu item again.
+            onPhaseEnd?(just, "Break done — back to focus")
+            beginPhase(.focus, duration: Self.focusDuration)
+        case .longBreak:
+            onPhaseEnd?(just, "Long break done — back to focus")
+            beginPhase(.focus, duration: Self.focusDuration)
         case .idle:
             break
         }
@@ -107,17 +131,33 @@ final class PomodoroController {
         let remaining = max(0, phaseEndsAt.timeIntervalSinceNow)
         let mins = Int(remaining) / 60
         let secs = Int(remaining) % 60
-        let label = phase == .focus ? "Focus" : "Break"
+        let label: String
+        switch phase {
+        case .focus:      label = "Focus"
+        case .shortBreak: label = "Break"
+        case .longBreak:  label = "Long break"
+        case .idle:       label = ""
+        }
         onTickRefresh?(String(format: "%@ %d:%02d", label, mins, secs), phase)
     }
 
     /// Menu item title — lets the right-click menu read the live state
-    /// without leaking the Phase enum to AppKit code.
+    /// without leaking the Phase enum to AppKit code. While focusing,
+    /// surfaces the position in the 4-cycle group so the user knows
+    /// how close the long break is.
     var menuTitle: String {
         switch phase {
-        case .idle:       return "Start Pomodoro"
-        case .focus:      return "Stop Pomodoro (focusing)"
-        case .shortBreak: return "Stop Pomodoro (on break)"
+        case .idle:
+            return "Start Pomodoro"
+        case .focus:
+            // completedFocusCycles increments at the *end* of each focus
+            // phase, so during the current focus it's still "n/4" where
+            // n is the upcoming completion count.
+            return "Stop Pomodoro (focus \(completedFocusCycles + 1)/\(Self.focusesPerLongBreak))"
+        case .shortBreak:
+            return "Stop Pomodoro (on break)"
+        case .longBreak:
+            return "Stop Pomodoro (long break)"
         }
     }
 }

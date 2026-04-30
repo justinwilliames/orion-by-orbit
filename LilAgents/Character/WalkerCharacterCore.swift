@@ -563,9 +563,14 @@ extension WalkerCharacter {
             in: WalkerCharacter.minSleepDuration...WalkerCharacter.maxSleepDuration
         )
         if let img = sleepingImage { imageView?.image = img }
-        // Hide any active status / completion bubble while asleep — looks
-        // weird with a bubble hovering over a sleeping character.
-        hideBubble()
+        // Hide any active status / completion bubble while asleep —
+        // looks weird with a bubble hovering over a sleeping character.
+        // Exception: when an external producer (Pomodoro) is driving
+        // the bubble surface, keep the bubble visible (e.g. the green
+        // break-countdown should remain readable while Orion naps).
+        if !pomodoroBubbleHold {
+            hideBubble()
+        }
     }
 
     /// Get up. Returns to the front-facing idle pose, takes a brief
@@ -634,7 +639,7 @@ extension WalkerCharacter {
                 wakeUp()
                 return false
             }
-            if now >= wakeAt {
+            if now >= wakeAt && !pomodoroForceAsleep {
                 wakeUp()
                 return false
             }
@@ -645,6 +650,7 @@ extension WalkerCharacter {
            !isWalking,
            !isIdleForPopover,
            !isClaudeBusy,
+           !pomodoroForceAwake,
            focusedExpert == nil,
            !isCompanionAvatar {
             enterSleep()

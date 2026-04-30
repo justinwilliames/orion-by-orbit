@@ -58,24 +58,39 @@ class LilAgentsController {
             guard let bruce = self?.characters.first else { return }
             switch phase {
             case .idle:
-                // Pomodoro stopped (or finished). Release the bubble
-                // hold so the regular 60fps tick can hide / repurpose
-                // the bubble for thinking / completion / etc.
+                // Pomodoro stopped (or finished). Release every hold so
+                // the regular bubble + sleep lifecycle takes back over.
                 bruce.pomodoroBubbleHold = false
+                bruce.pomodoroForceAwake = false
+                bruce.pomodoroForceAsleep = false
                 return
-            case .focus, .shortBreak:
-                // Claim the bubble surface so the 60fps tick stops
-                // hiding it between our per-second updates. Released
-                // when phase returns to .idle.
+            case .focus:
+                // Stay awake for the whole focus phase + claim the
+                // bubble surface for the red countdown.
                 bruce.pomodoroBubbleHold = true
-                // Don't trample a thinking bubble during an active chat
-                // turn. The Pomodoro keeps ticking internally; the next
-                // tick after the chat ends will resume the countdown
-                // bubble within ~1 second.
+                bruce.pomodoroForceAwake = true
+                bruce.pomodoroForceAsleep = false
+                if bruce.isSleeping { bruce.wakeUp() }
+                // Yield to the chat thinking bubble and to the per-phase
+                // completion bubble (which has its own 6s expiry and
+                // text). After either expires, the next tick (within 1s)
+                // re-asserts the countdown.
                 if bruce.isClaudeBusy { return }
-                let tint: NSColor = (phase == .focus) ? .systemRed : .systemGreen
+                if bruce.showingCompletion { return }
                 bruce.currentPhrase = text
-                bruce.showBubble(text: text, isCompletion: false, tint: tint)
+                bruce.showBubble(text: text, isCompletion: false, tint: .systemRed)
+            case .shortBreak, .longBreak:
+                // Sleep for the whole break + claim the bubble surface
+                // for the green countdown. enterSleep respects
+                // pomodoroBubbleHold and won't hide the countdown.
+                bruce.pomodoroBubbleHold = true
+                bruce.pomodoroForceAwake = false
+                bruce.pomodoroForceAsleep = true
+                if !bruce.isSleeping { bruce.enterSleep() }
+                if bruce.isClaudeBusy { return }
+                if bruce.showingCompletion { return }
+                bruce.currentPhrase = text
+                bruce.showBubble(text: text, isCompletion: false, tint: .systemGreen)
             }
         }
         PomodoroController.shared.onPhaseEnd = { [weak self] _, completionText in

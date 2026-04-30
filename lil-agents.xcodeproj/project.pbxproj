@@ -113,6 +113,7 @@
 		BC0000010000000000000014 /* StructuredJSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000014 /* StructuredJSONParser.swift */; };
 		BC0000010000000000000015 /* QuickTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000015 /* QuickTools.swift */; };
 		BC0000010000000000000016 /* CalendarTooltipProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000016 /* CalendarTooltipProvider.swift */; };
+		BC0000010000000000000017 /* NotesBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000017 /* NotesBrowser.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -223,6 +224,7 @@
 		BC0000020000000000000014 /* StructuredJSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredJSONParser.swift; sourceTree = "<group>"; };
 		BC0000020000000000000015 /* QuickTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickTools.swift; sourceTree = "<group>"; };
 		BC0000020000000000000016 /* CalendarTooltipProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTooltipProvider.swift; sourceTree = "<group>"; };
+		BC0000020000000000000017 /* NotesBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesBrowser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -414,6 +416,7 @@
 			isa = PBXGroup;
 			children = (
 				BC0000020000000000000015 /* QuickTools.swift */,
+				BC0000020000000000000017 /* NotesBrowser.swift */,
 			);
 			path = QuickTools;
 			sourceTree = "<group>";
@@ -628,6 +631,7 @@
 				BC0000010000000000000014 /* StructuredJSONParser.swift in Sources */,
 				BC0000010000000000000015 /* QuickTools.swift in Sources */,
 				BC0000010000000000000016 /* CalendarTooltipProvider.swift in Sources */,
+				BC0000010000000000000017 /* NotesBrowser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

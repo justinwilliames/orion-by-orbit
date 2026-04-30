@@ -123,6 +123,14 @@ final class WalkerCharacter {
     /// must not call `hideBubble()` while this is set, otherwise the
     /// bubble flashes between the producer's per-second updates.
     var pomodoroBubbleHold: Bool = false
+    /// While Pomodoro is in a focus phase, suppress the idle-threshold
+    /// auto-sleep so Orion stays awake even with no mouse activity. The
+    /// chat / popover wake triggers continue to work normally.
+    var pomodoroForceAwake: Bool = false
+    /// While Pomodoro is in a break phase, suppress the `wakeAt` timer
+    /// auto-wake so Orion stays asleep for the full break. User-
+    /// initiated wakes (chat busy, popover open) still take effect.
+    var pomodoroForceAsleep: Bool = false
     var lastAmbientLineIndex: Int = -1
     var isAmbientLLMRequestInFlight: Bool = false
     /// Text of the ambient bubble currently visible. Set in

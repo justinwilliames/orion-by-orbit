@@ -304,6 +304,6 @@ class CharacterContentView: NSView {
     }
 
     @objc private func viewNotes() {
-        OpenOrbitFolder.revealNotes()
+        NotesBrowserController.shared.show()
     }
 }
