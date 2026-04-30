@@ -44,7 +44,8 @@ class LilAgentsController {
         guard let bruce = characters.first else { return }
         bruce.isOnboarding = true
         // Show "Hi!" bubble after a short delay so the character is visible first
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak bruce] in
+            guard let bruce else { return }
             bruce.currentPhrase = "Hi!"
             bruce.showingCompletion = true
             bruce.completionBubbleExpiry = CACurrentMediaTime() + 600 // stays until clicked
