@@ -1,4 +1,5 @@
 import AppKit
+import SwiftUI
 
 private struct ExpertSwitcherEntry: Equatable {
     enum Destination: Equatable {
