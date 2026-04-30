@@ -41,17 +41,12 @@ class LilAgentsController {
     }
 
     private func triggerOnboarding() {
-        guard let bruce = characters.first else { return }
-        bruce.isOnboarding = true
-        // Show "Hi!" bubble after a short delay so the character is visible first
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak bruce] in
-            guard let bruce else { return }
-            bruce.currentPhrase = "Hi!"
-            bruce.showingCompletion = true
-            bruce.completionBubbleExpiry = CACurrentMediaTime() + 600 // stays until clicked
-            bruce.showBubble(text: "Hi!", isCompletion: true)
-            bruce.playCompletionSound()
-        }
+        // The welcome popup ("Hi!" bubble + sound, persistent until clicked)
+        // was removed at Sir's request — popups read as invasive next to the
+        // ambient status bubbles that already convey what Orion is doing.
+        // The flag is still flipped so any onboarding-only behaviour gated
+        // on `isOnboarding` still runs once on first launch.
+        characters.first?.isOnboarding = true
     }
 
     func completeOnboarding() {

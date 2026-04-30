@@ -78,8 +78,11 @@ extension WalkerCharacter {
             self.setCurrentActivityStatus("")
             self.terminalView?.endStreaming()
             self.terminalView?.clearLiveStatus()
-            self.playCompletionSound()
-            self.showCompletionBubble()
+            // Per Sir, completion popups (sound + persistent "Done!" bubble)
+            // are invasive. The terminal already shows the response in full;
+            // ambient status bubbles continue to communicate Orion's state
+            // (`isCompletion: false` paths in WalkerCharacterBubble are
+            // untouched).
             self.updateExpertNameTag()
             if self.focusedExpert != nil {
                 self.terminalView?.hideExpertSuggestions(clearState: false)

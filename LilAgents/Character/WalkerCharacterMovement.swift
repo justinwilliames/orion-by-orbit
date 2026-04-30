@@ -2,21 +2,23 @@ import AppKit
 
 extension WalkerCharacter {
     func horizontalRangeMetrics(screen: NSScreen, dockX: CGFloat, dockWidth: CGFloat) -> (minX: CGFloat, travelDistance: CGFloat) {
-        if usesExpandedHorizontalRange {
-            let margin: CGFloat = 24
-            let minX = screen.visibleFrame.minX + margin
-            let availableWidth = screen.visibleFrame.width - margin * 2
-            return (minX, max(availableWidth - displayWidth, 0))
-        }
-        let desiredInset = min(18.0, max(10.0, dockWidth * 0.025))
-        // Keep a little breathing room from the dock edges, but never let that
-        // padding eliminate the walkable range on narrower docks.
-        let minimumVisibleTravel: CGFloat = 28.0
-        let maximumInset = max((dockWidth - displayWidth - minimumVisibleTravel) / 2.0, 0)
-        let edgeInset = min(desiredInset, maximumInset)
-        let minX = dockX + edgeInset
-        let availableWidth = max(dockWidth - edgeInset * 2.0, 0)
-        return (minX, max(availableWidth - displayWidth, 0))
+        // Pin Orion to the centred 25% slice of the visible screen. Earlier
+        // logic let him roam the dock width (or the full screen when
+        // `usesExpandedHorizontalRange` was set) — both paths could put him
+        // close enough to the dock edges that a flick of motion walked him
+        // off the visible rail. The 25% band is wide enough to feel alive
+        // and narrow enough to keep him safely on the dock.
+        //
+        // `dockX` and `dockWidth` are unused but kept in the signature so
+        // every caller in the rendering pipeline continues to work without
+        // a sweep through Movement / Visuals.
+        _ = dockX
+        _ = dockWidth
+        let visible = screen.visibleFrame
+        let bandWidth = visible.width * 0.25
+        let minX = visible.minX + (visible.width - bandWidth) / 2.0
+        let travel = max(bandWidth - displayWidth, 0)
+        return (minX, travel)
     }
 
     func startWalk() {
