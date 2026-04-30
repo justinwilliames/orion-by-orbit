@@ -58,14 +58,16 @@ class LilAgentsController {
             guard let bruce = self?.characters.first else { return }
             switch phase {
             case .idle:
-                // Pomodoro stopped (or finished). Don't fight the regular
-                // bubble lifecycle — currentPhrase will be replaced the
-                // next time something else (a chat status bubble, the
-                // completion bubble from the previous phase, etc.) wants
-                // the surface. Hiding explicitly here would race with
-                // the per-phase completion bubble that fires alongside.
+                // Pomodoro stopped (or finished). Release the bubble
+                // hold so the regular 60fps tick can hide / repurpose
+                // the bubble for thinking / completion / etc.
+                bruce.pomodoroBubbleHold = false
                 return
             case .focus, .shortBreak:
+                // Claim the bubble surface so the 60fps tick stops
+                // hiding it between our per-second updates. Released
+                // when phase returns to .idle.
+                bruce.pomodoroBubbleHold = true
                 // Don't trample a thinking bubble during an active chat
                 // turn. The Pomodoro keeps ticking internally; the next
                 // tick after the chat ends will resume the countdown

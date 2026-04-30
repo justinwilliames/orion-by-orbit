@@ -106,6 +106,16 @@ extension WalkerCharacter {
                         bubble.setFrameOrigin(NSPoint(x: x, y: bubble.frame.origin.y))
                     }
                 }
+            } else if pomodoroBubbleHold {
+                // External producer (Pomodoro) is driving the bubble; the
+                // 60fps tick keeps it pinned to Orion's X without
+                // calling hideBubble between the producer's per-second
+                // text updates. Same X-tracking as the ambient branch.
+                if let bubble = thinkingBubbleWindow, bubble.isVisible {
+                    let bubbleW = bubble.frame.width
+                    let x = window.frame.midX - bubbleW / 2
+                    bubble.setFrameOrigin(NSPoint(x: x, y: bubble.frame.origin.y))
+                }
             } else {
                 hideBubble()
             }

@@ -117,6 +117,12 @@ final class WalkerCharacter {
     // to introduce himself sooner rather than waiting 1–3 minutes.
     var nextAmbientBubbleAt: CFTimeInterval = CACurrentMediaTime() + TimeInterval.random(in: 20...90)
     var ambientBubbleExpiresAt: CFTimeInterval = 0
+    /// When true, the bubble surface is being driven by an external
+    /// producer (Pomodoro countdown today; potentially other persistent
+    /// status sources later). The 60fps `updateThinkingBubble` tick
+    /// must not call `hideBubble()` while this is set, otherwise the
+    /// bubble flashes between the producer's per-second updates.
+    var pomodoroBubbleHold: Bool = false
     var lastAmbientLineIndex: Int = -1
     var isAmbientLLMRequestInFlight: Bool = false
     /// Text of the ambient bubble currently visible. Set in
