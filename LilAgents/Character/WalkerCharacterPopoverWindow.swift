@@ -556,7 +556,8 @@ extension WalkerCharacter {
         // at one fixed size now; close-and-reopen is the way back.
         let closeButtonX = popoverWidth - 12 - controlButtonSize
         let clearButtonX = closeButtonX - buttonSpacing - controlButtonSize
-        let settingsButtonX = clearButtonX - buttonSpacing - controlButtonSize
+        let toolboxButtonX = clearButtonX - buttonSpacing - controlButtonSize
+        let settingsButtonX = toolboxButtonX - buttonSpacing - controlButtonSize
 
         let settingsButton = HoverButton(title: "", target: NSApp.delegate, action: #selector(AppDelegate.openSettings))
         settingsButton.frame = NSRect(x: settingsButtonX, y: (titleBarHeight - controlButtonSize) / 2, width: controlButtonSize, height: controlButtonSize)
@@ -580,6 +581,30 @@ extension WalkerCharacter {
         settingsButton.toolTip = "Open settings"
         titleBar.addSubview(settingsButton)
         popoverSettingsButton = settingsButton
+
+        // Toolbox — popup menu for the productivity quick tools (start/
+        // stop Pomodoro, new quick note, view past notes). Surfaced
+        // here in the title bar so the actions are reachable from
+        // inside the chat popover, not only via right-click on the
+        // dock character.
+        let toolboxButton = HoverButton(title: "", target: self, action: #selector(toolboxButtonTapped(_:)))
+        toolboxButton.frame = NSRect(x: toolboxButtonX, y: (titleBarHeight - controlButtonSize) / 2, width: controlButtonSize, height: controlButtonSize)
+        toolboxButton.autoresizingMask = .minXMargin
+        toolboxButton.isBordered = false
+        toolboxButton.wantsLayer = true
+        toolboxButton.normalBg = t.separatorColor.withAlphaComponent(0.10).cgColor
+        toolboxButton.hoverBg = t.separatorColor.withAlphaComponent(0.22).cgColor
+        toolboxButton.layer?.backgroundColor = t.separatorColor.withAlphaComponent(0.10).cgColor
+        toolboxButton.layer?.cornerRadius = controlButtonSize / 2
+        if let image = NSImage(systemSymbolName: "wrench.and.screwdriver", accessibilityDescription: "Quick tools") {
+            let config = NSImage.SymbolConfiguration(pointSize: 11, weight: .medium)
+            toolboxButton.image = image.withSymbolConfiguration(config)
+        }
+        toolboxButton.imageScaling = .scaleProportionallyDown
+        toolboxButton.contentTintColor = t.textDim
+        toolboxButton.toolTip = "Quick tools"
+        titleBar.addSubview(toolboxButton)
+        popoverToolboxButton = toolboxButton
 
         let titleRowStack = NSStackView(views: [titleLabel, switcherButton])
         titleRowStack.translatesAutoresizingMaskIntoConstraints = false
@@ -750,6 +775,49 @@ extension WalkerCharacter {
         DispatchQueue.global(qos: .userInitiated).async {
             _ = ExpertSwitcherCatalog.entries(using: session)
         }
+    }
+
+    /// Toolbox button → popup menu with the productivity quick tools.
+    /// Same actions as the right-click menu on the dock character; this
+    /// surfaces them inside the chat popover so they're reachable
+    /// without dismissing the popover first.
+    @objc func toolboxButtonTapped(_ sender: NSButton) {
+        let menu = NSMenu()
+
+        let pomo = NSMenuItem(
+            title: PomodoroController.shared.menuTitle,
+            action: #selector(toolboxTogglePomodoro),
+            keyEquivalent: ""
+        )
+        pomo.target = self
+        menu.addItem(pomo)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let newNote = NSMenuItem(title: "New quick note…", action: #selector(toolboxShowQuickNote), keyEquivalent: "")
+        newNote.target = self
+        menu.addItem(newNote)
+
+        let viewNotes = NSMenuItem(title: "View past notes", action: #selector(toolboxViewNotes), keyEquivalent: "")
+        viewNotes.target = self
+        menu.addItem(viewNotes)
+
+        // Anchor the menu under the button instead of at the cursor so
+        // it visually attaches to the toolbox icon.
+        let location = NSPoint(x: 0, y: sender.bounds.height + 4)
+        menu.popUp(positioning: nil, at: location, in: sender)
+    }
+
+    @objc func toolboxTogglePomodoro() {
+        PomodoroController.shared.toggle()
+    }
+
+    @objc func toolboxShowQuickNote() {
+        QuickNoteController.shared.show()
+    }
+
+    @objc func toolboxViewNotes() {
+        NotesBrowserController.shared.show()
     }
 
     @objc func toggleExpertSwitcher() {

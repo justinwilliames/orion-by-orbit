@@ -52,6 +52,7 @@ final class WalkerCharacter {
     var popoverExpertSwitcherButton: HoverButton?
     var popoverReturnButton: NSButton?
     var popoverSettingsButton: HoverButton?
+    var popoverToolboxButton: HoverButton?
     var popoverExpandButton: HoverButton?
     var popoverPinButton: HoverButton?
     var popoverCloseButton: HoverButton?
