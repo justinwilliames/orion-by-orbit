@@ -54,10 +54,27 @@ class LilAgentsController {
     /// callees are MainActor-isolated singletons that touch UI.
     @MainActor
     private func wireQuickToolHooks() {
-        PomodoroController.shared.onPhaseStart = { [weak self] _, statusText in
-            guard let bruce = self?.characters.first, !statusText.isEmpty else { return }
-            bruce.currentPhrase = statusText
-            bruce.showBubble(text: statusText, isCompletion: false)
+        PomodoroController.shared.onTickRefresh = { [weak self] text, phase in
+            guard let bruce = self?.characters.first else { return }
+            switch phase {
+            case .idle:
+                // Pomodoro stopped (or finished). Don't fight the regular
+                // bubble lifecycle — currentPhrase will be replaced the
+                // next time something else (a chat status bubble, the
+                // completion bubble from the previous phase, etc.) wants
+                // the surface. Hiding explicitly here would race with
+                // the per-phase completion bubble that fires alongside.
+                return
+            case .focus, .shortBreak:
+                // Don't trample a thinking bubble during an active chat
+                // turn. The Pomodoro keeps ticking internally; the next
+                // tick after the chat ends will resume the countdown
+                // bubble within ~1 second.
+                if bruce.isClaudeBusy { return }
+                let tint: NSColor = (phase == .focus) ? .systemRed : .systemGreen
+                bruce.currentPhrase = text
+                bruce.showBubble(text: text, isCompletion: false, tint: tint)
+            }
         }
         PomodoroController.shared.onPhaseEnd = { [weak self] _, completionText in
             guard let bruce = self?.characters.first else { return }
@@ -67,16 +84,8 @@ class LilAgentsController {
             bruce.showBubble(text: completionText, isCompletion: true)
             bruce.playCompletionSound()
         }
-        PomodoroController.shared.onTooltipRefresh = { [weak self] tooltipText in
-            // Surface the live remaining time via the character's hover
-            // tooltip so the user can peek without a bubble nagging them.
-            self?.characters.first?.window?.contentView?.toolTip = tooltipText
-        }
 
         CalendarTooltipProvider.shared.onTooltipText = { [weak self] text in
-            // Calendar tooltip and Pomodoro tooltip share the same hover
-            // surface — Pomodoro takes priority while running.
-            if PomodoroController.shared.isRunning { return }
             self?.characters.first?.window?.contentView?.toolTip = text
         }
         CalendarTooltipProvider.shared.start()

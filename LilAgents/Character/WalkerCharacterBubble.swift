@@ -149,7 +149,7 @@ extension WalkerCharacter {
         })
     }
 
-    func showBubble(text: String, isCompletion: Bool, multiline: Bool = true) {
+    func showBubble(text: String, isCompletion: Bool, multiline: Bool = true, tint: NSColor? = nil) {
         // Hard suppression — never show a bubble while the chat popover
         // is open (the popover IS the conversation surface).
         if popoverWindow?.isVisible == true {
@@ -227,8 +227,20 @@ extension WalkerCharacter {
         let y = yBase + (neededLines > 1 ? CGFloat(neededLines - 1) * lineH * 0.5 : 0)
         thinkingBubbleWindow?.setFrame(CGRect(x: x, y: y, width: bubbleW, height: bubbleH), display: false)
 
-        let borderColor = isCompletion ? t.bubbleCompletionBorder.cgColor : t.bubbleBorder.cgColor
-        let textColor = isCompletion ? t.bubbleCompletionText : t.bubbleText
+        // Tint override lets short-lived bubble producers (e.g. the
+        // Pomodoro countdown — red while focusing, green while on break)
+        // colour the border + text without forking the whole rendering
+        // path. Background and shape stay the theme defaults so the
+        // bubble still reads as part of Orion's status family.
+        let borderColor: CGColor
+        let textColor: NSColor
+        if let tint {
+            borderColor = tint.cgColor
+            textColor = tint
+        } else {
+            borderColor = isCompletion ? t.bubbleCompletionBorder.cgColor : t.bubbleBorder.cgColor
+            textColor = isCompletion ? t.bubbleCompletionText : t.bubbleText
+        }
 
         if let container = thinkingBubbleWindow?.contentView {
             container.frame = NSRect(x: 0, y: 0, width: bubbleW, height: bubbleH)

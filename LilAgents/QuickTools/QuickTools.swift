@@ -30,12 +30,15 @@ final class PomodoroController {
     private(set) var phaseEndsAt: Date?
     private var timer: Timer?
 
-    /// Set by LilAgentsController so the Pomodoro can drive bubbles +
-    /// tooltips on the character without depending on the character
-    /// type directly.
-    var onPhaseStart: ((Phase, _ statusText: String) -> Void)?
+    /// Wired by LilAgentsController so the Pomodoro can drive Orion's
+    /// status bubble without depending on the character type directly.
+    /// `onTickRefresh` fires every second with the current label
+    /// ("Focus 14:32" / "Break 4:51") plus the phase, so the caller
+    /// can colour the bubble (red for focus, green for break) and
+    /// hide it on idle. `onPhaseEnd` fires once per phase boundary
+    /// for the completion bubble + chime.
+    var onTickRefresh: ((_ text: String, _ phase: Phase) -> Void)?
     var onPhaseEnd: ((Phase, _ completionText: String) -> Void)?
-    var onTooltipRefresh: ((_ tooltipText: String?) -> Void)?
 
     private init() {}
 
@@ -46,7 +49,7 @@ final class PomodoroController {
     }
 
     func startFocus() {
-        beginPhase(.focus, duration: Self.focusDuration, statusText: "Focus 25:00")
+        beginPhase(.focus, duration: Self.focusDuration)
     }
 
     func stop() {
@@ -54,16 +57,16 @@ final class PomodoroController {
         timer = nil
         phase = .idle
         phaseEndsAt = nil
-        onTooltipRefresh?(nil)
-        onPhaseStart?(.idle, "")
+        onTickRefresh?("", .idle)
     }
 
-    private func beginPhase(_ newPhase: Phase, duration: TimeInterval, statusText: String) {
+    private func beginPhase(_ newPhase: Phase, duration: TimeInterval) {
         timer?.invalidate()
         phase = newPhase
         phaseEndsAt = Date().addingTimeInterval(duration)
-        onPhaseStart?(newPhase, statusText)
-        refreshTooltip()
+        // Push the initial countdown text immediately so the bubble
+        // appears on the same runloop tick that the menu action returns.
+        emitTick()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 self?.tick()
@@ -77,7 +80,7 @@ final class PomodoroController {
         if remaining <= 0 {
             finishCurrentPhase()
         } else {
-            refreshTooltip()
+            emitTick()
         }
     }
 
@@ -88,24 +91,24 @@ final class PomodoroController {
         switch just {
         case .focus:
             onPhaseEnd?(just, "Focus done — 5 min break")
-            beginPhase(.shortBreak, duration: Self.shortBreakDuration, statusText: "Break 5:00")
+            beginPhase(.shortBreak, duration: Self.shortBreakDuration)
         case .shortBreak:
             onPhaseEnd?(just, "Break done — start another focus?")
             phase = .idle
             phaseEndsAt = nil
-            onTooltipRefresh?(nil)
+            onTickRefresh?("", .idle)
         case .idle:
             break
         }
     }
 
-    private func refreshTooltip() {
-        guard let phaseEndsAt else { onTooltipRefresh?(nil); return }
+    private func emitTick() {
+        guard let phaseEndsAt else { onTickRefresh?("", .idle); return }
         let remaining = max(0, phaseEndsAt.timeIntervalSinceNow)
         let mins = Int(remaining) / 60
         let secs = Int(remaining) % 60
         let label = phase == .focus ? "Focus" : "Break"
-        onTooltipRefresh?(String(format: "%@ %d:%02d", label, mins, secs))
+        onTickRefresh?(String(format: "%@ %d:%02d", label, mins, secs), phase)
     }
 
     /// Menu item title — lets the right-click menu read the live state
@@ -263,13 +266,25 @@ enum ClipboardCounter {
 // MARK: - Open ~/Orbit folder
 
 /// Reveals the local Orbit workspace in Finder. Creates the folder if
-/// it doesn't yet exist so the menu item never silently no-ops.
+/// it doesn't yet exist so the menu item never silently no-ops. The
+/// `revealNotes` variant scopes to the notes subdirectory — used by the
+/// "View past notes" menu item so the user lands directly where the
+/// daily .md files live instead of having to drill in.
 @MainActor
 enum OpenOrbitFolder {
     static func reveal() {
+        revealDirectory(named: nil)
+    }
+
+    static func revealNotes() {
+        revealDirectory(named: "notes")
+    }
+
+    private static func revealDirectory(named: String?) {
         let fm = FileManager.default
         let home = fm.homeDirectoryForCurrentUser
-        let dir = home.appendingPathComponent("Orbit")
+        var dir = home.appendingPathComponent("Orbit")
+        if let named { dir.appendPathComponent(named) }
         try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
         NSWorkspace.shared.open(dir)
     }

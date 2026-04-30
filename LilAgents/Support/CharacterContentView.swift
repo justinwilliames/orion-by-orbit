@@ -126,6 +126,10 @@ class CharacterContentView: NSView {
         noteItem.target = self
         menu.addItem(noteItem)
 
+        let viewNotesItem = NSMenuItem(title: "View past notes", action: #selector(viewNotes), keyEquivalent: "")
+        viewNotesItem.target = self
+        menu.addItem(viewNotesItem)
+
         let countItem = NSMenuItem(title: "Word + char count (clipboard)", action: #selector(showClipboardCount), keyEquivalent: "")
         countItem.target = self
         menu.addItem(countItem)
@@ -297,5 +301,9 @@ class CharacterContentView: NSView {
 
     @objc private func openOrbitFolder() {
         OpenOrbitFolder.reveal()
+    }
+
+    @objc private func viewNotes() {
+        OpenOrbitFolder.revealNotes()
     }
 }
