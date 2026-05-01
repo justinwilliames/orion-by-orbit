@@ -343,7 +343,7 @@ private struct PomodoroToolView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Classic 25/5 cycle. Long break every 4th focus phase. Sleeps Orion during breaks; keeps him awake while focusing.")
+                Text("Classic 25/5 cycle. Long rest every 4th focus phase. Sleeps Orion during rest; keeps him awake while focusing.")
                     .font(.system(size: 12))
                     .foregroundStyle(.secondary)
 

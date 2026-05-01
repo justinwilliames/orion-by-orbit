@@ -84,13 +84,21 @@ class LilAgentsController {
                 bruce.showBubble(text: text, isCompletion: false, tint: .systemGreen)
             }
         }
-        PomodoroController.shared.onPhaseEnd = { [weak self] _, completionText in
+        PomodoroController.shared.onPhaseEnd = { [weak self] ended, next, completionText in
             guard let bruce = self?.characters.first else { return }
+            bruce.playCompletionSound()
+            // Routine focus↔rest boundaries: chime only. Skip the 6s
+            // completion bubble so the live countdown swaps cleanly
+            // from "Focus 0:00" red → "Rest 5:00" green on the next
+            // tick. Long-break milestones still get the celebratory
+            // bubble — they fire once per ~2 hours, not on the loop.
+            let routineLoop = (ended == .focus && next == .shortBreak)
+                || (ended == .shortBreak && next == .focus)
+            if routineLoop { return }
             bruce.currentPhrase = completionText
             bruce.showingCompletion = true
             bruce.completionBubbleExpiry = CACurrentMediaTime() + 6.0
             bruce.showBubble(text: completionText, isCompletion: true)
-            bruce.playCompletionSound()
         }
 
         CalendarTooltipProvider.shared.onTooltipText = { [weak self] text in

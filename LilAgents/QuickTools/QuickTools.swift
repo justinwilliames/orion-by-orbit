@@ -44,12 +44,15 @@ final class PomodoroController {
     /// Wired by LilAgentsController so the Pomodoro can drive Orion's
     /// status bubble without depending on the character type directly.
     /// `onTickRefresh` fires every second with the current label
-    /// ("Focus 14:32" / "Break 4:51") plus the phase, so the caller
-    /// can colour the bubble (red for focus, green for break) and
+    /// ("Focus 14:32" / "Rest 4:51") plus the phase, so the caller
+    /// can colour the bubble (red for focus, green for rest) and
     /// hide it on idle. `onPhaseEnd` fires once per phase boundary
-    /// for the completion bubble + chime.
+    /// with both the just-ended and the upcoming phase, so the
+    /// caller can decide whether to surface a milestone bubble (long
+    /// break) or stay silent and let the next tick swap the
+    /// countdown in place (routine focus↔rest loop).
     var onTickRefresh: ((_ text: String, _ phase: Phase) -> Void)?
-    var onPhaseEnd: ((Phase, _ completionText: String) -> Void)?
+    var onPhaseEnd: ((_ ended: Phase, _ next: Phase, _ completionText: String) -> Void)?
 
     private init() {}
 
@@ -107,19 +110,19 @@ final class PomodoroController {
                 // End of a 4-cycle group → long break, then reset the
                 // counter so the next group starts fresh.
                 completedFocusCycles = 0
-                onPhaseEnd?(just, "Focus done — long break (you've earned it)")
+                onPhaseEnd?(just, .longBreak, "Focus done — long rest (you've earned it)")
                 beginPhase(.longBreak, duration: Self.longBreakDuration)
             } else {
-                onPhaseEnd?(just, "Focus done — 5 min break (\(completedFocusCycles)/\(Self.focusesPerLongBreak))")
+                onPhaseEnd?(just, .shortBreak, "Focus done — rest (\(completedFocusCycles)/\(Self.focusesPerLongBreak))")
                 beginPhase(.shortBreak, duration: Self.shortBreakDuration)
             }
         case .shortBreak:
             // Auto-loop into the next focus phase. The user manually
             // stops the Pomodoro by clicking the menu item again.
-            onPhaseEnd?(just, "Break done — back to focus")
+            onPhaseEnd?(just, .focus, "Rest done — back to focus")
             beginPhase(.focus, duration: Self.focusDuration)
         case .longBreak:
-            onPhaseEnd?(just, "Long break done — back to focus")
+            onPhaseEnd?(just, .focus, "Long rest done — back to focus")
             beginPhase(.focus, duration: Self.focusDuration)
         case .idle:
             break
@@ -134,8 +137,8 @@ final class PomodoroController {
         let label: String
         switch phase {
         case .focus:      label = "Focus"
-        case .shortBreak: label = "Break"
-        case .longBreak:  label = "Long break"
+        case .shortBreak: label = "Rest"
+        case .longBreak:  label = "Long rest"
         case .idle:       label = ""
         }
         onTickRefresh?(String(format: "%@ %d:%02d", label, mins, secs), phase)
@@ -155,9 +158,9 @@ final class PomodoroController {
             // n is the upcoming completion count.
             return "Stop Pomodoro (focus \(completedFocusCycles + 1)/\(Self.focusesPerLongBreak))"
         case .shortBreak:
-            return "Stop Pomodoro (on break)"
+            return "Stop Pomodoro (resting)"
         case .longBreak:
-            return "Stop Pomodoro (long break)"
+            return "Stop Pomodoro (long rest)"
         }
     }
 }
