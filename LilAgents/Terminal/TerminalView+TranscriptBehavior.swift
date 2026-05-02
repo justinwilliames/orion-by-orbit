@@ -22,6 +22,13 @@ extension TerminalView {
         transcriptSuggestionView = nil
         transcriptLiveStatusView = nil
         transcriptApprovalView = nil
+        // followUpChipsView was added after the original three trackers
+        // and was missed here — the stack wipe removed the chip view but
+        // left the pointer dangling, and the next clearFollowUpChips()
+        // would crash trying to remove a view that's no longer in this
+        // stack (NSStackView.m:1052 assertion). Symptom: send button on
+        // the second message did nothing, exception unwound silently.
+        followUpChipsView = nil
     }
 
     private func isTranscriptNearBottom(threshold: CGFloat = 48) -> Bool {

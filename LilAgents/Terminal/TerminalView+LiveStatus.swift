@@ -65,11 +65,16 @@ extension TerminalView {
     /// streaming response begins) — chips are ephemeral, never carried
     /// across turns.
     func clearFollowUpChips() {
-        if let view = followUpChipsView {
+        guard let view = followUpChipsView else { return }
+        // Defensive: only call removeArrangedSubview if the view is
+        // still actually in the stack. Other code paths can wipe the
+        // stack out from under us; without this guard, a stale pointer
+        // crashes inputSubmitted before onSendMessage ever fires.
+        if transcriptStack.arrangedSubviews.contains(view) {
             transcriptStack.removeArrangedSubview(view)
-            view.removeFromSuperview()
-            followUpChipsView = nil
         }
+        view.removeFromSuperview()
+        followUpChipsView = nil
     }
 
     func renderTranscriptSuggestions() {
