@@ -40,7 +40,7 @@ struct SessionAttachment: Equatable {
     }
 
     static var pickerContentTypes: [UTType] {
-        supportedContentTypes.filter { !$0.conforms(to: .image) }
+        supportedContentTypes
     }
 
     static func from(url: URL) -> SessionAttachment? {

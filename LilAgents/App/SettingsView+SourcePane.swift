@@ -6,7 +6,7 @@ extension SettingsView {
         let _ = detectionRefreshID
         return VStack(alignment: .leading, spacing: 20) {
             SettingsHeader(
-                title: "Lenny source",
+                title: "Answer source",
                 subtitle: "Choose whether Orion answers from the local archive or the full archive MCP."
             )
 

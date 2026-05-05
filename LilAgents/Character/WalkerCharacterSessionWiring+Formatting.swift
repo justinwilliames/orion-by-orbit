@@ -183,7 +183,7 @@ extension WalkerCharacter {
             return polishedStatusDetail(source)
         }
         if summary.contains("official Lenny MCP") {
-            return "Official Lenny MCP"
+            return "Official archive"
         }
         if summary.range(of: #"toolu_[A-Za-z0-9]+"#, options: .regularExpression) != nil {
             return nil
