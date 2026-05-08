@@ -7,7 +7,7 @@ This document covers the manual work that remains before Orion builds and ships,
 - ✅ Lenny fork copied to `~/Library/Mobile Documents/com~apple~CloudDocs/claude/Orion` (in iCloud Drive, alongside the source GIF assets in `claude/MiniJustin/Justin/`).
 - ✅ Heavy Lenny data deleted: `ExpertAvatars/` (16MB of headshots), `StarterArchive/` (~5MB of newsletter/podcast content), and Lenny demo media.
 - ✅ All user-facing "Lil-Lenny" branding strings renamed to "Orion" / "Orion".
-- ✅ Justin system prompt rewritten for **Orbit founder framing** in `LilAgents/Session/ClaudeSessionState.swift` — encodes the five Orbit voice pillars (Linus Tech Tips, Marques Brownlee, Ricky Gervais, Lenny's Newsletter, Elena Verna — tone only), nine Orbit writing rules, and the slop-detector anti-patterns. Canonical source: [get-orbit `lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames-sketch/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
+- ✅ Justin system prompt rewritten for **Orbit founder framing** in `LilAgents/Session/ClaudeSessionState.swift` — encodes the five Orbit voice pillars (Linus Tech Tips, Marques Brownlee, Ricky Gervais, Lenny's Newsletter, Elena Verna — tone only), nine Orbit writing rules, and the slop-detector anti-patterns. Canonical source: [get-orbit `lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
 - ✅ Welcome copy, popover subtitle, settings About panel, and prompt chips all retuned for Orbit positioning. Prompt chips map to real Orbit guide topics (Apple MPP, Braze naming, win-back flows, list hygiene, send-time optimisation, 72-hour aha-moment, retention economics).
 - ✅ The "Lenny source" Settings tab is hidden. The pane file remains in the tree for upstream merge compatibility.
 - ✅ Sparkle auto-update keys stripped from `Info.plist`.
@@ -57,7 +57,7 @@ Orion's Info.plist now points Sparkle at GitHub Releases for auto-update. The CI
 **Step 1 — add the Sparkle private key as a GitHub Actions secret.**
 
 ```
-gh secret set SPARKLE_ED_PRIVATE_KEY --repo justinwilliames-sketch/orion-by-orbit
+gh secret set SPARKLE_ED_PRIVATE_KEY --repo justinwilliames/orion-by-orbit
 # When prompted, paste this exact value (no trailing newline):
 #
 # <PASTE_PRIVATE_KEY_HERE — Claude shared the value in chat, not here>

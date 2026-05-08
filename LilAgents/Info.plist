@@ -39,7 +39,7 @@
          GitHub Actions secret used by CI to sign each .dmg. Sparkle
          refuses to install an update without a matching signature. -->
     <key>SUFeedURL</key>
-    <string>https://github.com/justinwilliames-sketch/orion-by-orbit/releases/latest/download/appcast.xml</string>
+    <string>https://github.com/justinwilliames/orion-by-orbit/releases/latest/download/appcast.xml</string>
     <key>SUPublicEDKey</key>
     <string>i+5A3O3oQqarQOydg+qfyIMxdCKXgyoQvOF8EAZuUao=</string>
     <key>SUEnableAutomaticChecks</key>

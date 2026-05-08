@@ -30,7 +30,7 @@ Pushing to `main` without a tag publishes a rolling `latest` prerelease — usef
 | Item | Location | Purpose |
 |---|---|---|
 | Public key | `LilAgents/Info.plist` → `SUPublicEDKey` (`bNQR7ti9TfIVO9mwWWH5hge2A8JzV98AczkncKfitQY=`) | Baked into every shipped `.app`. Sparkle uses it to verify update signatures. **Do not change** unless you're rotating (see below). |
-| Private key | GitHub Actions secret `SPARKLE_ED_PRIVATE_KEY` on `justinwilliames-sketch/orion-by-orbit` | Signs the `.dmg` in CI. Cannot be read back once set. |
+| Private key | GitHub Actions secret `SPARKLE_ED_PRIVATE_KEY` on `justinwilliames/orion-by-orbit` | Signs the `.dmg` in CI. Cannot be read back once set. |
 | Offline backup | **Required** — see DR section below. | If the GH secret is wiped or the repo is lost, this is the only path back to update continuity. |
 
 The matching key pair was generated at fork time. The original private key was briefly committed in `NEXT_STEPS.md`; that key was rotated to the value above before the public pipeline ever signed anything with it. The compromised key still appears in git history but cannot sign valid updates for the current `SUPublicEDKey`.
@@ -84,5 +84,5 @@ A leaked private key means an attacker can sign their own `.dmg` and trick Spark
 ## Other ops notes
 
 - **Notarization is not configured.** The app ships unsigned (no Apple Developer ID). Users must run `xattr -dr com.apple.quarantine /Applications/Orion.app` after each install and each Sparkle update. Once the Developer ID is provisioned, replace the ad-hoc-signing path with Developer ID + `xcrun notarytool` + `xcrun stapler staple`.
-- **Local origin remote** is `origin = https://github.com/justinwilliames-sketch/orion-by-orbit`. The `liljustin-archive` remote points to a tombstone repo and should not receive pushes.
+- **Local origin remote** is `origin = https://github.com/justinwilliames/orion-by-orbit`. The `liljustin-archive` remote points to a tombstone repo and should not receive pushes.
 - **Internal Swift symbols** stay as `Whispur*` for upstream merge compatibility (per memory rule). Don't rename them when refactoring fork-local code.

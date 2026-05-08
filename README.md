@@ -6,11 +6,11 @@
 
 A free macOS dock companion built by Orbit. Click Orion, ask anything about lifecycle marketing, deliverability, Braze, or retention. Direct, no-fluff answers in the Orbit voice, with real Orbit guides cited as sources.
 
-[![Latest release](https://img.shields.io/github/v/release/justinwilliames-sketch/orion-by-orbit?include_prereleases&label=latest&color=6366F1)](https://github.com/justinwilliames-sketch/orion-by-orbit/releases/latest)
+[![Latest release](https://img.shields.io/github/v/release/justinwilliames/orion-by-orbit?include_prereleases&label=latest&color=6366F1)](https://github.com/justinwilliames/orion-by-orbit/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-6366F1)](LICENSE)
 [![macOS](https://img.shields.io/badge/macOS-14%2B-6366F1)](https://www.apple.com/macos/)
 
-[**↓ Download Orion**](https://github.com/justinwilliames-sketch/orion-by-orbit/releases/latest)
+[**↓ Download Orion**](https://github.com/justinwilliames/orion-by-orbit/releases/latest)
 
 </div>
 
@@ -20,7 +20,7 @@ A free macOS dock companion built by Orbit. Click Orion, ask anything about life
 
 ### 1. Download the `.dmg`
 
-Grab the **latest** `.dmg` from [the Releases page](https://github.com/justinwilliames-sketch/orion-by-orbit/releases/latest) and open it.
+Grab the **latest** `.dmg` from [the Releases page](https://github.com/justinwilliames/orion-by-orbit/releases/latest) and open it.
 
 ### 2. Drag **Orion** into Applications
 
@@ -93,7 +93,7 @@ Automatic mode prefers Claude Code → Codex → OpenAI in that order, depending
 Clone, open in Xcode 16+ on macOS 14+, run the `LilAgents` scheme. Or from the command line:
 
 ```bash
-git clone https://github.com/justinwilliames-sketch/orion-by-orbit.git
+git clone https://github.com/justinwilliames/orion-by-orbit.git
 cd orion-by-orbit
 xcodebuild -project lil-agents.xcodeproj -scheme LilAgents -configuration Debug build
 ```
@@ -102,7 +102,7 @@ See [NEXT_STEPS.md](NEXT_STEPS.md) for the one-time Xcode setup (scheme rename, 
 
 ### Customise the personality
 
-The system prompt lives in [`LilAgents/Session/ClaudeSessionState.swift`](LilAgents/Session/ClaudeSessionState.swift) (`func buildInstructions`). It encodes the Orbit founder framing, five voice pillars, nine writing rules, the slop-detector anti-patterns, and the full slug→title manifest of all 87 Orbit guides for source citation. The canonical voice document this is distilled from lives in [`get-orbit/lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames-sketch/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
+The system prompt lives in [`LilAgents/Session/ClaudeSessionState.swift`](LilAgents/Session/ClaudeSessionState.swift) (`func buildInstructions`). It encodes the Orbit founder framing, five voice pillars, nine writing rules, the slop-detector anti-patterns, and the full slug→title manifest of all 87 Orbit guides for source citation. The canonical voice document this is distilled from lives in [`get-orbit/lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
 
 ### Refresh the bundled guides corpus
 

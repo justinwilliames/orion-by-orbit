@@ -131,7 +131,7 @@ extension SettingsView {
                     }
                     Text("Sparkle checks for updates automatically every 24 hours. You can also click 'Check for Updates…' from the menu bar icon.")
                         .settingsCaption()
-                    Link("All releases on GitHub", destination: URL(string: "https://github.com/justinwilliames-sketch/orion-by-orbit/releases")!)
+                    Link("All releases on GitHub", destination: URL(string: "https://github.com/justinwilliames/orion-by-orbit/releases")!)
                         .font(.subheadline.weight(.medium))
                 }
             }
