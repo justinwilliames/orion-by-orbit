@@ -12,6 +12,8 @@ A free macOS dock companion built by Orbit. Click Orion, ask anything about life
 
 [**↓ Download Orion**](https://github.com/justinwilliames/orion-by-orbit/releases/latest)
 
+<sub>Forked from [LilLenny](https://github.com/hbshih/lenny-lil-agents).</sub>
+
 </div>
 
 ---
