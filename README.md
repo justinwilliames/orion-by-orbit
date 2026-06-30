@@ -60,8 +60,6 @@ For deeper, structured Orbit tooling (88 guides, 50+ skills, native Braze API), 
 ## What's in the box
 
 - **88 Orbit guides bundled offline** — the full live corpus is shipped inside the app. On every question, the top 3 most relevant guides get spliced into the prompt so answers are grounded in the actual published content, not just slug-citations.
-- **Ambient comments** — when idle, Orion pipes up with short Orbit-voice observations on lifecycle, deliverability, and CRM craft. Driven by your connected model when available, hardcoded fallback otherwise.
-- **Sleep state** — after 1.5–4 minutes of inactivity, he curls up for a nap. Wakes on click.
 - **Auto-updates** — Sparkle keeps you on the latest. After each update, a one-click Gatekeeper helper handles the unsigned-app dance for you.
 - **Launch at login** — on by default. Toggle in Settings.
 - **MCP sync from Claude Desktop** — Orion can mirror the MCP servers you've already configured in Claude Desktop, so any tools you use there work here too.
@@ -104,7 +102,7 @@ See [NEXT_STEPS.md](NEXT_STEPS.md) for the one-time Xcode setup (scheme rename, 
 
 ### Customise the personality
 
-The system prompt lives in [`LilAgents/Session/ClaudeSessionState.swift`](LilAgents/Session/ClaudeSessionState.swift) (`func buildInstructions`). It encodes the Orbit founder framing, five voice pillars, nine writing rules, the slop-detector anti-patterns, and the full slug→title manifest of all 87 Orbit guides for source citation. The canonical voice document this is distilled from lives in [`get-orbit/lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
+The system prompt lives in [`LilAgents/Session/ClaudeSessionState.swift`](LilAgents/Session/ClaudeSessionState.swift) (`func buildInstructions`). It encodes the Orbit founder framing, five voice pillars, nine writing rules, the slop-detector anti-patterns, and the full slug→title manifest of the bundled Orbit guides for source citation. The canonical voice document this is distilled from lives in [`get-orbit/lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
 
 ### Refresh the bundled guides corpus
 
@@ -115,26 +113,13 @@ Orion ships with the full Orbit guides export at [`LilAgents/orbit-guides.json`]
 git commit -am "Refresh Orbit guides corpus"
 ```
 
-The script pulls from `https://get.yourorbit.team/api/guides/export`, validates the payload, and writes the new JSON in place. The retrieval is keyword-overlap scoring inside [`LilAgents/Session/OrbitGuidesCorpus.swift`](LilAgents/Session/OrbitGuidesCorpus.swift) — no embeddings, no network calls at runtime.
+The script pulls from `https://yourorbit.team/api/guides/export`, validates the payload, and writes the new JSON in place. The retrieval is keyword-overlap scoring inside [`LilAgents/Session/OrbitGuidesCorpus.swift`](LilAgents/Session/OrbitGuidesCorpus.swift) — no embeddings, no network calls at runtime.
 
-To fork this for your own dock assistant:
+To fork this for your own menu-bar assistant:
 
 1. Swap the system prompt for your voice and domain.
 2. Swap the bundled corpus JSON for your own knowledge base in the same export shape.
-3. Replace the GIFs in `LilAgents/CharacterSprites/` (front, back, walk-left, walk-right, sleeping — same filenames).
-4. Update bundle display name in `LilAgents/Info.plist`, welcome copy in `LilAgents/Terminal/TerminalView+TranscriptBehavior.swift`, and Settings → About in `LilAgents/App/SettingsView+ModelsPane.swift`.
-
-### Sprites
-
-The runtime expects these GIF filenames in `LilAgents/CharacterSprites/`:
-
-- `main-front.gif` — idle front-facing animation
-- `main-back.gif` — idle back-facing animation
-- `lil-justin-walk-left.gif` — walk cycle, left-facing
-- `lil-justin-walk-right.gif` — walk cycle, right-facing
-- `main-sleeping.gif` — idle sleeping animation (used after a stretch of inactivity)
-
-`NSImageView.animates = true` is set so multi-frame GIFs play automatically. Drop replacements in and rebuild.
+3. Update bundle display name in `LilAgents/Info.plist`, welcome copy in `LilAgents/Terminal/TerminalView+TranscriptBehavior.swift`, and Settings → About in `LilAgents/App/SettingsView+ModelsPane.swift`.
 
 ### Releasing
 
