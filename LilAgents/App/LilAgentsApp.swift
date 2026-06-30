@@ -146,17 +146,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
 
         let menu = NSMenu()
 
-        let char1Item = NSMenuItem(title: "Show Orion", action: #selector(toggleChar1), keyEquivalent: "1")
-        char1Item.state = .on
-        menu.addItem(char1Item)
-        self.char1Item = char1Item
-
-        let backToCharacterItem = NSMenuItem(title: "Back to Orion", action: #selector(backToCharacter), keyEquivalent: "")
-        backToCharacterItem.isEnabled = false
-        menu.addItem(backToCharacterItem)
-        self.backToCharacterItem = backToCharacterItem
-
-        menu.addItem(NSMenuItem.separator())
+        // PHASE 2 — the "Show Orion" / "Back to Orion" sprite show/hide
+        // toggles are gone: there is no visible sprite to show or hide, and
+        // left-clicking the menubar button now opens the chat directly.
 
         let soundItem = NSMenuItem(title: "Sounds", action: #selector(toggleSounds(_:)), keyEquivalent: "")
         soundItem.state = .on
@@ -303,17 +295,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
         }
     }
 
-    @objc func toggleChar1(_ sender: NSMenuItem) {
-        guard let chars = controller?.characters, chars.count > 0 else { return }
-        let char = chars[0]
-        if char.window.isVisible {
-            char.window.orderOut(nil)
-            sender.state = .off
-        } else {
-            char.window.orderFrontRegardless()
-            sender.state = .on
-        }
-    }
+    // toggleChar1 (sprite show/hide) removed in phase 2 — no visible sprite.
 
     @objc func backToCharacter() {
         controller?.returnToGenie()

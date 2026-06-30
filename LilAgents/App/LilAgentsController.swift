@@ -16,109 +16,24 @@ class LilAgentsController {
     private(set) var focusedExpert: ResponderExpert?
 
     func start() {
+        // PHASE 2 — the visible walking sprite is gone. We still create the
+        // single `WalkerCharacter` because it remains the HEADLESS host for
+        // the chat popover + shared ClaudeSession (ChatPopoverController and
+        // the menubar button drive it). `setup()` now builds only a hidden
+        // off-screen window; no GIF, no movement, no dock walking.
         let justin = WalkerCharacter(videoName: "justin")
-        justin.accelStart = 2.5
-        justin.fullSpeedStart = 3.2
-        justin.decelStart = 7.8
-        justin.walkStop = 8.4
-        justin.walkAmountRange = 0.35...0.6
-        justin.yOffset = 4
         justin.characterColor = NSColor(red: 0.96, green: 0.63, blue: 0.23, alpha: 1.0)
-        justin.positionProgress = 0.9
-        justin.pauseEndTime = CACurrentMediaTime() + Double.random(in: 0.5...2.0)
         justin.setup()
 
         characters = [justin]
         characters.forEach { $0.controller = self }
 
-        setupDebugLine()
-        startDisplayLink()
+        // Removed with the sprite: the 60fps movement tick (display link +
+        // fallback timer), the sprite debug line, the Pomodoro/Calendar
+        // ambient-bubble hooks, and the first-run sprite onboarding. The
+        // dock-prefs observers are kept (harmlessly inert) in case future
+        // dock-relative anchoring wants them.
         registerDockRefreshObservers()
-        wireQuickToolHooks()
-
-        if !UserDefaults.standard.bool(forKey: Self.onboardingKey) {
-            triggerOnboarding()
-        }
-    }
-
-    /// Hook PomodoroController and CalendarTooltipProvider into the
-    /// character — the controllers don't depend on AppKit types
-    /// directly, so the wiring lives here.
-    private func wireQuickToolHooks() {
-        PomodoroController.shared.onTickRefresh = { [weak self] text, phase in
-            guard let bruce = self?.characters.first else { return }
-            switch phase {
-            case .idle:
-                // Pomodoro stopped (or finished). Release every hold so
-                // the regular bubble + sleep lifecycle takes back over.
-                bruce.pomodoroBubbleHold = false
-                bruce.pomodoroForceAwake = false
-                bruce.pomodoroForceAsleep = false
-                return
-            case .focus:
-                // Stay awake for the whole focus phase + claim the
-                // bubble surface for the red countdown.
-                bruce.pomodoroBubbleHold = true
-                bruce.pomodoroForceAwake = true
-                bruce.pomodoroForceAsleep = false
-                if bruce.isSleeping { bruce.wakeUp() }
-                // Yield to the chat thinking bubble and to the per-phase
-                // completion bubble (which has its own 6s expiry and
-                // text). After either expires, the next tick (within 1s)
-                // re-asserts the countdown.
-                if bruce.isClaudeBusy { return }
-                if bruce.showingCompletion { return }
-                bruce.currentPhrase = text
-                bruce.showBubble(text: text, isCompletion: false, tint: .systemRed)
-            case .shortBreak, .longBreak:
-                // Sleep for the whole break + claim the bubble surface
-                // for the green countdown. enterSleep respects
-                // pomodoroBubbleHold and won't hide the countdown.
-                bruce.pomodoroBubbleHold = true
-                bruce.pomodoroForceAwake = false
-                bruce.pomodoroForceAsleep = true
-                if !bruce.isSleeping { bruce.enterSleep() }
-                if bruce.isClaudeBusy { return }
-                if bruce.showingCompletion { return }
-                bruce.currentPhrase = text
-                bruce.showBubble(text: text, isCompletion: false, tint: .systemGreen)
-            }
-        }
-        PomodoroController.shared.onPhaseEnd = { [weak self] ended, next, completionText in
-            guard let bruce = self?.characters.first else { return }
-            bruce.playCompletionSound()
-            // Routine focus↔rest boundaries: chime only. Skip the 6s
-            // completion bubble so the live countdown swaps cleanly
-            // from "Focus 0:00" red → "Rest 5:00" green on the next
-            // tick. Long-break milestones still get the celebratory
-            // bubble — they fire once per ~2 hours, not on the loop.
-            let routineLoop = (ended == .focus && next == .shortBreak)
-                || (ended == .shortBreak && next == .focus)
-            if routineLoop { return }
-            bruce.currentPhrase = completionText
-            bruce.showingCompletion = true
-            bruce.completionBubbleExpiry = CACurrentMediaTime() + 6.0
-            bruce.showBubble(text: completionText, isCompletion: true)
-        }
-
-        CalendarTooltipProvider.shared.onTooltipText = { [weak self] text in
-            self?.characters.first?.window?.contentView?.toolTip = text
-        }
-        CalendarTooltipProvider.shared.start()
-    }
-
-    private func triggerOnboarding() {
-        guard let bruce = characters.first else { return }
-        bruce.isOnboarding = true
-        // Show "Hi!" bubble after a short delay so the character is visible first
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak bruce] in
-            guard let bruce else { return }
-            bruce.currentPhrase = "Hi!"
-            bruce.showingCompletion = true
-            bruce.completionBubbleExpiry = CACurrentMediaTime() + 600 // stays until clicked
-            bruce.showBubble(text: "Hi!", isCompletion: true)
-            bruce.playCompletionSound()
-        }
     }
 
     func completeOnboarding() {
@@ -237,25 +152,6 @@ class LilAgentsController {
         return (screen, dockX, dockWidth, dockTopY)
     }
 
-    // MARK: - Debug
-
-    private func setupDebugLine() {
-        let win = NSWindow(contentRect: CGRect(x: 0, y: 0, width: 100, height: 2),
-                           styleMask: .borderless, backing: .buffered, defer: false)
-        win.isOpaque = false
-        win.backgroundColor = NSColor.red
-        win.hasShadow = false
-        win.level = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + 10)
-        win.ignoresMouseEvents = true
-        win.collectionBehavior = [.canJoinAllSpaces, .stationary]
-        win.orderOut(nil)
-        debugWindow = win
-    }
-
-    private func updateDebugLine(dockX: CGFloat, dockWidth: CGFloat, dockTopY: CGFloat) {
-        guard let win = debugWindow, win.isVisible else { return }
-        win.setFrame(CGRect(x: dockX, y: dockTopY, width: dockWidth, height: 2), display: true)
-    }
 
     // MARK: - Dock prefs cache invalidation
 
@@ -490,35 +386,6 @@ class LilAgentsController {
         return (dockX, dockWidth)
     }
 
-    // MARK: - Display Link
-
-    private func startDisplayLink() {
-        CVDisplayLinkCreateWithActiveCGDisplays(&displayLink)
-        startFallbackDisplayTimer()
-        guard let displayLink = displayLink else { return }
-
-        let callback: CVDisplayLinkOutputCallback = { _, _, _, _, _, userInfo -> CVReturn in
-            let controller = Unmanaged<LilAgentsController>.fromOpaque(userInfo!).takeUnretainedValue()
-            DispatchQueue.main.async {
-                controller.tick(source: .displayLink)
-            }
-            return kCVReturnSuccess
-        }
-
-        CVDisplayLinkSetOutputCallback(displayLink, callback,
-                                       Unmanaged.passUnretained(self).toOpaque())
-        _ = CVDisplayLinkStart(displayLink)
-    }
-
-    private func startFallbackDisplayTimer() {
-        fallbackDisplayTimer?.invalidate()
-        let timer = Timer(timeInterval: 1.0 / 60.0, repeats: true) { [weak self] _ in
-            self?.tick(source: .fallbackTimer)
-        }
-        fallbackDisplayTimer = timer
-        RunLoop.main.add(timer, forMode: .common)
-    }
-
     var activeScreen: NSScreen? {
         if pinnedScreenIndex >= 0, pinnedScreenIndex < NSScreen.screens.count {
             return NSScreen.screens[pinnedScreenIndex]
@@ -551,44 +418,6 @@ class LilAgentsController {
         if v.origin.x > f.origin.x { return true }   // left dock
         if v.maxX < f.maxX { return true }           // right dock
         return false
-    }
-
-    private enum TickSource {
-        case displayLink
-        case fallbackTimer
-    }
-
-    private func tick(source: TickSource) {
-        let now = CACurrentMediaTime()
-        if source == .fallbackTimer, now - lastTickTimestamp < (1.0 / 90.0) {
-            return
-        }
-        lastTickTimestamp = now
-
-        guard let metrics = currentDockMetrics() else { return }
-        let screen = metrics.screen
-        let dockX = metrics.dockX
-        let dockWidth = metrics.dockWidth
-        let dockTopY = metrics.dockTopY
-
-        updateDebugLine(dockX: dockX, dockWidth: dockWidth, dockTopY: dockTopY)
-
-        let activeChars = characters.filter { $0.window.isVisible }
-        let anyWalking = activeChars.contains { $0.isWalking }
-        for char in activeChars {
-            if char.isIdleForPopover { continue }
-            if char.isPaused && now >= char.pauseEndTime && anyWalking {
-                char.pauseEndTime = now + Double.random(in: 5.0...10.0)
-            }
-        }
-        for char in activeChars {
-            char.update(screen: screen, dockX: dockX, dockWidth: dockWidth, dockTopY: dockTopY)
-        }
-
-        let sorted = activeChars.sorted { $0.positionProgress < $1.positionProgress }
-        for (i, char) in sorted.enumerated() {
-            char.window.level = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + i)
-        }
     }
 
     deinit {

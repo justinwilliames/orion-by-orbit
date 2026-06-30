@@ -35,7 +35,6 @@
 		A10000010000000000000032 /* WalkerCharacterCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000032 /* WalkerCharacterCore.swift */; };
 		A10000010000000000000033 /* WalkerCharacterPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000033 /* WalkerCharacterPopover.swift */; };
 		A10000010000000000000034 /* WalkerCharacterVisuals.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000034 /* WalkerCharacterVisuals.swift */; };
-		A10000010000000000000035 /* WalkerCharacterMovement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000035 /* WalkerCharacterMovement.swift */; };
 		A10000010000000000000036 /* ClaudeSessionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000036 /* ClaudeSessionModels.swift */; };
 		A10000010000000000000037 /* ClaudeSessionState.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000037 /* ClaudeSessionState.swift */; };
 		A10000010000000000000038 /* ClaudeSessionExpertResolution.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000038 /* ClaudeSessionExpertResolution.swift */; };
@@ -56,7 +55,6 @@
 		A10000010000000000000054 /* TerminalViewLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000054 /* TerminalViewLayout.swift */; };
 		A10000010000000000000055 /* WalkerCharacterBubble.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000055 /* WalkerCharacterBubble.swift */; };
 		F8A0C2AC9D5941F1B950A8A5 /* WalkerCharacterFollowUps.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A0C2AE9D5941F1B950A8A5 /* WalkerCharacterFollowUps.swift */; };
-		F8A0C2AD9D5941F1B950A8A6 /* BubbleClickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8A0C2AF9D5941F1B950A8A6 /* BubbleClickView.swift */; };
 		A10000010000000000000056 /* WalkerCharacterExpertTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000056 /* WalkerCharacterExpertTag.swift */; };
 		A10000010000000000000057 /* WalkerCharacterPopoverWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000057 /* WalkerCharacterPopoverWindow.swift */; };
 		A10000010000000000000058 /* WalkerCharacterSessionWiring.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000058 /* WalkerCharacterSessionWiring.swift */; };
@@ -77,7 +75,6 @@
 		A10000010000000000000075 /* ClaudeSessionTransport+Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000075 /* ClaudeSessionTransport+Archive.swift */; };
 		A10000010000000000000076 /* ClaudeSessionTransport+Diagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000076 /* ClaudeSessionTransport+Diagnostics.swift */; };
 		A10000010000000000000077 /* MCPConnectionCards+OfficialMCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000077 /* MCPConnectionCards+OfficialMCP.swift */; };
-		A10000110000000000000001 /* CharacterSprites in Resources */ = {isa = PBXBuildFile; fileRef = A10000120000000000000001 /* CharacterSprites */; };
 		A10000110000000000000002 /* ExpertAvatars in Resources */ = {isa = PBXBuildFile; fileRef = A10000120000000000000002 /* ExpertAvatars */; };
 		A10000110000000000000003 /* fall-smoke-dust.lottie in Resources */ = {isa = PBXBuildFile; fileRef = A10000120000000000000003 /* fall-smoke-dust.lottie */; };
 		A10000110000000000000004 /* fall-smoke-dust.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000120000000000000004 /* fall-smoke-dust.json */; };
@@ -113,7 +110,6 @@
 		BC0000010000000000000013 /* MarkdownToHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000013 /* MarkdownToHTML.swift */; };
 		BC0000010000000000000014 /* StructuredJSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000014 /* StructuredJSONParser.swift */; };
 		BC0000010000000000000015 /* QuickTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000015 /* QuickTools.swift */; };
-		BC0000010000000000000016 /* CalendarTooltipProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000016 /* CalendarTooltipProvider.swift */; };
 		BC0000010000000000000017 /* NotesBrowser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000017 /* NotesBrowser.swift */; };
 		BC0000010000000000000019 /* Toolbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0000020000000000000019 /* Toolbox.swift */; };
 /* End PBXBuildFile section */
@@ -147,7 +143,6 @@
 		A10000020000000000000032 /* WalkerCharacterCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterCore.swift; sourceTree = "<group>"; };
 		A10000020000000000000033 /* WalkerCharacterPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterPopover.swift; sourceTree = "<group>"; };
 		A10000020000000000000034 /* WalkerCharacterVisuals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterVisuals.swift; sourceTree = "<group>"; };
-		A10000020000000000000035 /* WalkerCharacterMovement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterMovement.swift; sourceTree = "<group>"; };
 		A10000020000000000000036 /* ClaudeSessionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSessionModels.swift; sourceTree = "<group>"; };
 		A10000020000000000000037 /* ClaudeSessionState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSessionState.swift; sourceTree = "<group>"; };
 		A10000020000000000000038 /* ClaudeSessionExpertResolution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSessionExpertResolution.swift; sourceTree = "<group>"; };
@@ -168,7 +163,6 @@
 		A10000020000000000000054 /* TerminalViewLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalViewLayout.swift; sourceTree = "<group>"; };
 		A10000020000000000000055 /* WalkerCharacterBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterBubble.swift; sourceTree = "<group>"; };
 		F8A0C2AE9D5941F1B950A8A5 /* WalkerCharacterFollowUps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterFollowUps.swift; sourceTree = "<group>"; };
-		F8A0C2AF9D5941F1B950A8A6 /* BubbleClickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BubbleClickView.swift; sourceTree = "<group>"; };
 		A10000020000000000000056 /* WalkerCharacterExpertTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterExpertTag.swift; sourceTree = "<group>"; };
 		A10000020000000000000057 /* WalkerCharacterPopoverWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterPopoverWindow.swift; sourceTree = "<group>"; };
 		A10000020000000000000058 /* WalkerCharacterSessionWiring.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacterSessionWiring.swift; sourceTree = "<group>"; };
@@ -190,7 +184,6 @@
 		A10000020000000000000076 /* ClaudeSessionTransport+Diagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClaudeSessionTransport+Diagnostics.swift"; sourceTree = "<group>"; };
 		A10000020000000000000077 /* MCPConnectionCards+OfficialMCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MCPConnectionCards+OfficialMCP.swift"; sourceTree = "<group>"; };
 		A10000030000000000000001 /* Lil-Lenny.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lil-Lenny.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A10000120000000000000001 /* CharacterSprites */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CharacterSprites; sourceTree = "<group>"; };
 		A10000120000000000000002 /* ExpertAvatars */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ExpertAvatars; sourceTree = "<group>"; };
 		A10000120000000000000003 /* fall-smoke-dust.lottie */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fall-smoke-dust.lottie"; sourceTree = "<group>"; };
 		A10000120000000000000004 /* fall-smoke-dust.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "fall-smoke-dust.json"; sourceTree = "<group>"; };
@@ -226,7 +219,6 @@
 		BC0000020000000000000013 /* MarkdownToHTML.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownToHTML.swift; sourceTree = "<group>"; };
 		BC0000020000000000000014 /* StructuredJSONParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StructuredJSONParser.swift; sourceTree = "<group>"; };
 		BC0000020000000000000015 /* QuickTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickTools.swift; sourceTree = "<group>"; };
-		BC0000020000000000000016 /* CalendarTooltipProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTooltipProvider.swift; sourceTree = "<group>"; };
 		BC0000020000000000000017 /* NotesBrowser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesBrowser.swift; sourceTree = "<group>"; };
 		BC0000020000000000000019 /* Toolbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -274,7 +266,6 @@
 				BC0000060000000000000004 /* Integrations */,
 				A10000020000000000000007 /* Assets.xcassets */,
 				A10000020000000000000010 /* Sounds */,
-				A10000120000000000000001 /* CharacterSprites */,
 				A10000120000000000000002 /* ExpertAvatars */,
 				A10000120000000000000003 /* fall-smoke-dust.lottie */,
 				A10000120000000000000004 /* fall-smoke-dust.json */,
@@ -362,10 +353,8 @@
 				A10000020000000000000031 /* WalkerCharacterTypes.swift */,
 				A10000020000000000000032 /* WalkerCharacterCore.swift */,
 				A10000020000000000000034 /* WalkerCharacterVisuals.swift */,
-				A10000020000000000000035 /* WalkerCharacterMovement.swift */,
 				A10000020000000000000055 /* WalkerCharacterBubble.swift */,
 				F8A0C2AE9D5941F1B950A8A5 /* WalkerCharacterFollowUps.swift */,
-				F8A0C2AF9D5941F1B950A8A6 /* BubbleClickView.swift */,
 				A10000020000000000000056 /* WalkerCharacterExpertTag.swift */,
 				A10000020000000000000033 /* WalkerCharacterPopover.swift */,
 				A10000020000000000000057 /* WalkerCharacterPopoverWindow.swift */,
@@ -430,7 +419,6 @@
 		BC0000060000000000000004 /* Integrations */ = {
 			isa = PBXGroup;
 			children = (
-				BC0000020000000000000016 /* CalendarTooltipProvider.swift */,
 			);
 			path = Integrations;
 			sourceTree = "<group>";
@@ -525,7 +513,6 @@
 			files = (
 				A10000010000000000000005 /* Assets.xcassets in Resources */,
 				A10000010000000000000010 /* Sounds in Resources */,
-				A10000110000000000000001 /* CharacterSprites in Resources */,
 				A10000110000000000000002 /* ExpertAvatars in Resources */,
 				A10000110000000000000003 /* fall-smoke-dust.lottie in Resources */,
 				A10000110000000000000004 /* fall-smoke-dust.json in Resources */,
@@ -599,14 +586,12 @@
 				A10000010000000000000032 /* WalkerCharacterCore.swift in Sources */,
 				A10000010000000000000055 /* WalkerCharacterBubble.swift in Sources */,
 				F8A0C2AC9D5941F1B950A8A5 /* WalkerCharacterFollowUps.swift in Sources */,
-				F8A0C2AD9D5941F1B950A8A6 /* BubbleClickView.swift in Sources */,
 				A10000010000000000000056 /* WalkerCharacterExpertTag.swift in Sources */,
 				A10000010000000000000033 /* WalkerCharacterPopover.swift in Sources */,
 				A10000010000000000000057 /* WalkerCharacterPopoverWindow.swift in Sources */,
 				A10000010000000000000058 /* WalkerCharacterSessionWiring.swift in Sources */,
 				9B5B7C6D4F4E4B11A1D2C3E4 /* WalkerCharacterSessionWiring+Formatting.swift in Sources */,
 				A10000010000000000000034 /* WalkerCharacterVisuals.swift in Sources */,
-				A10000010000000000000035 /* WalkerCharacterMovement.swift in Sources */,
 				A10000010000000000000025 /* LilAgentsController.swift in Sources */,
 				A10000010000000000000078 /* ChatPopoverController.swift in Sources */,
 				A10000010000000000000061 /* MCPConnectionCards.swift in Sources */,
@@ -637,7 +622,6 @@
 				BC0000010000000000000013 /* MarkdownToHTML.swift in Sources */,
 				BC0000010000000000000014 /* StructuredJSONParser.swift in Sources */,
 				BC0000010000000000000015 /* QuickTools.swift in Sources */,
-				BC0000010000000000000016 /* CalendarTooltipProvider.swift in Sources */,
 				BC0000010000000000000017 /* NotesBrowser.swift in Sources */,
 				BC0000010000000000000019 /* Toolbox.swift in Sources */,
 			);
