@@ -147,8 +147,8 @@ enum AppSettings {
 
     // MARK: - Preferences
 
-    /// Run at login. Defaults to ON for first-install users (the dock
-    /// companion is ambient — most users want it back after restart
+    /// Run at login. Defaults to ON for first-install users (the menu-bar
+    /// app is ambient — most users want it back after restart
     /// without thinking about it). Wired via SMAppService.mainApp; the
     /// first call to `applyLaunchAtLoginPreference()` triggers the OS
     /// permission grant in System Settings → General → Login Items.

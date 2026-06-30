@@ -4,7 +4,7 @@ import NaturalLanguage
 /// On-device semantic re-rank over the Orbit guides corpus.
 ///
 /// `OrbitGuidesCorpus` does a fast keyword-overlap pass to filter the
-/// 87 guides down to a candidate set. This file's job is to re-rank
+/// guides down to a candidate set. This file's job is to re-rank
 /// that candidate set by sentence-embedding cosine similarity so the
 /// returned guides are semantically relevant, not just lexically.
 ///
@@ -12,7 +12,7 @@ import NaturalLanguage
 ///   - Apple ships a 512-dim sentence-embedding model in the OS
 ///     (`NLEmbedding.sentenceEmbedding(for: .english)`) — no model
 ///     bundling, no network, no third-party dependency.
-///   - For 87 guides, full corpus vectorisation runs in milliseconds.
+///   - Full corpus vectorisation runs in milliseconds.
 ///   - Cosine over 512-dim vectors is trivially fast in Swift; no
 ///     vector index needed.
 ///

@@ -99,7 +99,7 @@ class TerminalView: NSView {
     var requiresInitialConnectionSetup = false
     var lastObservedFirstRunConfigurationSignature: String?
     var settingsObserver: NSObjectProtocol?
-    let officialMCPURL = URL(string: "https://get.yourorbit.team")!
+    let officialMCPURL = URL(string: "https://yourorbit.team")!
 
     override init(frame: NSRect) {
         super.init(frame: frame)

@@ -28,7 +28,7 @@ enum ToolID: Hashable, Identifiable {
     case significance
     case emailSize
     case percentage
-    /// Web-only tools — clicking the card opens get.yourorbit.team
+    /// Web-only tools — clicking the card opens yourorbit.team
     /// rather than navigating to a detail view.
     case web(slug: String, title: String)
 
@@ -1031,12 +1031,12 @@ enum WebToolOpener {
     ]
 
     static func open(slug: String) {
-        guard let url = URL(string: "https://get.yourorbit.team/apps/\(slug)") else { return }
+        guard let url = URL(string: "https://yourorbit.team/apps/\(slug)") else { return }
         NSWorkspace.shared.open(url)
     }
 
     static func openIndex() {
-        guard let url = URL(string: "https://get.yourorbit.team/apps") else { return }
+        guard let url = URL(string: "https://yourorbit.team/apps") else { return }
         NSWorkspace.shared.open(url)
     }
 }

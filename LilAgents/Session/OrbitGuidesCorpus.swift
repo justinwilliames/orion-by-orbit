@@ -3,8 +3,8 @@ import Foundation
 /// In-app retrieval over the Orbit guides corpus.
 ///
 /// At build time we bundle the full export from
-/// `https://get.yourorbit.team/api/guides/export` as `orbit-guides.json`
-/// (~850 KB, ~95 guides × ~9 KB markdown each). On first access the
+/// `https://yourorbit.team/api/guides/export` as `orbit-guides.json`
+/// (~850 KB, count from JSON × ~9 KB markdown each). On first access the
 /// JSON is parsed once and cached for the process lifetime — the file
 /// is small enough that holding it in memory is cheaper than re-decoding
 /// per turn.
@@ -45,7 +45,7 @@ enum OrbitGuidesCorpus {
     ///   1. **Keyword pass** scores every guide by token overlap over
     ///      title, summary, slug, targetQuery, and a leading body
     ///      slice. Title hits weigh 5×, summary 3×, body 1×. Cheap,
-    ///      runs over all 87 guides in microseconds.
+    ///      runs over all guides in microseconds.
     ///   2. **Embedding re-rank** — when `OrbitGuidesEmbeddings` has
     ///      finished its background precompute, the top
     ///      `keywordCandidates` candidates are re-scored using cosine

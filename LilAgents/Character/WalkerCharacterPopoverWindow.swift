@@ -428,7 +428,7 @@ extension WalkerCharacter {
 
     func refreshPopoverHeader() {
         popoverTitleLabel?.stringValue = focusedExpert?.name ?? resolvedTheme.titleString
-        popoverSubtitleLabel?.stringValue = focusedExpert?.title ?? "Orbit's assistant for your dock."
+        popoverSubtitleLabel?.stringValue = focusedExpert?.title ?? "Orbit's menu-bar lifecycle assistant."
         popoverReturnButton?.isHidden = (focusedExpert == nil)
         terminalView?.setReturnToLennyVisible(focusedExpert != nil)
         updatePopoverExpertSwitcherState()
@@ -539,7 +539,7 @@ extension WalkerCharacter {
         switcherButton.isEnabled = false
         popoverExpertSwitcherButton = switcherButton
 
-        let subtitle = NSTextField(labelWithString: focusedExpert?.title ?? "Orbit's assistant for your dock.")
+        let subtitle = NSTextField(labelWithString: focusedExpert?.title ?? "Orbit's menu-bar lifecycle assistant.")
         subtitle.translatesAutoresizingMaskIntoConstraints = false
         subtitle.font = NSFont.systemFont(ofSize: 11, weight: .regular)
         subtitle.textColor = t.textDim.withAlphaComponent(0.75)

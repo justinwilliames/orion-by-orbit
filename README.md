@@ -2,9 +2,9 @@
 
 # Orion
 
-### [Orbit](https://get.yourorbit.team)'s assistant for your dock.
+### [Orbit](https://yourorbit.team)'s menu-bar lifecycle assistant.
 
-A free macOS dock companion built by Orbit. Click Orion, ask anything about lifecycle marketing, deliverability, Braze, or retention. Direct, no-fluff answers in the Orbit voice, with real Orbit guides cited as sources.
+A free macOS menu-bar app built by Orbit. Click Orion in your menu bar, ask anything about lifecycle marketing, deliverability, Braze, or retention. Direct, no-fluff answers in the Orbit voice, with real Orbit guides cited as sources.
 
 [![Latest release](https://img.shields.io/github/v/release/justinwilliames/orion-by-orbit?include_prereleases&label=latest&color=6366F1)](https://github.com/justinwilliames/orion-by-orbit/releases/latest)
 [![License](https://img.shields.io/badge/license-MIT-6366F1)](LICENSE)
@@ -36,7 +36,7 @@ Orion is unsigned (free side-project, no Apple Developer ID), so macOS Gatekeepe
 xattr -dr com.apple.quarantine /Applications/Orion.app
 ```
 
-Then double-click Orion in Applications. Orion appears above your Dock.
+Then double-click Orion in Applications. Orion appears in your menu bar (top-right).
 
 > **Don't want to use Terminal?** Right-click `Orion` in Applications → **Open** → confirm. Or System Settings → Privacy & Security → "Open Anyway". Either works.
 
@@ -55,11 +55,11 @@ Some examples of what he'll handle well:
 - **Measurement** — A/B test sample sizes, holdouts, incrementality, false positives, churn cohorts
 - **Tools** — Braze, Iterable, Customer.io, HubSpot — what each gets right and wrong
 
-For deeper, structured Orbit tooling (95 guides, 50+ skills, native Braze API), install the full **[Orbit MCP for Claude Desktop](https://get.yourorbit.team/download)**. Orion will use those tools when they're available.
+For deeper, structured Orbit tooling (88 guides, 50+ skills, native Braze API), install the full **[Orbit MCP for Claude Desktop](https://yourorbit.team/download)**. Orion will use those tools when they're available.
 
 ## What's in the box
 
-- **87 Orbit guides bundled offline** — the full live corpus is shipped inside the app. On every question, the top 3 most relevant guides get spliced into the prompt so answers are grounded in the actual published content, not just slug-citations.
+- **88 Orbit guides bundled offline** — the full live corpus is shipped inside the app. On every question, the top 3 most relevant guides get spliced into the prompt so answers are grounded in the actual published content, not just slug-citations.
 - **Ambient comments** — when idle, Orion pipes up with short Orbit-voice observations on lifecycle, deliverability, and CRM craft. Driven by your connected model when available, hardcoded fallback otherwise.
 - **Sleep state** — after 1.5–4 minutes of inactivity, he curls up for a nap. Wakes on click.
 - **Auto-updates** — Sparkle keeps you on the latest. After each update, a one-click Gatekeeper helper handles the unsigned-app dance for you.

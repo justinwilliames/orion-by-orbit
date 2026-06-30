@@ -75,7 +75,7 @@ struct SettingsView: View {
     @State var detectedClaudeAvailable: Bool? = nil
     @State var detectedCodexAvailable: Bool? = nil
 
-    let officialArchiveURL = URL(string: "https://get.yourorbit.team") ?? URL(fileURLWithPath: "/")
+    let officialArchiveURL = URL(string: "https://yourorbit.team") ?? URL(fileURLWithPath: "/")
 
     var body: some View {
         NavigationSplitView {

@@ -28,9 +28,9 @@ extension WalkerCharacter {
         }
 
         let welcome = """
-        Orion — Orbit's assistant for your dock.
+        Orion — Orbit's menu-bar lifecycle assistant.
 
-        Ask about lifecycle, deliverability, Braze, retention. The Orbit playbook, in dock form.
+        Ask about lifecycle, deliverability, Braze, retention. The Orbit playbook, in your menu bar.
         """
         terminalView?.appendStreamingText(welcome)
         terminalView?.endStreaming()
@@ -93,8 +93,8 @@ extension WalkerCharacter {
         }
 
         // Reshuffle the welcome chips on every popover open. The pool is
-        // 1:1 with the Orbit guide library (87 chips); 4 are shown at a
-        // time, drawn at random so the user sees fresh prompts each time.
+        // 1:1 with the Orbit guide library; 4 are shown at a time, drawn
+        // at random so the user sees fresh prompts each time.
         terminalView?.currentWelcomeSuggestions = []
         terminalView?.lastRenderedWelcomeSignature = nil
 

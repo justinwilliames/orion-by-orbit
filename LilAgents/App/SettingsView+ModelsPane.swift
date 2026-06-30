@@ -149,18 +149,18 @@ extension SettingsView {
                 }
             }
 
-            SettingsSectionCard(title: "About Orion", subtitle: "Orbit's assistant for your dock.") {
+            SettingsSectionCard(title: "About Orion", subtitle: "Orbit's menu-bar lifecycle assistant.") {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Orion is Orbit's lifecycle assistant for your dock — same Orbit voice, narrower surface than the full MCP extension. Ask about lifecycle marketing, deliverability, Braze, retention economics — anything from the Orbit playbook.")
+                    Text("Orion is Orbit's menu-bar lifecycle assistant — same Orbit voice, narrower surface than the full MCP extension. Ask about lifecycle marketing, deliverability, Braze, retention economics — anything from the Orbit playbook.")
                         .settingsCaption()
 
-                    Link("Orbit · The lifecycle marketing OS for Claude", destination: URL(string: "https://get.yourorbit.team")!)
+                    Link("Orbit · The hub for lifecycle marketing & AI workflows", destination: URL(string: "https://yourorbit.team")!)
                         .font(.subheadline.weight(.medium))
 
                     Text("This is a personality layer on whichever provider you connect in Settings — not an archive, not RAG. For deeper grounding in the full Orbit guide library, install the Orbit MCP for Claude Desktop.")
                         .settingsCaption()
 
-                    Link("Install Orbit (.mcpb · pay-what-it's-worth)", destination: URL(string: "https://get.yourorbit.team/download")!)
+                    Link("Install Orbit (.mcpb · free for everyone)", destination: URL(string: "https://yourorbit.team/download")!)
                         .font(.subheadline.weight(.medium))
                 }
             }
