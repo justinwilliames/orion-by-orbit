@@ -33,6 +33,15 @@ final class WalkerCharacter {
 
     var isOnboarding = false
     var isIdleForPopover = false
+    /// When true, the chat popover was summoned from the menubar status
+    /// item (via `ChatPopoverController`) rather than by clicking the
+    /// sprite. In that mode the popover is anchored under the menubar
+    /// button, so the per-tick `updatePopoverPosition()` (which re-anchors
+    /// the window above the sprite's head) must NOT run — otherwise the
+    /// window would snap back to the sprite on the next display-link tick.
+    /// Additive flag: defaults false, so the sprite's own popover flow is
+    /// completely unaffected.
+    var isMenubarAnchored = false
     var popoverWindow: NSWindow?
     var terminalView: TerminalView?
     var claudeSession: ClaudeSession?

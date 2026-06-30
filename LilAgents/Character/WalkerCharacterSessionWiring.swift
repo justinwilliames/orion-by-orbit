@@ -341,6 +341,10 @@ extension WalkerCharacter {
         lastLiveStatusEventAt = Date()
     }
     func updatePopoverPosition() {
+        // Menubar-summoned popovers are anchored under the status item by
+        // ChatPopoverController. Skip the sprite-head re-anchor so the
+        // per-tick display link doesn't drag the window back to the dock.
+        guard !isMenubarAnchored else { return }
         guard let popover = popoverWindow, isIdleForPopover else { return }
         // Anchor to the screen that owns the Dock (where Orion lives),
         // not NSScreen.main — main returns the screen with the focused

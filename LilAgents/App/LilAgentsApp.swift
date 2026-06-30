@@ -16,6 +16,16 @@ struct LilAgentsApp: App {
 class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegate {
     var controller: LilAgentsController?
     var statusItem: NSStatusItem?
+    /// Owns the menubar-summoned chat popover. Retained for the app's
+    /// lifetime; instantiated once in applicationDidFinishLaunching after
+    /// the controller exists. Additive — the sprite's click-to-chat path
+    /// is unchanged.
+    var chatPopoverController: ChatPopoverController?
+    /// The NSMenu built in setupMenuBar(). No longer assigned to
+    /// statusItem.menu (that would make every click pop the menu and
+    /// swallow the button action). Instead we pop it manually on
+    /// right-click; left-click toggles the chat popover.
+    var statusMenu: NSMenu?
     var expertStatusItems: [NSStatusItem] = []
     var visibleExperts: [ResponderExpert] = []
     var focusedExpert: ResponderExpert?
@@ -77,6 +87,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
             self?.updateFocusedExpert(expert)
         }
         controller?.start()
+        chatPopoverController = ChatPopoverController(controller: controller)
         setupMenuBar()
     }
 
@@ -121,7 +132,16 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
             // wallpaper. Requires the MenuBarIcon asset to be monochrome
             // (alpha-only); SF Symbols already template-render correctly.
             button.image?.isTemplate = true
-            button.toolTip = "Open Orion"
+            button.toolTip = "Open Orion chat"
+            // Left-click → toggle the chat popover; right-click → the
+            // classic menu. We do NOT assign statusItem.menu (that makes
+            // AppKit pop the menu on every click and never fire the button
+            // action); instead the action below pops the menu manually on
+            // right-click. sendAction(on:) makes the action fire on the
+            // mouse-DOWN of both buttons so we can branch on event type.
+            button.target = self
+            button.action = #selector(statusItemClicked(_:))
+            button.sendAction(on: [.leftMouseDown, .rightMouseDown])
         }
 
         let menu = NSMenu()
@@ -209,7 +229,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
         let quitItem = NSMenuItem(title: "Quit", action: #selector(quitApp), keyEquivalent: "q")
         menu.addItem(quitItem)
 
-        statusItem?.menu = menu
+        // Stash the menu rather than assigning statusItem.menu, so the
+        // button's click action keeps firing. Right-click pops it manually
+        // (see statusItemClicked).
+        statusMenu = menu
+    }
+
+    /// Status-item button click handler. Fires on mouse-down of both
+    /// buttons (see sendAction(on:) in setupMenuBar).
+    ///   • right-click (or Control-click) → pop the classic NSMenu.
+    ///   • left-click → toggle the menubar chat popover.
+    @objc func statusItemClicked(_ sender: NSStatusBarButton) {
+        let event = NSApp.currentEvent
+        let isRightClick = event?.type == .rightMouseDown
+            || (event?.modifierFlags.contains(.control) ?? false)
+
+        if isRightClick, let menu = statusMenu, let statusItem {
+            // popUpMenu(_:) is deprecated but still the supported way to
+            // show a status-item menu on demand without permanently
+            // binding it via statusItem.menu. Assign-show-clear keeps the
+            // left-click action intact for subsequent clicks.
+            statusItem.menu = menu
+            sender.performClick(nil)
+            statusItem.menu = nil
+            return
+        }
+
+        chatPopoverController?.toggle(relativeTo: sender)
     }
 
     // MARK: - Menu Actions

@@ -26,6 +26,7 @@
 		A10000010000000000000023 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000023 /* TerminalView.swift */; };
 		A10000010000000000000024 /* WalkerCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000024 /* WalkerCharacter.swift */; };
 		A10000010000000000000025 /* LilAgentsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000025 /* LilAgentsController.swift */; };
+		A10000010000000000000078 /* ChatPopoverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000078 /* ChatPopoverController.swift */; };
 		A10000010000000000000026 /* PaddedTextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000026 /* PaddedTextFieldCell.swift */; };
 		A10000010000000000000027 /* TerminalView+Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000027 /* TerminalView+Setup.swift */; };
 		A10000010000000000000029 /* TerminalView+Attachments.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000029 /* TerminalView+Attachments.swift */; };
@@ -137,6 +138,7 @@
 		A10000020000000000000023 /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		A10000020000000000000024 /* WalkerCharacter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacter.swift; sourceTree = "<group>"; };
 		A10000020000000000000025 /* LilAgentsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LilAgentsController.swift; sourceTree = "<group>"; };
+		A10000020000000000000078 /* ChatPopoverController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPopoverController.swift; sourceTree = "<group>"; };
 		A10000020000000000000026 /* PaddedTextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextFieldCell.swift; sourceTree = "<group>"; };
 		A10000020000000000000027 /* TerminalView+Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+Setup.swift"; sourceTree = "<group>"; };
 		A10000020000000000000029 /* TerminalView+Attachments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+Attachments.swift"; sourceTree = "<group>"; };
@@ -298,6 +300,7 @@
 				A10000020000000000000001 /* LilAgentsApp.swift */,
 				1DE77FA6D7384588B124A5E7 /* LilAgentsApp+MenuBar.swift */,
 				A10000020000000000000025 /* LilAgentsController.swift */,
+				A10000020000000000000078 /* ChatPopoverController.swift */,
 				A10000020000000000000040 /* AppSettings.swift */,
 				A10000020000000000000072 /* AppSettings+Detection.swift */,
 				A10000020000000000000073 /* AppSettings+MCPConfig.swift */,
@@ -605,6 +608,7 @@
 				A10000010000000000000034 /* WalkerCharacterVisuals.swift in Sources */,
 				A10000010000000000000035 /* WalkerCharacterMovement.swift in Sources */,
 				A10000010000000000000025 /* LilAgentsController.swift in Sources */,
+				A10000010000000000000078 /* ChatPopoverController.swift in Sources */,
 				A10000010000000000000061 /* MCPConnectionCards.swift in Sources */,
 				A10000010000000000000077 /* MCPConnectionCards+OfficialMCP.swift in Sources */,
 				A10000010000000000000062 /* SettingsComponents.swift in Sources */,
