@@ -104,9 +104,22 @@ extension WalkerCharacter {
             claudeSession = session
             wireSession(session)
             session.start()
-        } else if claudeSession?.isRunning != true {
-            claudeSession?.focusedExpert = focusedExpert
-            claudeSession?.start()
+        } else if let session = claudeSession {
+            // Session already exists — most commonly because it was warmed
+            // at launch (LilAgentsController) so runtime detection + auto-
+            // select ran BEFORE the first popover open. Re-wire its
+            // callbacks to THIS terminalView (the warm-up had none), then
+            // reflect the detection outcome we already computed instead of
+            // flashing a stale welcome and re-resolving.
+            session.focusedExpert = focusedExpert
+            wireSession(session)
+            if session.hasResolvedBackendOnce {
+                // Detection already finished: apply its result directly.
+                terminalView?.requiresInitialConnectionSetup = (session.lastSetupRequiredMessage != nil)
+            }
+            if session.isRunning != true {
+                session.start()
+            }
         }
 
         refreshPopoverHeader()
@@ -271,7 +284,8 @@ extension WalkerCharacter {
             tailHeight: WalkerCharacter.popoverTailHeight,
             tailWidth: WalkerCharacter.popoverTailWidth,
             cornerRadius: 18,
-            tailCenterX: tailX
+            tailCenterX: tailX,
+            tailOnTop: isMenubarAnchored
         )
 
         if animated {

@@ -178,22 +178,28 @@ final class WalkerCharacter {
     /// the character's actual screen X minus the popover's origin X
     /// so the tail keeps pointing at the character even after the
     /// popover gets bumped sideways to fit on-screen.
+    /// When `tailOnTop` is true the tail jut points UP (apex at
+    /// y=size.height) and the rounded body occupies the bottom of the
+    /// rect (y=0 up to y=size.height−tailHeight). This is the menubar-
+    /// anchored layout: the popover hangs below the status-item icon at
+    /// the top of the screen, so the beak must point up toward it.
+    /// Default (false) keeps the original tail-down sprite layout.
     static func bubbleShellPath(
         size: CGSize,
         tailHeight: CGFloat,
         tailWidth: CGFloat,
         cornerRadius r: CGFloat,
-        tailCenterX: CGFloat? = nil
+        tailCenterX: CGFloat? = nil,
+        tailOnTop: Bool = false
     ) -> CGPath {
-        // Cocoa flipped Y: origin bottom-left. Body sits from y=tailHeight
-        // up to y=size.height; tail apex points down to y=0 at the
-        // requested horizontal position. Path traces clockwise from the
-        // top-left corner-curve start, rounds each corner via tangent-end
-        // arcs, and breaks the bottom edge at the tail attachment points.
+        // Cocoa flipped Y: origin bottom-left. Tail-down (default): body
+        // sits from y=tailHeight up to y=size.height; tail apex points
+        // down to y=0. Tail-up: body sits from y=0 up to y=size.height−
+        // tailHeight; tail apex points up to y=size.height. Path traces
+        // clockwise, rounds each corner via tangent-end arcs, and breaks
+        // the tail-side edge at the tail attachment points.
         let w = size.width
         let h = size.height
-        let bodyBottom = tailHeight
-        let bodyTop = h
         let halfTail = tailWidth / 2
         // Clamp the tail position so its base never overlaps the
         // rounded corners — leaves a small margin (`r + halfTail + 4`)
@@ -205,6 +211,27 @@ final class WalkerCharacter {
         let cx = min(maxCx, max(minCx, requestedCx))
 
         let p = CGMutablePath()
+
+        if tailOnTop {
+            // Body occupies the bottom; tail juts up from the top edge.
+            let bodyTop = h - tailHeight
+            let bodyBottom: CGFloat = 0
+            // Trace clockwise from the left edge near the top, break the
+            // TOP edge for the upward tail, then round the lower corners.
+            p.move(to: CGPoint(x: 0, y: bodyTop - r))
+            p.addArc(tangent1End: CGPoint(x: 0, y: bodyTop), tangent2End: CGPoint(x: cx - halfTail, y: bodyTop), radius: r)
+            p.addLine(to: CGPoint(x: cx - halfTail, y: bodyTop))
+            p.addLine(to: CGPoint(x: cx, y: h))
+            p.addLine(to: CGPoint(x: cx + halfTail, y: bodyTop))
+            p.addArc(tangent1End: CGPoint(x: w, y: bodyTop), tangent2End: CGPoint(x: w, y: bodyTop - r), radius: r)
+            p.addArc(tangent1End: CGPoint(x: w, y: bodyBottom), tangent2End: CGPoint(x: w - r, y: bodyBottom), radius: r)
+            p.addArc(tangent1End: CGPoint(x: 0, y: bodyBottom), tangent2End: CGPoint(x: 0, y: bodyBottom + r), radius: r)
+            p.closeSubpath()
+            return p
+        }
+
+        let bodyBottom = tailHeight
+        let bodyTop = h
         p.move(to: CGPoint(x: 0, y: bodyTop - r))
         p.addArc(tangent1End: CGPoint(x: 0, y: bodyTop), tangent2End: CGPoint(x: r, y: bodyTop), radius: r)
         p.addArc(tangent1End: CGPoint(x: w, y: bodyTop), tangent2End: CGPoint(x: w, y: bodyTop - r), radius: r)

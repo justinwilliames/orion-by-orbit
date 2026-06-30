@@ -473,6 +473,15 @@ extension WalkerCharacter {
         host.wantsLayer = true
         host.autoresizingMask = [.width, .height]
 
+        // Menubar-anchored popovers hang BELOW the status item at the top
+        // of the screen, so the tail must point UP at the icon. The sprite
+        // popover sits ABOVE the character, tail pointing down. One flag
+        // (`isMenubarAnchored`, set before openPopover() calls this) picks
+        // the geometry: tail-up + body at y=0, vs tail-down + body at
+        // y=tailHeight.
+        let tailOnTop = isMenubarAnchored
+        let bodyOriginY: CGFloat = tailOnTop ? 0 : tailHeight
+
         let bubbleShape = CAShapeLayer()
         bubbleShape.frame = host.bounds
         bubbleShape.path = WalkerCharacter.bubbleShellPath(
@@ -480,7 +489,8 @@ extension WalkerCharacter {
             tailHeight: tailHeight,
             tailWidth: tailWidth,
             cornerRadius: shellCornerRadius,
-            tailCenterX: tailCenterXRelativeToPopover()
+            tailCenterX: tailCenterXRelativeToPopover(),
+            tailOnTop: tailOnTop
         )
         bubbleShape.fillColor = t.popoverBg.cgColor
         bubbleShape.strokeColor = t.popoverBorder.cgColor
@@ -499,7 +509,7 @@ extension WalkerCharacter {
         // OWNED by `bubbleShape`; the container is a transparent overlay.
         // Springs-and-struts: top fixed at 0, bottom fixed at tailHeight,
         // height flexible — so the body grows when the popover expands.
-        let container = NSView(frame: NSRect(x: 0, y: tailHeight, width: popoverWidth, height: popoverHeight))
+        let container = NSView(frame: NSRect(x: 0, y: bodyOriginY, width: popoverWidth, height: popoverHeight))
         container.wantsLayer = true
         container.layer?.backgroundColor = NSColor.clear.cgColor
         container.layer?.cornerRadius = shellCornerRadius

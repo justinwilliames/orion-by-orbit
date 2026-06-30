@@ -13,15 +13,18 @@ extension ClaudeSession {
         resolvePreferredBackend { [weak self] backend, environment, message in
             guard let self else { return }
             SessionDebugLogger.log("session", "start() backend resolution completed. backend=\(String(describing: backend)) environment=\(SessionDebugLogger.summarizeEnvironment(environment))")
+            self.hasResolvedBackendOnce = true
             guard let backend else {
                 let msg = message ?? self.backendSetupMessage(environment: environment)
                 SessionDebugLogger.log("session", "start() failed: \(msg)")
                 self.isRunning = false
+                self.lastSetupRequiredMessage = msg
                 self.onSetupRequired?(msg)
                 return
             }
 
             self.selectedBackend = backend
+            self.lastSetupRequiredMessage = nil
             SessionDebugLogger.log("session", "session ready. selectedBackend=\(self.backendStatusMessage(for: backend, environment: environment))")
             self.onSessionReady?()
         }

@@ -32,6 +32,16 @@ final class ClaudeSession {
 
     var isRunning = false
     var isBusy = false
+    /// True once the backend scan (claude → codex → OpenAI) has run to
+    /// completion at least once, regardless of outcome. Lets the UI tell
+    /// "still detecting" apart from "detected, nothing found".
+    var hasResolvedBackendOnce = false
+    /// The setup-required message from the most recent backend scan, or
+    /// nil when a backend was successfully selected. Recorded even when no
+    /// terminalView is attached yet (eager launch-time warm-up), so the
+    /// popover can reflect the already-known result the moment it opens
+    /// instead of flashing a stale welcome state before re-resolving.
+    var lastSetupRequiredMessage: String?
     var conversations: [String: ConversationState] = [:]
     var focusedExpert: ResponderExpert?
     var selectedBackend: Backend?

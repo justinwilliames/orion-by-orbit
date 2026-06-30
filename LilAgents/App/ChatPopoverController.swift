@@ -137,12 +137,16 @@ final class ChatPopoverController: NSObject {
         let buttonRectOnScreen = buttonWindow.convertToScreen(buttonRectInWindow)
 
         let popoverSize = popover.frame.size
-        let gap: CGFloat = 6
+        // The bubble's tail (beak) juts UP out of the top `popoverTailHeight`
+        // pixels of the window toward the menubar icon. Keep the gap tight so
+        // the beak's apex lands just under the status item.
+        let gap: CGFloat = 2
 
         // Center the popover horizontally under the button.
         var x = buttonRectOnScreen.midX - popoverSize.width / 2
         // Window is borderless with origin at bottom-left; place its TOP
-        // just below the button's bottom edge.
+        // (where the upward beak apex sits) just below the button's bottom
+        // edge.
         var y = buttonRectOnScreen.minY - gap - popoverSize.height
 
         // Clamp onto the visible frame so the popover never spills off the
@@ -151,6 +155,17 @@ final class ChatPopoverController: NSObject {
         y = max(visibleFrame.minY + 4, min(y, visibleFrame.maxY - popoverSize.height - 4))
 
         popover.setFrameOrigin(NSPoint(x: x, y: y))
+
+        // The bubble outline's upward beak defaults to the popover's
+        // horizontal centre. After the x-clamp above the popover may be
+        // bumped sideways to fit on-screen, so re-point the beak at the
+        // button's actual centre relative to the (now final) popover origin.
+        let beakX = buttonRectOnScreen.midX - popover.frame.minX
+        character.rebuildPopoverBubbleShellPath(
+            forSize: popoverSize,
+            tailCenterX: beakX,
+            animated: false
+        )
     }
 
     // MARK: - Event monitors (Escape + click-outside)

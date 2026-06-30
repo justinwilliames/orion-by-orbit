@@ -346,9 +346,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
     @objc func openSettings() {
         NSApp.activate(ignoringOtherApps: true)
         if settingsWindow == nil {
+            // Size the window to SettingsView's declared minimum
+            // (840×620 in SettingsView.body's .frame). The window was
+            // previously created at 600×460 — well below that minimum —
+            // which crushed the NavigationSplitView: the sidebar (min
+            // 220pt) plus the detail column couldn't fit, and the detail
+            // pane's "Models" title + subtitle collided with the toolbar /
+            // sidebar-toggle at the top-left. Matching the intended size
+            // gives the split view room to lay out cleanly.
+            let initialSize = NSSize(width: 920, height: 700)
             let window = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 600, height: 460),
-                styleMask: [.titled, .closable, .miniaturizable],
+                contentRect: NSRect(origin: .zero, size: initialSize),
+                styleMask: [.titled, .closable, .miniaturizable, .resizable],
                 backing: .buffered,
                 defer: false
             )
@@ -357,7 +366,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
             window.collectionBehavior = [.canJoinAllSpaces]
             let hostingController = NSHostingController(rootView: SettingsView())
             window.contentViewController = hostingController
-            window.setContentSize(NSSize(width: 600, height: 460))
+            window.setContentSize(initialSize)
             window.center()
             window.isReleasedWhenClosed = false
             settingsWindow = window

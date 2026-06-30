@@ -28,12 +28,46 @@ class LilAgentsController {
         characters = [justin]
         characters.forEach { $0.controller = self }
 
+        // Warm the shared chat session at launch so runtime detection +
+        // auto-select (Claude Code → Codex → OpenAI, via the .automatic
+        // transport in resolvePreferredBackend) runs PROMPTLY — before the
+        // user ever opens the popover. Two payoffs:
+        //   • If a logged-in CLI is found, the backend is already resolved
+        //     and cached by the time the chat opens, so we go straight to
+        //     ready-to-chat with no "Set up your AI connection" flash.
+        //   • If nothing is found, the setup-required outcome is recorded
+        //     on the session (lastSetupRequiredMessage) and the popover
+        //     reflects it the moment it opens — no stale welcome.
+        // No terminalView exists yet, so we don't wire UI callbacks here;
+        // openPopover() re-wires this same session to the live terminalView
+        // and applies the cached detection result. We never override an
+        // explicit user runtime choice — resolvePreferredBackend honours
+        // AppSettings.preferredTransport when the user has set one.
+        warmSharedChatSession(on: justin)
+
         // Removed with the sprite: the 60fps movement tick (display link +
         // fallback timer), the sprite debug line, the Pomodoro/Calendar
         // ambient-bubble hooks, and the first-run sprite onboarding. The
         // dock-prefs observers are kept (harmlessly inert) in case future
         // dock-relative anchoring wants them.
         registerDockRefreshObservers()
+    }
+
+    /// Create + kick off backend resolution for the character's shared
+    /// ClaudeSession at launch, without attaching it to any UI. The session
+    /// is stored on the character so openPopover() reuses (and re-wires) it
+    /// rather than spinning up a fresh one. Detection runs on a background
+    /// queue inside start(); this call returns immediately.
+    private func warmSharedChatSession(on character: WalkerCharacter) {
+        guard character.claudeSession == nil else { return }
+        let session = ClaudeSession()
+        session.focusedExpert = character.focusedExpert
+        character.claudeSession = session
+        // No wireSession() here — there's no terminalView at launch. The
+        // session records its detection outcome (selectedBackend /
+        // lastSetupRequiredMessage / hasResolvedBackendOnce) so the popover
+        // can apply it on first open.
+        session.start()
     }
 
     func completeOnboarding() {
