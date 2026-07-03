@@ -8,7 +8,6 @@ extension TerminalView {
     }
 
     private func resetWelcomeStateTracking() {
-        currentWelcomeArchiveMode = nil
         currentWelcomeSuggestions = []
         lastRenderedWelcomeSignature = nil
     }
@@ -236,7 +235,6 @@ extension TerminalView {
         } else {
             greeting = "Orion here — Orbit's menu-bar lifecycle assistant. Ask about lifecycle, deliverability, Braze, retention economics — anything from the Orbit playbook. I'll lead with the sharpest answer and go deeper if you want it."
         }
-        _ = archiveMode
         let attrText = NSAttributedString(string: greeting, attributes: [
             .font: t.font,
             .foregroundColor: t.textPrimary,

@@ -1,0 +1,74 @@
+{
+  "task_id": "orbit",
+  "title": "Orion to Orbit transformation",
+  "status": "blocked",
+  "blocked_reason": "ALL WORK DONE — remaining are Justin-gated only: deploy orbit-website (19 commits), runtime-test menubar Orion, build.yml stable-name follow-up, delete orion-by-orbit-old (passkey), tidy Pulsar dup workflow",
+  "created_at": "2026-06-29T23:56:55Z",
+  "last_heartbeat_epoch": 1782783569,
+  "last_heartbeat": "2026-06-30T01:39:29Z",
+  "heartbeat_stale_seconds": 1800,
+  "iteration": 16,
+  "max_iterations": 300,
+  "consecutive_failures": 0,
+  "max_consecutive_failures": 4,
+  "checkpoint_every_seconds": 0,
+  "checkpoint_action": null,
+  "last_checkpoint_epoch": 1782777415,
+  "resumer_task_id": null,
+  "playbook_path": "/Users/justin/code/orion-by-orbit/.worklog/orbit.playbook.md",
+  "next_action": "Phase menubar-chat: extract popover factory + ChatPopoverController, wire menubar status-item button to toggle the chat popover (additive, keep sprite). Build green. Commit 'Menubar summons the chat popover'.",
+  "phases": [
+    {
+      "id": "menubar-chat",
+      "title": "menubar-chat",
+      "status": "done",
+      "note": "CI run 28411396131 SUCCESS (bb621b2)"
+    },
+    {
+      "id": "delete-sprite",
+      "title": "delete-sprite",
+      "status": "done",
+      "note": "CI run 28412092342 SUCCESS (262f60d, -1900 lines)"
+    },
+    {
+      "id": "rebrand",
+      "title": "rebrand",
+      "status": "in_progress",
+      "note": "KEEP Orion name; new icon (celestial family, pending Justin approval); internal LilAgents codenames stay"
+    },
+    {
+      "id": "listing",
+      "title": "listing",
+      "status": "pending",
+      "note": ""
+    },
+    {
+      "id": "repo-rename",
+      "title": "repo-rename",
+      "status": "pending",
+      "note": ""
+    }
+  ],
+  "ledger": [
+    "menubar-chat",
+    "delete-sprite",
+    "rebrand",
+    "listing"
+  ],
+  "notes": [
+    "2026-06-29T23:58:29Z BLOCKER: Orion is an xcodebuild-only Xcode project (scheme LilAgents); no Xcode.app installed (xcode-select=CommandLineTools, mdfind found none). Package.swift only builds LilJustinCore test lib, not the app. Cannot verify builds locally. Pulsar worked because SwiftPM + custom script. Awaiting Justin: install Xcode (then autonomous) / checkpointed w/ his Xcode-or-CI build / write-blind-build-at-end.",
+    "2026-06-30T00:06:20Z BLOCKER RESOLUTION (Justin): Orion builds via GitHub Actions CI (build.yml, xcodebuild on runner), not local Xcode — local build was never expected. So per-phase verification = push refactor to a CI branch -> Actions builds -> read result -> fix -> advance. Needs Justin's OK to push to a CI feature branch (e.g. orbit-menubar); main/release stay gated. App loop can resume on that basis once confirmed. (Website reposition workflow wavncouxd running separately on get-orbit.)",
+    "2026-06-30T00:09:25Z UNBLOCKED (Justin: fully autonomous, CI branch). Verification = push to orbit-menubar + 'gh workflow run build.yml --ref orbit-menubar' (workflow_dispatch builds without publishing — release step is tag-gated). Loop: implement (blind, no local Xcode — work from the exploration map) -> commit on orbit-menubar -> push -> dispatch CI -> read run result -> fix red -> advance. main/releases stay gated. Phase 1 menubar-chat starting.",
+    "2026-06-30T00:10:38Z menubar-chat delegated to a5968ba41c8741bc9. On completion: push orbit-menubar -> gh workflow run build.yml --ref orbit-menubar -> gh run watch -> read result. If red, triage from the agent's 'uncertain compiles' list + CI log, fix, re-push. If green, ledger-add menubar-chat, advance to delete-sprite. Parallel track: website workflow wavncouxd on get-orbit (separate).",
+    "2026-06-30T00:16:08Z menubar-chat agent done: bb621b2 (ChatPopoverController drives sprite openPopover() + re-anchors under menubar button; minimal new code). Pushing + dispatching CI.",
+    "2026-06-30T00:16:51Z CI: orbit-menubar pushed, build.yml dispatched -> run 28411396131 (in_progress), watching via bg bash by5bfwfbz. On result: SUCCESS->ledger-add menubar-chat + advance delete-sprite; FAILURE->gh run view 28411396131 --log-failed, triage vs agent's uncertain list (right-click menu dance in LilAgentsApp.swift statusItemClicked; sendAction(on:); ChatPopoverController.position coordinate conversions; cross-file access levels on WalkerCharacter), fix, re-push, re-dispatch.",
+    "2026-06-30T00:20:35Z menubar-chat CI-GREEN. delete-sprite: KEEP WalkerCharacter as headless popover/session host (ChatPopoverController depends on its openPopover/closePopover/claudeSession); remove only visible-sprite machinery (floating window content, Movement, Visuals/GIF, drag/sleep, ExpertTag, Bubble, BubbleClickView, FollowUps-if-sprite-only, CalendarTooltipProvider, display-link tick, CharacterSprites assets, sprite-toggle menu items). Resuming agent for this.",
+    "2026-06-30T00:35:09Z DECISION (Justin): KEEP ORION as a sub-brand (NOT renamed to Orbit) — avoids brand stutter/SERP doubling. So 'rebrand' phase changes: keep the Orion name + /orion slug; remove sprite (done); give Orion its OWN app icon (celestial family, indigo squircle); keep internal LilAgents/LilJustin codenames. Website: revert any 'Orbit Desktop' → 'Orion' in the workflow output. delete-sprite committed 262f60d (-1900 lines, gutted stubs); verifying on CI now.",
+    "2026-06-30T00:39:49Z delete-sprite CI-GREEN (run 28412092342). Icon family first-pass rendered (indigo squircle + comet/waveform-bars/constellation) — awaiting Justin approval before deploying to website (3 icons) + each app (AppIcon.icns + menubar). 'Consistently styled apps' (UI: OrbitColors/popover/About across all 3) = follow-up; Orion's UI consistency rides with its rebrand. Comet+Orion get indigo bg (were black); Pulsar glyph changes waveform.path-line -> waveform bars.",
+    "2026-06-30T00:52:55Z JUSTIN GO: publish now + icons approved. PLAN: (1) icons deployed to website [done 5285456]; (2) deploy .icns to 3 apps (Pulsar .icns; Comet+Orion .xcassets appiconset); (3) PUBLISH: Pulsar push caldwell-speak->pulsar-by-orbit main + tag release; Comet icon+push+release; Orion finish rebrand on orbit-menubar (icon+keep-Orion strings) -> CI -> merge main -> tag release; (4) website finalize: Keep-Orion revert (16 files) + quarantine boxes + direct-.dmg download buttons (stable-named from new releases). main/release gate now OPEN per Justin.",
+    "2026-06-30T01:05:49Z PULSAR PUBLISHED: v0.7.0 Latest on pulsar-by-orbit (replaces stale Caldwell), direct .dmg 302. Fixed stale-cache-from-rename CI failure (deleted caches, reran). Now Comet: clearing caches + dispatching build, then tag release; then Orion rebrand+release; then website finalize.",
+    "2026-06-30T01:19:10Z Comet v0.2.22 PUBLISHED (new icon). Orion CI green (28413532707, icon+menubar refactor). Publishing Orion: merge orbit-menubar->main + tag v0.6.0. RUNTIME CAVEAT: Orion menubar UX is CI-COMPILED only, not runtime-tested (no local Xcode) — flag Justin to test the released app.",
+    "2026-06-30T01:27:04Z ALL 3 APPS PUBLISHED w/ consistent family icons + stable direct .dmg: Comet v0.2.22, Pulsar v0.7.0, Orion v0.6.0 (Comet.dmg/Pulsar.dmg/Orion.dmg all 302). Website close-out delegated to orbit-voice agent a557e8a708d3607ca (Keep-Orion revert 16 files + direct-download buttons + quarantine boxes). FOLLOW-UPS: (1) build.yml stable-name add per app so FUTURE releases keep <App>.dmg (re-uploads cover current only); (2) Justin runtime-test menubar Orion (CI-compiled only); (3) DEPLOY orbit-website branch (gated); (4) delete orion-by-orbit-old (passkey, still pending); (5) Pulsar dup 'Build Pulsar' workflows tidy.",
+    "2026-06-30T01:39:29Z COMPLETE. Website close-out committed c79e2ee (orbit-website, typecheck clean): Keep-Orion revert (0 'Orbit Desktop' left), direct .dmg buttons, quarantine boxes. 3 apps live. Loop done."
+  ]
+}
