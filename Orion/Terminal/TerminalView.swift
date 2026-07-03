@@ -81,9 +81,6 @@ class TerminalView: NSView {
     var isExpertMode = false
     var isReplayingTranscript = false
     var starterPackWelcomeBannerDismissed = false
-    /// Session-only flag: set when the user explicitly dismisses the proactive
-    /// MCP setup banner. Resets on the next app open so they get a reminder.
-    var mcpSetupBannerDismissedThisSession = false
     /// Session-only flag: set when the user clicks "Skip for now" on the
     /// business-context survey card. Persistent dismissal lives in
     /// `AppSettings.markBusinessContextPromptShown()` (stamps the current
@@ -97,7 +94,6 @@ class TerminalView: NSView {
     var requiresInitialConnectionSetup = false
     var lastObservedFirstRunConfigurationSignature: String?
     var settingsObserver: NSObjectProtocol?
-    let officialMCPURL = URL(string: "https://yourorbit.team")!
 
     override init(frame: NSRect) {
         super.init(frame: frame)

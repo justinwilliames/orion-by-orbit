@@ -30,10 +30,6 @@ extension TerminalView {
         return currentWelcomeSuggestions
     }
 
-    func openOfficialMCPURL() {
-        NSWorkspace.shared.open(officialMCPURL)
-    }
-
     func completeOfficialMCPSetupFlow() {
         isShowingOfficialMCPSetupPanel = false
         starterPackWelcomeBannerDismissed = true

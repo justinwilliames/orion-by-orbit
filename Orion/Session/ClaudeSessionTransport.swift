@@ -81,7 +81,6 @@ extension ClaudeSession {
                     apiKey: key,
                     expert: activeExpert,
                     conversationKey: conversationKey,
-                    mcpToken: nil,
                     archiveContext: nil
                 )
 
@@ -93,9 +92,7 @@ extension ClaudeSession {
                     environment: environment,
                     expert: activeExpert,
                     conversationKey: conversationKey,
-                    archiveContext: nil,
-                    officialMCPToken: nil,
-                    useOfficialMCP: false
+                    archiveContext: nil
                 )
 
             case let .codexCLI(path):
@@ -106,8 +103,7 @@ extension ClaudeSession {
                     environment: environment,
                     expert: activeExpert,
                     conversationKey: conversationKey,
-                    archiveContext: nil,
-                    useOfficialMCP: false
+                    archiveContext: nil
                 )
             }
         }

@@ -19,34 +19,20 @@ extension ClaudeSession {
         return nil
     }
 
-    func callOpenAI(message: String, attachments: [SessionAttachment], apiKey: String, expert: ResponderExpert?, conversationKey: String, mcpToken: String?, archiveContext: String?) {
+    func callOpenAI(message: String, attachments: [SessionAttachment], apiKey: String, expert: ResponderExpert?, conversationKey: String, archiveContext: String?) {
         let prompt = buildUserPrompt(message: message, attachments: attachments, expert: expert, archiveContext: archiveContext)
         let input: [[String: Any]] = [[
             "role": "user",
             "content": buildInputContent(prompt: prompt, attachments: attachments)
         ]]
 
-        let instructions = buildInstructions(for: expert, expectMCP: mcpToken != nil)
+        let instructions = buildInstructions(for: expert, expectMCP: false)
         var payload: [String: Any] = [
             "model": selectedOpenAIModel(),
             "instructions": instructions,
             "input": input,
             "stream": true
         ]
-
-        if let mcpToken {
-            payload["tools"] = [[
-                "type": "mcp",
-                "server_label": Constants.lennyMCPServerLabel,
-                "server_description": "Lenny Rachitsky's archive of newsletter posts and podcast transcripts about startups, product, growth, pricing, leadership, career, and AI product work.",
-                "server_url": Constants.lennyMCPURL,
-                "headers": [
-                    "Authorization": "Bearer \(mcpToken)"
-                ],
-                "require_approval": "never",
-                "allowed_tools": Constants.lennyAllowedTools
-            ]]
-        }
 
         if let previousResponseID = conversations[conversationKey]?.previousResponseID {
             payload["previous_response_id"] = previousResponseID
@@ -56,15 +42,13 @@ extension ClaudeSession {
            let payloadText = String(data: payloadData, encoding: .utf8) {
             SessionDebugLogger.logMultiline(
                 "openai",
-                header: "dispatching OpenAI Responses API (streaming). conversationKey=\(conversationKey) expert=\(expert?.name ?? "none") mcpInjected=\(mcpToken != nil)",
+                header: "dispatching OpenAI Responses API (streaming). conversationKey=\(conversationKey) expert=\(expert?.name ?? "none")",
                 body: payloadText
             )
         }
 
         let modelLabel = selectedOpenAIModelLabel()
-        let planningSummary = mcpToken == nil
-            ? "Calling \(modelLabel) via OpenAI"
-            : "Calling \(modelLabel) via OpenAI with Lenny MCP"
+        let planningSummary = "Calling \(modelLabel) via OpenAI"
         onToolUse?("Planning", ["summary": planningSummary])
         appendHistory(Message(role: .toolUse, text: "Planning: \(planningSummary)"), to: conversationKey)
 

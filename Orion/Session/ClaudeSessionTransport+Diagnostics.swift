@@ -11,7 +11,6 @@ extension ClaudeSession {
 
     func logStartupDiagnostics() {
         Task.detached(priority: .utility) {
-            let fm = FileManager.default
             let processEnv = ProcessInfo.processInfo.environment
 
             // ── Runtimes ─────────────────────────────────────────────────────

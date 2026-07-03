@@ -23,8 +23,7 @@ enum SessionDebugLogger {
         let interestingKeys = [
             "PATH",
             "ANTHROPIC_API_KEY",
-            "OPENAI_API_KEY",
-            ClaudeSession.Constants.lennyMCPAuthEnvVar
+            "OPENAI_API_KEY"
         ]
 
         return interestingKeys.map { key in

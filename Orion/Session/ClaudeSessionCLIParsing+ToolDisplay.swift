@@ -34,7 +34,7 @@ extension ClaudeSession {
 
             if status == "completed",
                let result = item["result"],
-               let completionStatus = completedToolStatus(for: normalizedTool, arguments: arguments, result: result) {
+               let completionStatus = completedToolStatus(for: normalizedTool, result: result) {
                 return ("Tool Result", completionStatus)
             }
 
@@ -236,7 +236,7 @@ extension ClaudeSession {
         return "That route isn't available here, trying another approach"
     }
 
-    private func completedToolStatus(for toolName: String, arguments: [String: Any], result: Any) -> String? {
+    private func completedToolStatus(for toolName: String, result: Any) -> String? {
         let normalized = toolName.lowercased()
         let payload = decodedToolResultPayload(from: result)
 
@@ -281,18 +281,7 @@ extension ClaudeSession {
         let lowered = errorMessage.lowercased()
 
         if lowered.contains("user cancelled mcp tool call") {
-            if Constants.lennyAllowedTools.contains(toolName) {
-                return "The archive lookup was cancelled before it finished"
-            }
             return "That tool call was cancelled before it finished"
-        }
-
-        if lowered.contains("environment variable") && lowered.contains(Constants.lennyMCPAuthEnvVar.lowercased()) {
-            return "The archive token was not available to the MCP server"
-        }
-
-        if lowered.contains("startup failed") {
-            return "The archive connection failed to start"
         }
 
         return errorMessage

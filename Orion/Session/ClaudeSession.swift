@@ -4,11 +4,6 @@ final class ClaudeSession {
     enum Constants {
         static let openAIEndpoint = URL(string: "https://api.openai.com/v1/responses")!
         static let requestTimeout: TimeInterval = 120
-        static let lennyMCPURL = "https://mcp.lennysdata.com/mcp"
-        static let lennyMCPServerLabel = "lennysdata"
-        static let lennyMCPAuthEnvVar = "LENNYSDATA_MCP_AUTH_TOKEN"
-        static let lennyAllowedTools = ["search_content", "read_excerpt", "read_content", "list_content"]
-        static let avatarsDirectory = "ExpertAvatars"
     }
 
     enum Backend: Equatable {

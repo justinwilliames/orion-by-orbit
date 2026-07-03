@@ -299,11 +299,16 @@ extension ClaudeSession {
     }
 
     func normalizedTransportToolName(_ rawToolName: String) -> String {
-        let mcpPrefix = "mcp__\(Constants.lennyMCPServerLabel)__"
-        if rawToolName.hasPrefix(mcpPrefix) {
-            return String(rawToolName.dropFirst(mcpPrefix.count))
+        // Strips an `mcp__<server>__` wrapper so downstream display logic sees
+        // the bare tool name. Orion ships no MCP servers, so in practice tool
+        // names arrive unwrapped and this returns them unchanged.
+        let mcpPrefix = "mcp__"
+        guard rawToolName.hasPrefix(mcpPrefix),
+              let lastSeparator = rawToolName.range(of: "__", options: .backwards),
+              lastSeparator.lowerBound >= rawToolName.index(rawToolName.startIndex, offsetBy: mcpPrefix.count) else {
+            return rawToolName
         }
-        return rawToolName
+        return String(rawToolName[lastSeparator.upperBound...])
     }
 
     func readablePath(_ rawPath: String?) -> String {
@@ -313,26 +318,5 @@ extension ClaudeSession {
             return "the file"
         }
         return URL(fileURLWithPath: rawPath).lastPathComponent
-    }
-
-    private func toolFailureStatus(for toolName: String, errorMessage: String) -> String {
-        let lowered = errorMessage.lowercased()
-
-        if lowered.contains("user cancelled mcp tool call") {
-            if Constants.lennyAllowedTools.contains(toolName) {
-                return "The archive lookup was cancelled before it finished"
-            }
-            return "That tool call was cancelled before it finished"
-        }
-
-        if lowered.contains("environment variable") && lowered.contains(Constants.lennyMCPAuthEnvVar.lowercased()) {
-            return "The archive token was not available to the MCP server"
-        }
-
-        if lowered.contains("startup failed") {
-            return "The archive connection failed to start"
-        }
-
-        return errorMessage
     }
 }

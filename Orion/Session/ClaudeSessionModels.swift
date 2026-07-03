@@ -219,23 +219,6 @@ struct ExpertSuggestionEntry: Equatable {
     }
 }
 
-struct SearchEnvelope: Decodable {
-    let results: [SearchResult]
-}
-
-struct SearchResult: Decodable {
-    let title: String
-    let filename: String
-    let type: String
-    let date: String
-    let snippet: String?
-    let snippets: [Snippet]?
-}
-
-struct Snippet: Decodable {
-    let text: String
-}
-
 extension ClaudeSession {
     struct Message: Equatable {
         enum Role { case user, assistant, error, toolUse, toolResult }
