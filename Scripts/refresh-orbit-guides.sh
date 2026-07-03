@@ -11,7 +11,7 @@
 #   https://get.yourorbit.team/api/guides/export
 #
 # Output:
-#   LilAgents/orbit-guides.json — bundled into the .app at build time,
+#   Orion/orbit-guides.json — bundled into the .app at build time,
 #                                 read by OrbitGuidesCorpus.swift
 #
 # Usage:
@@ -20,7 +20,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DEST="$REPO_ROOT/LilAgents/orbit-guides.json"
+DEST="$REPO_ROOT/Orion/orbit-guides.json"
 URL="https://get.yourorbit.team/api/guides/export"
 
 echo "Fetching $URL"

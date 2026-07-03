@@ -7,43 +7,35 @@ This document covers the manual work that remains before Orion builds and ships,
 - ✅ Lenny fork copied to `~/Library/Mobile Documents/com~apple~CloudDocs/claude/Orion` (in iCloud Drive, alongside the source GIF assets in `claude/MiniJustin/Justin/`).
 - ✅ Heavy Lenny data deleted: `ExpertAvatars/` (16MB of headshots), `StarterArchive/` (~5MB of newsletter/podcast content), and Lenny demo media.
 - ✅ All user-facing "Lil-Lenny" branding strings renamed to "Orion" / "Orion".
-- ✅ Justin system prompt rewritten for **Orbit founder framing** in `LilAgents/Session/ClaudeSessionState.swift` — encodes the five Orbit voice pillars (Linus Tech Tips, Marques Brownlee, Ricky Gervais, Lenny's Newsletter, Elena Verna — tone only), nine Orbit writing rules, and the slop-detector anti-patterns. Canonical source: [get-orbit `lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
+- ✅ Justin system prompt rewritten for **Orbit founder framing** in `Orion/Session/ClaudeSessionState.swift` — encodes the five Orbit voice pillars (Linus Tech Tips, Marques Brownlee, Ricky Gervais, Lenny's Newsletter, Elena Verna — tone only), nine Orbit writing rules, and the slop-detector anti-patterns. Canonical source: [get-orbit `lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
 - ✅ Welcome copy, popover subtitle, settings About panel, and prompt chips all retuned for Orbit positioning. Prompt chips map to real Orbit guide topics (Apple MPP, Braze naming, win-back flows, list hygiene, send-time optimisation, 72-hour aha-moment, retention economics).
 - ✅ The "Lenny source" Settings tab is hidden. The pane file remains in the tree for upstream merge compatibility.
 - ✅ Sparkle auto-update keys stripped from `Info.plist`.
 - ✅ `CFBundleDisplayName` and `CFBundleName` set to "Orion" in `Info.plist`.
-- ✅ **Hand-authored animated Orion sprites installed** — four 36-frame GIFs (front, back, walk-left, walk-right) in `LilAgents/CharacterSprites/`. The runtime loader was updated to load GIFs for all four directions; `NSImageView.animates` was already true upstream.
+- ✅ **Hand-authored animated Orion sprites installed** — four 36-frame GIFs (front, back, walk-left, walk-right) in `Orion/CharacterSprites/`. The runtime loader was updated to load GIFs for all four directions; `NSImageView.animates` was already true upstream.
+- ✅ **Fork build-identity renamed to Orion.** Source folder `LilAgents/` → `Orion/`, Xcode project `lil-agents.xcodeproj` → `orion.xcodeproj`, and the build target/scheme `LilAgents` → `Orion`. `PRODUCT_NAME` (was `Lenny`/`Lil-Lenny`), `INFOPLIST_FILE`, `CODE_SIGN_ENTITLEMENTS` (now `Orion/Orion.entitlements`), the built product (`Orion.app`), and every path reference in `build.yml`, `Package.swift`, the guides-refresh workflow, and `README.md` were updated to match. The scheme is auto-created from the target name, so `xcodebuild -scheme Orion` resolves with no checked-in `.xcscheme`. (A few internal Swift symbols/filenames — `LilAgentsApp`, `LilAgentsController`, `LennyArchiveClient` — still carry the old names; renaming those is a separate, optional pass since they aren't visible in the project/scheme/product identity.)
 
 ## ⚠️ Required before first build (in Xcode)
 
-These are easier in the Xcode UI than via hand-editing `project.pbxproj`. Open `~/Library/Mobile Documents/com~apple~CloudDocs/claude/Orion/lil-agents.xcodeproj` and:
+Open `~/Library/Mobile Documents/com~apple~CloudDocs/claude/Orion/orion.xcodeproj` and:
 
-1. **Rename the scheme.**
-   Product → Scheme → Manage Schemes → select `LilAgents` → rename to `Orion`.
+1. **Set the signing team.**
+   Select the `Orion` target → Signing & Capabilities → Team → your Apple Developer account. The bundle identifier is already set to `team.yourorbit.Orion` (change it here if you'd rather ship under `com.justinwilliames.Orion` or similar). Without a team the app only runs unsigned via Xcode, which is fine for local development.
 
-2. **Set the bundle identifier.**
-   Click the `LilAgents` target → Signing & Capabilities tab → set Bundle Identifier to something like `team.yourorbit.Orion` or `com.justinwilliames.Orion`. The current value is whatever Ben Shih had — you cannot ship under his identifier.
-
-3. **Set the signing team.**
-   Same tab → Team → select your Apple Developer account. Without this, the app will only run unsigned via Xcode (fine for local development).
-
-4. **Replace the app icon.**
-   `LilAgents/Assets.xcassets/AppIcon.appiconset/` currently contains the Lenny app icon. Drop your own `.png` files in (or remove the existing slots and add new ones) for sizes 16, 32, 64, 128, 256, 512, 1024 (×1 and ×2). You can generate a full set from a single 1024×1024 PNG using a tool like [appicon.co](https://appicon.co/).
-
-5. **Optional: rename `lil-agents.xcodeproj` → `orion.xcodeproj`.**
-   Cosmetic only. If you do, also rename inside Xcode (File → Rename Project) to keep the scheme references consistent. Skip if you don't care — the project filename is invisible to end users.
+2. **Replace the app icon.**
+   `Orion/Assets.xcassets/AppIcon.appiconset/` currently contains the Lenny app icon. Drop your own `.png` files in (or remove the existing slots and add new ones) for sizes 16, 32, 64, 128, 256, 512, 1024 (×1 and ×2). You can generate a full set from a single 1024×1024 PNG using a tool like [appicon.co](https://appicon.co/).
 
 ## Drop in your ChatGPT-generated sprites
 
 When you have the real Orion sprites, replace these files (exact filenames matter):
 
 ```
-LilAgents/CharacterSprites/main-front.png             304 × 415 PNG, RGBA
-LilAgents/CharacterSprites/main-back.png              304 × 415 PNG, RGBA
-LilAgents/CharacterSprites/main-left.png              304 × 415 PNG, RGBA
-LilAgents/CharacterSprites/main-right.png             304 × 415 PNG, RGBA
-LilAgents/CharacterSprites/lil-justin-walk-left.gif   304 × 415 GIF, transparent, looped
-LilAgents/CharacterSprites/lil-justin-walk-right.gif  304 × 415 GIF, transparent, looped
+Orion/CharacterSprites/main-front.png             304 × 415 PNG, RGBA
+Orion/CharacterSprites/main-back.png              304 × 415 PNG, RGBA
+Orion/CharacterSprites/main-left.png              304 × 415 PNG, RGBA
+Orion/CharacterSprites/main-right.png             304 × 415 PNG, RGBA
+Orion/CharacterSprites/lil-justin-walk-left.gif   304 × 415 GIF, transparent, looped
+Orion/CharacterSprites/lil-justin-walk-right.gif  304 × 415 GIF, transparent, looped
 ```
 
 The placeholder generator script lives at `/tmp/lil_justin_placeholders.py` if you ever want to regenerate them. It uses Python PIL.
@@ -65,13 +57,13 @@ gh secret set SPARKLE_ED_PRIVATE_KEY --repo justinwilliames/orion-by-orbit
 
 Or via the web UI: **Settings → Secrets and variables → Actions → New repository secret** → name `SPARKLE_ED_PRIVATE_KEY`, value `<PASTE_PRIVATE_KEY_HERE — Claude shared the value in chat, not here>`.
 
-The matching public key (`bNQR7ti9TfIVO9mwWWH5hge2A8JzV98AczkncKfitQY=`) is already baked into `LilAgents/Info.plist` as `SUPublicEDKey`. Do NOT change it — Sparkle will refuse to install updates signed with a different key.
+The matching public key (`bNQR7ti9TfIVO9mwWWH5hge2A8JzV98AczkncKfitQY=`) is already baked into `Orion/Info.plist` as `SUPublicEDKey`. Do NOT change it — Sparkle will refuse to install updates signed with a different key.
 
 > **Note on the rotated key:** an earlier commit briefly committed the original private key directly into this file. That key is now considered compromised and was rotated to the value above before the public pipeline ever signed anything with it. The earlier key value still appears in git history but cannot sign valid updates for the current `SUPublicEDKey`.
 
 **Step 2 — re-enable Sparkle's launch-time check.** Once the secret is set and at least one tagged release has shipped a signed `.dmg` + `appcast.xml`:
 
-In `LilAgents/App/LilAgentsApp.swift`, change:
+In `Orion/App/LilAgentsApp.swift`, change:
 ```swift
 updaterController = SPUStandardUpdaterController(
     startingUpdater: false,    // ← change to true
@@ -97,7 +89,7 @@ The current architecture leaves the upstream `LocalArchive.swift` / `ClaudeSessi
 The path would be:
 
 1. In `get-orbit`, run the existing markdown export utility (`lib/guides/markdown-export.ts`) over the 95 TSX guides to produce a folder of `.md` files.
-2. Drop the resulting markdown into `Orion/LilAgents/StarterArchive/guides/` matching the existing folder structure (one `.md` per guide).
+2. Drop the resulting markdown into `Orion/Orion/StarterArchive/guides/` matching the existing folder structure (one `.md` per guide).
 3. Re-show the "Lenny source" Settings tab (rename to "Orbit guides") by removing the `static var allCases` override in `SettingsView.swift`.
 4. Update the system prompt to tell the model "you have an Orbit guide archive available — query it via the `read_excerpt` MCP tool when answering specific guide-shaped questions."
 5. Update the welcome copy to mention the bundled guides.
@@ -108,19 +100,19 @@ This would give Orion true grounding in current guide content without requiring 
 
 The strip strategy was pragmatic: I removed user-facing Lenny presence and hid the archive-mode UI, but left the underlying Lenny archive Swift code in place so the project still compiles. None of it gets invoked at runtime now, but the dead code is still in the tree. When you have time:
 
-- Remove `LilAgents/Session/LennyArchiveClient.swift`
-- Remove `LilAgents/Session/LocalArchive.swift`
-- Remove `LilAgents/Session/GuestTitles.swift`
-- Remove `LilAgents/Session/ClaudeSessionExpertCatalog.swift`
-- Remove `LilAgents/Session/ClaudeSessionExpertResolution.swift`
-- Remove `LilAgents/Session/ClaudeSessionExpertTextResolution.swift`
-- Remove `LilAgents/Session/ClaudeSessionOfficialArchive.swift`
-- Remove `LilAgents/Session/ClaudeSessionTransport+Archive.swift`
-- Remove `LilAgents/Character/WalkerCharacterExpertTag.swift`
-- Remove `LilAgents/Terminal/MCPConnectionCards+OfficialMCP.swift`
-- Remove `LilAgents/App/AppSettings+MCPConfig.swift`
-- Remove `LilAgents/App/AppSettings+MCPInstaller.swift`
-- Remove `LilAgents/App/SettingsView+SourcePane.swift`
+- Remove `Orion/Session/LennyArchiveClient.swift`
+- Remove `Orion/Session/LocalArchive.swift`
+- Remove `Orion/Session/GuestTitles.swift`
+- Remove `Orion/Session/ClaudeSessionExpertCatalog.swift`
+- Remove `Orion/Session/ClaudeSessionExpertResolution.swift`
+- Remove `Orion/Session/ClaudeSessionExpertTextResolution.swift`
+- Remove `Orion/Session/ClaudeSessionOfficialArchive.swift`
+- Remove `Orion/Session/ClaudeSessionTransport+Archive.swift`
+- Remove `Orion/Character/WalkerCharacterExpertTag.swift`
+- Remove `Orion/Terminal/MCPConnectionCards+OfficialMCP.swift`
+- Remove `Orion/App/AppSettings+MCPConfig.swift`
+- Remove `Orion/App/AppSettings+MCPInstaller.swift`
+- Remove `Orion/App/SettingsView+SourcePane.swift`
 - Then fix every compile error by removing the corresponding callers and import lines.
 
 Expect this cleanup to take 2–3 hours of focused Swift refactoring. Don't bother unless you find yourself confused by the dead paths.
@@ -144,11 +136,11 @@ If you want to test the prompt without rebuilding the app, paste the prompt into
 
 ## Verify the build
 
-Once you've done the Xcode renames:
+The folder/project/scheme rename is already applied in the repo, so this should build as-is:
 
 ```bash
 cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/claude/Orion
-xcodebuild -project lil-agents.xcodeproj -scheme Orion -configuration Debug build 2>&1 | tail -40
+xcodebuild -project orion.xcodeproj -scheme Orion -configuration Debug build 2>&1 | tail -40
 ```
 
 > **iCloud caveat:** the project lives in iCloud Drive. If you ever see weird Xcode errors about missing files or `.DS_Store` conflicts, force iCloud to fully download the folder via Finder → right-click → "Download Now", and add `.DS_Store` to your global git ignore if it's polluting commits.
@@ -157,6 +149,5 @@ If the build succeeds, run the scheme in Xcode. Orion should appear above your D
 
 If the build fails, the most likely culprits are:
 
-- A scheme rename that didn't propagate (re-open the project after renaming the scheme).
 - Missing signing identity (set Team in Signing & Capabilities).
-- A reference in `project.pbxproj` to a file path that has changed (none should have changed, since we kept the `LilAgents/` source folder name).
+- A stale reference in `project.pbxproj` to the old `LilAgents/` folder path (all known ones were updated to `Orion/` during the rename — but if you added files since, double-check their group paths).

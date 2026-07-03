@@ -102,36 +102,36 @@ Automatic mode prefers Claude Code → Codex → OpenAI in that order, depending
 
 ### Build from source
 
-Clone, open in Xcode 16+ on macOS 14+, run the `LilAgents` scheme. Or from the command line:
+Clone, open in Xcode 16+ on macOS 14+, run the `Orion` scheme. Or from the command line:
 
 ```bash
 git clone https://github.com/justinwilliames/orion-by-orbit.git
 cd orion-by-orbit
-xcodebuild -project lil-agents.xcodeproj -scheme LilAgents -configuration Debug build
+xcodebuild -project orion.xcodeproj -scheme Orion -configuration Debug build
 ```
 
 See [NEXT_STEPS.md](NEXT_STEPS.md) for the one-time Xcode setup (scheme rename, bundle identifier, signing team, app icon).
 
 ### Customise the personality
 
-The system prompt lives in [`LilAgents/Session/ClaudeSessionState.swift`](LilAgents/Session/ClaudeSessionState.swift) (`func buildInstructions`). It encodes the Orbit founder framing, five voice pillars, nine writing rules, the slop-detector anti-patterns, and the full slug→title manifest of the bundled Orbit guides for source citation. The canonical voice document this is distilled from lives in [`get-orbit/lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
+The system prompt lives in [`Orion/Session/ClaudeSessionState.swift`](Orion/Session/ClaudeSessionState.swift) (`func buildInstructions`). It encodes the Orbit founder framing, five voice pillars, nine writing rules, the slop-detector anti-patterns, and the full slug→title manifest of the bundled Orbit guides for source citation. The canonical voice document this is distilled from lives in [`get-orbit/lib/admin/voice-guidelines.ts`](https://github.com/justinwilliames/get-orbit/blob/main/lib/admin/voice-guidelines.ts).
 
 ### Refresh the bundled guides corpus
 
-Orion ships with the full Orbit guides export at [`LilAgents/orbit-guides.json`](LilAgents/orbit-guides.json). When new guides go live or existing ones change, regenerate the bundle:
+Orion ships with the full Orbit guides export at [`Orion/orbit-guides.json`](Orion/orbit-guides.json). When new guides go live or existing ones change, regenerate the bundle:
 
 ```bash
 ./Scripts/refresh-orbit-guides.sh
 git commit -am "Refresh Orbit guides corpus"
 ```
 
-The script pulls from `https://yourorbit.team/api/guides/export`, validates the payload, and writes the new JSON in place. The retrieval is keyword-overlap scoring inside [`LilAgents/Session/OrbitGuidesCorpus.swift`](LilAgents/Session/OrbitGuidesCorpus.swift) — no embeddings, no network calls at runtime.
+The script pulls from `https://yourorbit.team/api/guides/export`, validates the payload, and writes the new JSON in place. The retrieval is keyword-overlap scoring inside [`Orion/Session/OrbitGuidesCorpus.swift`](Orion/Session/OrbitGuidesCorpus.swift) — no embeddings, no network calls at runtime.
 
 To fork this for your own menu-bar assistant:
 
 1. Swap the system prompt for your voice and domain.
 2. Swap the bundled corpus JSON for your own knowledge base in the same export shape.
-3. Update bundle display name in `LilAgents/Info.plist`, welcome copy in `LilAgents/Terminal/TerminalView+TranscriptBehavior.swift`, and Settings → About in `LilAgents/App/SettingsView+ModelsPane.swift`.
+3. Update bundle display name in `Orion/Info.plist`, welcome copy in `Orion/Terminal/TerminalView+TranscriptBehavior.swift`, and Settings → About in `Orion/App/SettingsView+ModelsPane.swift`.
 
 ### Releasing
 

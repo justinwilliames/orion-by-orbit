@@ -49,14 +49,14 @@ jobs:
       - name: Detect diff
         id: diff
         run: |
-          if git diff --quiet -- LilAgents/orbit-guides.json; then
+          if git diff --quiet -- Orion/orbit-guides.json; then
             echo "Corpus unchanged — skipping the rest of the pipeline."
             echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           echo "changed=true" >> "$GITHUB_OUTPUT"
-          BEFORE_COUNT=$(git show HEAD:LilAgents/orbit-guides.json | python3 -c "import json,sys; print(json.load(sys.stdin)['count'])")
-          AFTER_COUNT=$(python3 -c "import json; print(json.load(open('LilAgents/orbit-guides.json'))['count'])")
+          BEFORE_COUNT=$(git show HEAD:Orion/orbit-guides.json | python3 -c "import json,sys; print(json.load(sys.stdin)['count'])")
+          AFTER_COUNT=$(python3 -c "import json; print(json.load(open('Orion/orbit-guides.json'))['count'])")
           echo "before_count=$BEFORE_COUNT" >> "$GITHUB_OUTPUT"
           echo "after_count=$AFTER_COUNT" >> "$GITHUB_OUTPUT"
 
@@ -72,7 +72,7 @@ jobs:
           python3 <<'PY'
           import json, sys
 
-          with open("LilAgents/orbit-guides.json") as f:
+          with open("Orion/orbit-guides.json") as f:
               data = json.load(f)
 
           errors = []
@@ -138,7 +138,7 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add LilAgents/orbit-guides.json
+          git add Orion/orbit-guides.json
           # No [skip ci] — we want the main-push to refresh the
           # rolling 'latest' release in addition to the tag push
           # publishing the dedicated release. GitHub honours
@@ -180,4 +180,4 @@ jobs:
             See the workflow run logs for the specific validator failures.
           branch: chore/refresh-orbit-guides-failed
           delete-branch: true
-          add-paths: LilAgents/orbit-guides.json
+          add-paths: Orion/orbit-guides.json

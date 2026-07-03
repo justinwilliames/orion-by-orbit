@@ -29,7 +29,7 @@ Pushing to `main` without a tag publishes a rolling `latest` prerelease — usef
 
 | Item | Location | Purpose |
 |---|---|---|
-| Public key | `LilAgents/Info.plist` → `SUPublicEDKey` (`bNQR7ti9TfIVO9mwWWH5hge2A8JzV98AczkncKfitQY=`) | Baked into every shipped `.app`. Sparkle uses it to verify update signatures. **Do not change** unless you're rotating (see below). |
+| Public key | `Orion/Info.plist` → `SUPublicEDKey` (`bNQR7ti9TfIVO9mwWWH5hge2A8JzV98AczkncKfitQY=`) | Baked into every shipped `.app`. Sparkle uses it to verify update signatures. **Do not change** unless you're rotating (see below). |
 | Private key | GitHub Actions secret `SPARKLE_ED_PRIVATE_KEY` on `justinwilliames/orion-by-orbit` | Signs the `.dmg` in CI. Cannot be read back once set. |
 | Offline backup | **Required** — see DR section below. | If the GH secret is wiped or the repo is lost, this is the only path back to update continuity. |
 
@@ -63,7 +63,7 @@ Restore the key into the GH Actions secret. Update flow resumes. No user impact.
 **Option B: Generate a new keypair (only if A is impossible).**
 
 1. Generate a new Ed25519 keypair using Sparkle's `generate_keys` tool.
-2. Update `SUPublicEDKey` in `LilAgents/Info.plist` to the new public key.
+2. Update `SUPublicEDKey` in `Orion/Info.plist` to the new public key.
 3. Set the new private key as `SPARKLE_ED_PRIVATE_KEY` in GH Actions secrets.
 4. Ship a new tagged release.
 

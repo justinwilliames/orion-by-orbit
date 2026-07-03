@@ -74,7 +74,7 @@ jobs:
 
       - name: List available targets and schemes (debug)
         run: |
-          xcodebuild -list -project lil-agents.xcodeproj || true
+          xcodebuild -list -project orion.xcodeproj || true
 
       - name: Run pure-logic unit tests (Swift Package)
         # Tests live in `Package.swift` at the repo root and pin the
@@ -91,8 +91,8 @@ jobs:
       - name: Resolve Swift Package Manager dependencies
         run: |
           xcodebuild \
-            -project lil-agents.xcodeproj \
-            -scheme LilAgents \
+            -project orion.xcodeproj \
+            -scheme Orion \
             -resolvePackageDependencies
 
       - name: Resolve build version from tag (or main)
@@ -119,8 +119,8 @@ jobs:
       - name: Build Orion (unsigned, Release configuration)
         run: |
           xcodebuild build \
-            -project lil-agents.xcodeproj \
-            -scheme LilAgents \
+            -project orion.xcodeproj \
+            -scheme Orion \
             -configuration Release \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \

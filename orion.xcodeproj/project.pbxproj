@@ -125,7 +125,7 @@
 		9B5B7C6D4F4E4B11A1D2C3E5 /* WalkerCharacterSessionWiring+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalkerCharacterSessionWiring+Formatting.swift"; sourceTree = "<group>"; };
 		A10000020000000000000001 /* LilAgentsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LilAgentsApp.swift; sourceTree = "<group>"; };
 		A10000020000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A10000020000000000000004 /* LilAgents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LilAgents.entitlements; sourceTree = "<group>"; };
+		A10000020000000000000004 /* Orion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Orion.entitlements; sourceTree = "<group>"; };
 		A10000020000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A10000020000000000000010 /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
 		A10000020000000000000020 /* PopoverTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverTheme.swift; sourceTree = "<group>"; };
@@ -183,7 +183,7 @@
 		A10000020000000000000075 /* ClaudeSessionTransport+Archive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClaudeSessionTransport+Archive.swift"; sourceTree = "<group>"; };
 		A10000020000000000000076 /* ClaudeSessionTransport+Diagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClaudeSessionTransport+Diagnostics.swift"; sourceTree = "<group>"; };
 		A10000020000000000000077 /* MCPConnectionCards+OfficialMCP.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MCPConnectionCards+OfficialMCP.swift"; sourceTree = "<group>"; };
-		A10000030000000000000001 /* Lil-Lenny.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Lil-Lenny.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A10000030000000000000001 /* Orion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Orion.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000120000000000000002 /* ExpertAvatars */ = {isa = PBXFileReference; lastKnownFileType = folder; path = ExpertAvatars; sourceTree = "<group>"; };
 		A10000120000000000000003 /* fall-smoke-dust.lottie */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fall-smoke-dust.lottie"; sourceTree = "<group>"; };
 		A10000120000000000000004 /* fall-smoke-dust.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "fall-smoke-dust.json"; sourceTree = "<group>"; };
@@ -246,13 +246,13 @@
 		A10000050000000000000001 = {
 			isa = PBXGroup;
 			children = (
-				A10000050000000000000002 /* LilAgents */,
+				A10000050000000000000002 /* Orion */,
 				922A33A32F812E09008BF92C /* Frameworks */,
 				A10000050000000000000003 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		A10000050000000000000002 /* LilAgents */ = {
+		A10000050000000000000002 /* Orion */ = {
 			isa = PBXGroup;
 			children = (
 				A10000060000000000000010 /* App */,
@@ -272,15 +272,15 @@
 				A10000120000000000000005 /* orbit-guides.json */,
 				A10000020000000000000043 /* StarterArchive */,
 				A10000020000000000000003 /* Info.plist */,
-				A10000020000000000000004 /* LilAgents.entitlements */,
+				A10000020000000000000004 /* Orion.entitlements */,
 			);
-			path = LilAgents;
+			path = Orion;
 			sourceTree = "<group>";
 		};
 		A10000050000000000000003 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A10000030000000000000001 /* Lil-Lenny.app */,
+				A10000030000000000000001 /* Orion.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -447,9 +447,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A10000060000000000000001 /* LilAgents */ = {
+		A10000060000000000000001 /* Orion */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A10000080000000000000001 /* Build configuration list for PBXNativeTarget "LilAgents" */;
+			buildConfigurationList = A10000080000000000000001 /* Build configuration list for PBXNativeTarget "Orion" */;
 			buildPhases = (
 				A10000070000000000000001 /* Sources */,
 				A10000040000000000000001 /* Frameworks */,
@@ -459,13 +459,13 @@
 			);
 			dependencies = (
 			);
-			name = LilAgents;
+			name = Orion;
 			packageProductDependencies = (
 				922A33A42F812E09008BF92C /* Sparkle */,
 				922A33A82F812F19008BF92C /* Lottie */,
 			);
-			productName = LilAgents;
-			productReference = A10000030000000000000001 /* Lil-Lenny.app */;
+			productName = Orion;
+			productReference = A10000030000000000000001 /* Orion.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -483,7 +483,7 @@
 					};
 				};
 			};
-			buildConfigurationList = A10000080000000000000002 /* Build configuration list for PBXProject "lil-agents" */;
+			buildConfigurationList = A10000080000000000000002 /* Build configuration list for PBXProject "orion" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -501,7 +501,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A10000060000000000000001 /* LilAgents */,
+				A10000060000000000000001 /* Orion */,
 			);
 		};
 /* End PBXProject section */
@@ -739,7 +739,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				AUTOMATION_APPLE_EVENTS = NO;
-				CODE_SIGN_ENTITLEMENTS = LilAgents/LilAgents.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Orion/Orion.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 2;
@@ -753,7 +753,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = LilAgents/Info.plist;
+				INFOPLIST_FILE = Orion/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Orion by Orbit";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSMainNibFile = "";
@@ -764,7 +764,7 @@
 				);
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = team.yourorbit.Orion;
-				PRODUCT_NAME = "Lil-Lenny";
+				PRODUCT_NAME = Orion;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
 				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
 				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
@@ -781,7 +781,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				AUTOMATION_APPLE_EVENTS = NO;
-				CODE_SIGN_ENTITLEMENTS = LilAgents/LilAgents.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Orion/Orion.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 2;
@@ -795,7 +795,7 @@
 				ENABLE_RESOURCE_ACCESS_LOCATION = NO;
 				ENABLE_RESOURCE_ACCESS_PHOTO_LIBRARY = NO;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = LilAgents/Info.plist;
+				INFOPLIST_FILE = Orion/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Orion by Orbit";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSMainNibFile = "";
@@ -806,7 +806,7 @@
 				);
 				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = team.yourorbit.Orion;
-				PRODUCT_NAME = Lenny;
+				PRODUCT_NAME = Orion;
 				RUNTIME_EXCEPTION_ALLOW_DYLD_ENVIRONMENT_VARIABLES = NO;
 				RUNTIME_EXCEPTION_ALLOW_JIT = NO;
 				RUNTIME_EXCEPTION_ALLOW_UNSIGNED_EXECUTABLE_MEMORY = NO;
@@ -821,7 +821,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A10000080000000000000001 /* Build configuration list for PBXNativeTarget "LilAgents" */ = {
+		A10000080000000000000001 /* Build configuration list for PBXNativeTarget "Orion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1000000A000000000000003 /* Debug */,
@@ -830,7 +830,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A10000080000000000000002 /* Build configuration list for PBXProject "lil-agents" */ = {
+		A10000080000000000000002 /* Build configuration list for PBXProject "orion" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1000000A000000000000001 /* Debug */,

@@ -3,7 +3,7 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 
-OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "LilAgents", "CharacterSprites")
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Orion", "CharacterSprites")
 W, H = 304, 415
 
 SKIN = (220, 184, 152, 255)

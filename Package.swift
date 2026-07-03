@@ -3,7 +3,7 @@ import PackageDescription
 
 // Orion's automated test surface.
 //
-// The Xcode project (lil-agents.xcodeproj) builds the actual app.
+// The Xcode project (orion.xcodeproj) builds the actual app.
 // This Package exists only to compile and run the regression tests
 // that protect the pure-logic modules from the kinds of bugs that
 // shipped in v0.1.38–v0.1.42 (Slack copy markup, citation
@@ -45,7 +45,7 @@ let package = Package(
             // Reference production source files directly so tests
             // stay in lockstep with what the app actually ships.
             // Adding a new pure-logic file the tests should cover?
-            // List it here AND keep it in lil-agents.xcodeproj.
+            // List it here AND keep it in orion.xcodeproj.
             path: ".",
             exclude: [
                 "LICENSE",
@@ -54,18 +54,18 @@ let package = Package(
                 "Tests",
                 "Scripts",
                 "dist",
-                "lil-agents.xcodeproj",
-                "LilAgents"
+                "orion.xcodeproj",
+                "Orion"
             ],
             sources: [
-                "LilAgents/Session/MarkdownToSlack.swift",
-                "LilAgents/Session/MarkdownToHTML.swift",
-                "LilAgents/Session/StructuredJSONParser.swift",
-                "LilAgents/Session/ClaudeSessionAttachmentModels.swift",
-                "LilAgents/Memory/MemoryEntry.swift",
-                "LilAgents/Memory/SensitivityFilter.swift",
-                "LilAgents/App/BusinessContext.swift",
-                "LilAgents/Terminal/BubbleWidthMath.swift"
+                "Orion/Session/MarkdownToSlack.swift",
+                "Orion/Session/MarkdownToHTML.swift",
+                "Orion/Session/StructuredJSONParser.swift",
+                "Orion/Session/ClaudeSessionAttachmentModels.swift",
+                "Orion/Memory/MemoryEntry.swift",
+                "Orion/Memory/SensitivityFilter.swift",
+                "Orion/App/BusinessContext.swift",
+                "Orion/Terminal/BubbleWidthMath.swift"
             ]
         ),
         .testTarget(
