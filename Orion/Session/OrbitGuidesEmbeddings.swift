@@ -18,7 +18,7 @@ import NaturalLanguage
 ///
 /// Lifecycle:
 ///   1. App launches.
-///   2. First call to `precomputeIfNeeded()` (from `LilAgentsApp`)
+///   2. First call to `precomputeIfNeeded()` (from `OrionApp`)
 ///      kicks off a background job that hashes the bundled corpus,
 ///      compares against the cached fingerprint on disk, and only
 ///      rebuilds when the corpus has actually changed.

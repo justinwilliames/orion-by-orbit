@@ -106,7 +106,7 @@ extension WalkerCharacter {
             session.start()
         } else if let session = claudeSession {
             // Session already exists — most commonly because it was warmed
-            // at launch (LilAgentsController) so runtime detection + auto-
+            // at launch (OrionController) so runtime detection + auto-
             // select ran BEFORE the first popover open. Re-wire its
             // callbacks to THIS terminalView (the warm-up had none), then
             // reflect the detection outcome we already computed instead of

@@ -1,6 +1,6 @@
 import AppKit
 
-class LilAgentsController {
+class OrionController {
     var characters: [WalkerCharacter] = []
     private var displayLink: CVDisplayLink?
     private var fallbackDisplayTimer: Timer?

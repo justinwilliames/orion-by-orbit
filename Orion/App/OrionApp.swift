@@ -3,7 +3,7 @@ import AppKit
 import Sparkle
 
 @main
-struct LilAgentsApp: App {
+struct OrionApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
@@ -14,7 +14,7 @@ struct LilAgentsApp: App {
 }
 
 class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegate {
-    var controller: LilAgentsController?
+    var controller: OrionController?
     var statusItem: NSStatusItem?
     /// Owns the menubar-summoned chat popover. Retained for the app's
     /// lifetime; instantiated once in applicationDidFinishLaunching after
@@ -78,7 +78,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             self?.checkForPostUpdateGatekeeperHelp()
         }
-        controller = LilAgentsController()
+        controller = OrionController()
         NotificationCenter.default.addObserver(self, selector: #selector(handleResetAllData), name: .liLJustinDidResetData, object: nil)
         controller?.onExpertsChanged = { [weak self] experts in
             self?.updateExpertStatusItems(experts)

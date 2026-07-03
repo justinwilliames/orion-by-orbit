@@ -41,7 +41,7 @@ final class PomodoroController {
     private(set) var completedFocusCycles: Int = 0
     private var timer: Timer?
 
-    /// Wired by LilAgentsController so the Pomodoro can drive Orion's
+    /// Wired by OrionController so the Pomodoro can drive Orion's
     /// status bubble without depending on the character type directly.
     /// `onTickRefresh` fires every second with the current label
     /// ("Focus 14:32" / "Rest 4:51") plus the phase, so the caller

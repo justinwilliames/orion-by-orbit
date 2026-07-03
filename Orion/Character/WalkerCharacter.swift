@@ -47,7 +47,7 @@ final class WalkerCharacter {
     var claudeSession: ClaudeSession?
     var clickOutsideMonitor: Any?
     var escapeKeyMonitor: Any?
-    weak var controller: LilAgentsController?
+    weak var controller: OrionController?
     var themeOverride: PopoverTheme?
     var thinkingBubbleWindow: NSWindow?
     var focusedExpert: ResponderExpert?

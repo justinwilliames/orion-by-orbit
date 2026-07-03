@@ -17,7 +17,7 @@
 		922A33A52F812E09008BF92C /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 922A33A42F812E09008BF92C /* Sparkle */; };
 		922A33A92F812F19008BF92C /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 922A33A82F812F19008BF92C /* Lottie */; };
 		9B5B7C6D4F4E4B11A1D2C3E4 /* WalkerCharacterSessionWiring+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B5B7C6D4F4E4B11A1D2C3E5 /* WalkerCharacterSessionWiring+Formatting.swift */; };
-		A10000010000000000000001 /* LilAgentsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000001 /* LilAgentsApp.swift */; };
+		A10000010000000000000001 /* OrionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000001 /* OrionApp.swift */; };
 		A10000010000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000007 /* Assets.xcassets */; };
 		A10000010000000000000010 /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000010 /* Sounds */; };
 		A10000010000000000000020 /* PopoverTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000020 /* PopoverTheme.swift */; };
@@ -25,7 +25,7 @@
 		A10000010000000000000022 /* ClaudeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000022 /* ClaudeSession.swift */; };
 		A10000010000000000000023 /* TerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000023 /* TerminalView.swift */; };
 		A10000010000000000000024 /* WalkerCharacter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000024 /* WalkerCharacter.swift */; };
-		A10000010000000000000025 /* LilAgentsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000025 /* LilAgentsController.swift */; };
+		A10000010000000000000025 /* OrionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000025 /* OrionController.swift */; };
 		A10000010000000000000078 /* ChatPopoverController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000078 /* ChatPopoverController.swift */; };
 		A10000010000000000000026 /* PaddedTextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000026 /* PaddedTextFieldCell.swift */; };
 		A10000010000000000000027 /* TerminalView+Setup.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000027 /* TerminalView+Setup.swift */; };
@@ -81,7 +81,7 @@
 		A10000110000000000000005 /* orbit-guides.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000120000000000000005 /* orbit-guides.json */; };
 		B67657262565478489452A02 /* TerminalView+TranscriptSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6147B37CFB04148BFA41599 /* TerminalView+TranscriptSupport.swift */; };
 		B79886ADD52D409490EA159A /* ClaudeSessionCLIParsing+Stdout.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAAA8DD4462743869A46526E /* ClaudeSessionCLIParsing+Stdout.swift */; };
-		BE61A7DFB8334AA396E94A7D /* LilAgentsApp+MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE77FA6D7384588B124A5E7 /* LilAgentsApp+MenuBar.swift */; };
+		BE61A7DFB8334AA396E94A7D /* OrionApp+MenuBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DE77FA6D7384588B124A5E7 /* OrionApp+MenuBar.swift */; };
 		D799D5C77D4A4FE6B64212AC /* TerminalView+TranscriptAccessoryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F17C00560192470995924D41 /* TerminalView+TranscriptAccessoryViews.swift */; };
 		D8A23CFBC5234439AA8244A7 /* AvatarImageUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97C5AEED2944E54BCB1A99A /* AvatarImageUtilities.swift */; };
 		DE03A9314A424E6E8BEC2B02 /* TerminalView+AttachmentsParsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F57B574712DA4013BC6E6D5E /* TerminalView+AttachmentsParsing.swift */; };
@@ -116,14 +116,14 @@
 
 /* Begin PBXFileReference section */
 		0A58238166CD4823820011F5 /* TerminalView+SetupActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+SetupActions.swift"; sourceTree = "<group>"; };
-		1DE77FA6D7384588B124A5E7 /* LilAgentsApp+MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LilAgentsApp+MenuBar.swift"; sourceTree = "<group>"; };
+		1DE77FA6D7384588B124A5E7 /* OrionApp+MenuBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrionApp+MenuBar.swift"; sourceTree = "<group>"; };
 		2AD260B3BA9C4BCF90E35E5E /* ClaudeSessionCLIParsing+ValueExtraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClaudeSessionCLIParsing+ValueExtraction.swift"; sourceTree = "<group>"; };
 		31BFF3306DFF4EEC97D297BF /* TerminalView+TranscriptBehavior.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+TranscriptBehavior.swift"; sourceTree = "<group>"; };
 		60D199B93FB44171854B772E /* TerminalView+TranscriptSuggestions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+TranscriptSuggestions.swift"; sourceTree = "<group>"; };
 		6250668D17C04A23B71786AC /* TerminalMarkdownRenderer+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalMarkdownRenderer+Parsing.swift"; sourceTree = "<group>"; };
 		64CF291C594F4C8A9539291A /* TerminalView+TranscriptBubble.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+TranscriptBubble.swift"; sourceTree = "<group>"; };
 		9B5B7C6D4F4E4B11A1D2C3E5 /* WalkerCharacterSessionWiring+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WalkerCharacterSessionWiring+Formatting.swift"; sourceTree = "<group>"; };
-		A10000020000000000000001 /* LilAgentsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LilAgentsApp.swift; sourceTree = "<group>"; };
+		A10000020000000000000001 /* OrionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrionApp.swift; sourceTree = "<group>"; };
 		A10000020000000000000003 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A10000020000000000000004 /* Orion.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Orion.entitlements; sourceTree = "<group>"; };
 		A10000020000000000000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -133,7 +133,7 @@
 		A10000020000000000000022 /* ClaudeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSession.swift; sourceTree = "<group>"; };
 		A10000020000000000000023 /* TerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalView.swift; sourceTree = "<group>"; };
 		A10000020000000000000024 /* WalkerCharacter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalkerCharacter.swift; sourceTree = "<group>"; };
-		A10000020000000000000025 /* LilAgentsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LilAgentsController.swift; sourceTree = "<group>"; };
+		A10000020000000000000025 /* OrionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrionController.swift; sourceTree = "<group>"; };
 		A10000020000000000000078 /* ChatPopoverController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPopoverController.swift; sourceTree = "<group>"; };
 		A10000020000000000000026 /* PaddedTextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddedTextFieldCell.swift; sourceTree = "<group>"; };
 		A10000020000000000000027 /* TerminalView+Setup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+Setup.swift"; sourceTree = "<group>"; };
@@ -288,9 +288,9 @@
 		A10000060000000000000010 /* App */ = {
 			isa = PBXGroup;
 			children = (
-				A10000020000000000000001 /* LilAgentsApp.swift */,
-				1DE77FA6D7384588B124A5E7 /* LilAgentsApp+MenuBar.swift */,
-				A10000020000000000000025 /* LilAgentsController.swift */,
+				A10000020000000000000001 /* OrionApp.swift */,
+				1DE77FA6D7384588B124A5E7 /* OrionApp+MenuBar.swift */,
+				A10000020000000000000025 /* OrionController.swift */,
 				A10000020000000000000078 /* ChatPopoverController.swift */,
 				A10000020000000000000040 /* AppSettings.swift */,
 				A10000020000000000000072 /* AppSettings+Detection.swift */,
@@ -528,8 +528,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000010000000000000001 /* LilAgentsApp.swift in Sources */,
-				BE61A7DFB8334AA396E94A7D /* LilAgentsApp+MenuBar.swift in Sources */,
+				A10000010000000000000001 /* OrionApp.swift in Sources */,
+				BE61A7DFB8334AA396E94A7D /* OrionApp+MenuBar.swift in Sources */,
 				D8A23CFBC5234439AA8244A7 /* AvatarImageUtilities.swift in Sources */,
 				A10000010000000000000020 /* PopoverTheme.swift in Sources */,
 				A10000010000000000000021 /* CharacterContentView.swift in Sources */,
@@ -592,7 +592,7 @@
 				A10000010000000000000058 /* WalkerCharacterSessionWiring.swift in Sources */,
 				9B5B7C6D4F4E4B11A1D2C3E4 /* WalkerCharacterSessionWiring+Formatting.swift in Sources */,
 				A10000010000000000000034 /* WalkerCharacterVisuals.swift in Sources */,
-				A10000010000000000000025 /* LilAgentsController.swift in Sources */,
+				A10000010000000000000025 /* OrionController.swift in Sources */,
 				A10000010000000000000078 /* ChatPopoverController.swift in Sources */,
 				A10000010000000000000061 /* MCPConnectionCards.swift in Sources */,
 				A10000010000000000000077 /* MCPConnectionCards+OfficialMCP.swift in Sources */,

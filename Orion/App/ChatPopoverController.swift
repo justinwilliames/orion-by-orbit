@@ -26,7 +26,7 @@ import AppKit
 ///     this file plus one additive flag (`isMenubarAnchored`) and one
 ///     guard in `updatePopoverPosition()`.
 final class ChatPopoverController: NSObject {
-    private weak var controller: LilAgentsController?
+    private weak var controller: OrionController?
 
     /// Local event monitors installed while the menubar popover is open.
     /// The sprite's own monitors are suppressed for the duration (see
@@ -41,7 +41,7 @@ final class ChatPopoverController: NSObject {
     /// the button's own region.
     private weak var anchorButton: NSStatusBarButton?
 
-    init(controller: LilAgentsController?) {
+    init(controller: OrionController?) {
         self.controller = controller
         super.init()
     }
