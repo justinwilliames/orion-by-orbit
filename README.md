@@ -18,6 +18,18 @@ A free macOS menu-bar app built by [Orbit](https://yourorbit.team), the lifecycl
 
 ---
 
+## Star History
+
+If Orion earns a spot in your menu bar, a ⭐ helps other lifecycle folks find it.
+
+<a href="https://www.star-history.com/?repos=justinwilliames%2Fcomet-by-orbit%2Cjustinwilliames%2Fpulsar-by-orbit%2Cjustinwilliames%2Forbit-for-claude%2Cjustinwilliames%2Forion-by-orbit&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=justinwilliames/comet-by-orbit%2Cjustinwilliames/pulsar-by-orbit%2Cjustinwilliames/orbit-for-claude%2Cjustinwilliames/orion-by-orbit&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=justinwilliames/comet-by-orbit%2Cjustinwilliames/pulsar-by-orbit%2Cjustinwilliames/orbit-for-claude%2Cjustinwilliames/orion-by-orbit&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=justinwilliames/comet-by-orbit%2Cjustinwilliames/pulsar-by-orbit%2Cjustinwilliames/orbit-for-claude%2Cjustinwilliames/orion-by-orbit&type=date&legend=top-left" />
+ </picture>
+</a>
+
 ## Install in 3 steps
 
 ### 1. Download the `.dmg`
@@ -152,12 +164,3 @@ Orion builds on two open-source predecessors, both MIT-licensed and credited in 
 **Made by [Justin Williames](https://get.yourorbit.team) · MIT licensed · macOS 14+**
 
 </div>
-## Star History
-
-<a href="https://www.star-history.com/?repos=justinwilliames%2Fcomet-by-orbit%2Cjustinwilliames%2Fpulsar-by-orbit%2Cjustinwilliames%2Forbit-for-claude%2Cjustinwilliames%2Forion-by-orbit&type=date&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=justinwilliames/comet-by-orbit%2Cjustinwilliames/pulsar-by-orbit%2Cjustinwilliames/orbit-for-claude%2Cjustinwilliames/orion-by-orbit&type=date&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=justinwilliames/comet-by-orbit%2Cjustinwilliames/pulsar-by-orbit%2Cjustinwilliames/orbit-for-claude%2Cjustinwilliames/orion-by-orbit&type=date&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=justinwilliames/comet-by-orbit%2Cjustinwilliames/pulsar-by-orbit%2Cjustinwilliames/orbit-for-claude%2Cjustinwilliames/orion-by-orbit&type=date&legend=top-left" />
- </picture>
-</a>
