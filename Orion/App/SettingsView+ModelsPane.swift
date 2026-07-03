@@ -207,25 +207,10 @@ extension SettingsView {
                     Divider()
 
                     VStack(alignment: .leading, spacing: 10) {
-                        Text("Welcome preview")
-                            .font(.headline)
-
-                        Picker("Preview mode", selection: $welcomePreviewMode) {
-                            ForEach(AppSettings.WelcomePreviewMode.allCases, id: \.rawValue) { mode in
-                                Text(mode.label).tag(mode.rawValue)
-                            }
-                        }
-                        .pickerStyle(.radioGroup)
-                        .labelsHidden()
-                    }
-
-                    Divider()
-
-                    VStack(alignment: .leading, spacing: 10) {
                         Text("Reset")
                             .font(.headline)
 
-                        Text("Clear Orion's local settings and remove its Claude/Codex archive MCP configuration so you can test the setup flow from a clean state.")
+                        Text("Clear Orion's local settings so you can test the setup flow from a clean state.")
                             .settingsCaption()
 
                         Button("Reset all local data…", role: .destructive) {

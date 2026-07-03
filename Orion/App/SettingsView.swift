@@ -3,22 +3,18 @@ import Combine
 import SwiftUI
 
 enum SettingsPane: String, CaseIterable, Identifiable {
-    case source       // Hidden in Orion — archive mode is not used.
     case models
     case businessContext
     case memory
     case about
     case developer
 
-    // Orion hides the `.source` pane (archive switcher) from the sidebar.
-    // The pane itself stays in the file tree to keep the upstream merge surface small.
     static var allCases: [SettingsPane] { [.models, .businessContext, .memory, .about, .developer] }
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .source: return "Source"
         case .models: return "Models"
         case .businessContext: return "Business context"
         case .memory: return "Memory"
@@ -29,7 +25,6 @@ enum SettingsPane: String, CaseIterable, Identifiable {
 
     var subtitle: String {
         switch self {
-        case .source: return "Hidden"
         case .models: return "Runtime and model choices"
         case .businessContext: return "Tell me about your program"
         case .memory: return "What I remember about you"
@@ -40,7 +35,6 @@ enum SettingsPane: String, CaseIterable, Identifiable {
 
     var icon: String {
         switch self {
-        case .source: return "books.vertical.fill"
         case .models: return "cpu.fill"
         case .businessContext: return "building.2.crop.circle.fill"
         case .memory: return "brain"
@@ -52,15 +46,11 @@ enum SettingsPane: String, CaseIterable, Identifiable {
 
 struct SettingsView: View {
     @AppStorage(AppSettings.preferredTransportKey) var preferredTransport = AppSettings.PreferredTransport.automatic.rawValue
-    @AppStorage(AppSettings.archiveAccessModeKey) var archiveAccessMode = AppSettings.ArchiveAccessMode.starterPack.rawValue
-    @AppStorage(AppSettings.officialLennyMCPTokenKey) var officialToken = ""
     @AppStorage(AppSettings.openAIAPIKeyKey) var openAIAPIKey = ""
     @AppStorage(AppSettings.debugLoggingEnabledKey) var debugLoggingEnabled = true
     @AppStorage(AppSettings.preferredClaudeModelKey) var preferredClaudeModel = AppSettings.ClaudeModel.default.rawValue
     @AppStorage(AppSettings.preferredCodexModelKey) var preferredCodexModel = AppSettings.CodexModel.default.rawValue
     @AppStorage(AppSettings.preferredOpenAIModelKey) var preferredOpenAIModel = AppSettings.OpenAIModel.gpt5Nano.rawValue
-    @AppStorage(AppSettings.welcomePreviewModeKey) var welcomePreviewMode = AppSettings.WelcomePreviewMode.live.rawValue
-    @AppStorage(AppSettings.mcpReconnectNeededKey) var mcpReconnectNeeded = false
     @AppStorage(AppSettings.launchAtLoginKey) var launchAtLogin: Bool = true
     @AppStorage(AppSettings.useAmbientLLMKey) var useAmbientLLM: Bool = true
 
@@ -165,11 +155,6 @@ struct SettingsView: View {
     @ViewBuilder
     private var currentPaneView: some View {
         switch selectedPane {
-        case .source:
-            // Hidden pane — defensive empty view in case anything routes to
-            // it (e.g. corrupted persisted selection). visiblePanes never
-            // exposes .source, so this branch should be unreachable.
-            EmptyView()
         case .models:
             modelsPane
         case .businessContext:
@@ -195,11 +180,6 @@ struct SettingsView: View {
             AppSettings.refreshAndPrefetchDetectionStateSync()
             DispatchQueue.main.async {
                 detectionRefreshID = UUID()
-                // Only skip re-evaluation if the user explicitly chose Starter Pack.
-                // Auto-written defaults don't count — native MCP detection should always upgrade.
-                if !AppSettings.hasExplicitStarterPackChoice {
-                    archiveAccessMode = AppSettings.defaultArchiveAccessMode.rawValue
-                }
             }
         }
     }

@@ -72,19 +72,9 @@ extension ClaudeSession {
             return ([fallbackMessage], linkified, false)
         }
 
-        let structuredNames = structuredExpertSuggestionNames(from: outputText)
-        if !structuredNames.isEmpty {
-            let structuredExperts = structuredNames.compactMap { name -> ResponderExpert? in
-                guard let avatarPath = avatarPath(for: name) else { return nil }
-                let context = "Explicitly suggested by the assistant in the latest answer."
-                return makeResponderExpert(name: name, avatarPath: avatarPath, archiveContext: context)
-            }
-
-            assistantExplicitlyRequestedExperts = !structuredExperts.isEmpty
-            pendingExperts = Array(structuredExperts.prefix(3))
-            let names = pendingExperts.map(\.name).joined(separator: ", ")
-            SessionDebugLogger.log("experts", "parsed \(pendingExperts.count) structured expert candidate(s) from assistant output: \(names)")
-        }
+        // Orion is single-persona: the structured-expert-suggestion fallback
+        // (extract <LIL_AGENTS_EXPERTS> names → stage experts) was removed with
+        // the archive/expert subsystem. Just render the cleaned prose.
 
         let cleaned = cleanedAssistantText(outputText)
         let linkified = CitationLinkifier.linkify(cleaned)

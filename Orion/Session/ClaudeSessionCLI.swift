@@ -113,21 +113,13 @@ extension ClaudeSession {
                     }
 
                     if let event = self.claudeCLIStreamEvent(from: json) {
-                        let experts = self.expertsFromTransport(
-                            payload: json,
-                            textCandidates: [event.summary, line]
-                        )
-                        self.onToolUse?(event.title, ["summary": event.summary, "experts": experts])
+                        self.onToolUse?(event.title, ["summary": event.summary])
                     }
                 } else if !line.hasPrefix("{") && !line.hasPrefix("}") {
                     let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !trimmed.isEmpty else { return }
                     let summary = String(trimmed.prefix(80))
-                    let experts = self.expertsFromTransport(
-                        payload: ["message": trimmed],
-                        textCandidates: [trimmed, summary]
-                    )
-                    self.onToolUse?("Calling Model", ["summary": summary, "experts": experts])
+                    self.onToolUse?("Calling Model", ["summary": summary])
                 }
             }
         ) { [weak self] status, stdout, stderr in
@@ -178,10 +170,6 @@ extension ClaudeSession {
                     }
                     return
                 }
-                // Successful turn via token injection — the reconnect is resolved.
-                if useOfficialMCP, officialMCPToken != nil, AppSettings.mcpReconnectNeeded {
-                    DispatchQueue.main.async { AppSettings.mcpReconnectNeeded = false }
-                }
                 self.finishCLIResponse(outputText, conversationKey: conversationKey)
                 return
             }
@@ -212,11 +200,8 @@ extension ClaudeSession {
         appendHistory(Message(role: .toolUse, text: "Planning: \(planningSummary)"), to: conversationKey)
 
         let prompt = buildConversationPrompt(message: message, attachments: attachments, expert: expert, conversationKey: conversationKey, archiveContext: archiveContext, expectMCP: useOfficialMCP)
-        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("lenny-codex-last-message-\(UUID().uuidString).md")
-        var runtimeEnvironment = environment
-        if let token = officialMCPToken(from: environment) {
-            runtimeEnvironment[Constants.lennyMCPAuthEnvVar] = token
-        }
+        let outputURL = FileManager.default.temporaryDirectory.appendingPathComponent("orion-codex-last-message-\(UUID().uuidString).md")
+        let runtimeEnvironment = environment
 
         let approvalPolicy = useOfficialMCP ? "on-request" : "never"
         var args = [
@@ -235,26 +220,8 @@ extension ClaudeSession {
             args.append(contentsOf: ["-m", model])
         }
 
-        if useOfficialMCP, let token = officialMCPToken(from: environment) {
-            // Inject MCP config only when we have a bearer token from Settings/env.
-            // When the native path is used (token == nil), Codex reads its own .codex/config.toml.
-            args.append(contentsOf: [
-                "-c",
-                "mcp_servers.\(Constants.lennyMCPServerLabel).url=\"\(Constants.lennyMCPURL)\""
-            ])
-
-            if AppSettings.officialLennyMCPToken != nil {
-                args.append(contentsOf: [
-                    "-c",
-                    "mcp_servers.\(Constants.lennyMCPServerLabel).http_headers.Authorization=\"Bearer \(token)\""
-                ])
-            } else {
-                args.append(contentsOf: [
-                    "-c",
-                    "mcp_servers.\(Constants.lennyMCPServerLabel).bearer_token_env_var=\"\(Constants.lennyMCPAuthEnvVar)\""
-                ])
-            }
-        }
+        // Orion: no official-Lenny-MCP injection — the archive subsystem was
+        // removed, so useOfficialMCP is always false here.
 
         args.append(prompt)
 
@@ -285,11 +252,7 @@ extension ClaudeSession {
                 if let data = line.data(using: .utf8),
                    let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                    let event = self.codexCLIStreamEvent(from: json) {
-                    let experts = self.expertsFromTransport(
-                        payload: json,
-                        textCandidates: [event.summary, line]
-                    )
-                    self.onToolUse?(event.title, ["summary": event.summary, "experts": experts])
+                    self.onToolUse?(event.title, ["summary": event.summary])
                     return
                 }
 
@@ -300,11 +263,7 @@ extension ClaudeSession {
                 }
 
                 let summary = String(trimmed.prefix(80))
-                let experts = self.expertsFromTransport(
-                    payload: ["message": trimmed],
-                    textCandidates: [trimmed, summary]
-                )
-                self.onToolUse?("Calling Model", ["summary": summary, "experts": experts])
+                self.onToolUse?("Calling Model", ["summary": summary])
             }
         ) { [weak self] status, stdout, stderr in
             guard let self else { return }

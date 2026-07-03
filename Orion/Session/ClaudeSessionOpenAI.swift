@@ -2,6 +2,23 @@ import AppKit
 import Foundation
 
 extension ClaudeSession {
+    /// Pull the assistant text out of an OpenAI Responses `output` array.
+    /// Relocated from the deleted expert-resolution file; it is a general
+    /// output-text extractor, not expert-specific.
+    func extractMessageText(from outputItems: [[String: Any]]) -> String? {
+        for item in outputItems where item["type"] as? String == "message" {
+            let content = item["content"] as? [[String: Any]] ?? []
+            let texts = content.compactMap { block -> String? in
+                guard block["type"] as? String == "output_text" else { return nil }
+                return block["text"] as? String
+            }
+            if !texts.isEmpty {
+                return texts.joined(separator: "\n")
+            }
+        }
+        return nil
+    }
+
     func callOpenAI(message: String, attachments: [SessionAttachment], apiKey: String, expert: ResponderExpert?, conversationKey: String, mcpToken: String?, archiveContext: String?) {
         let prompt = buildUserPrompt(message: message, attachments: attachments, expert: expert, archiveContext: archiveContext)
         let input: [[String: Any]] = [[
@@ -67,7 +84,6 @@ extension ClaudeSession {
             guard let self else { return }
             do {
                 let (asyncBytes, _) = try await URLSession.shared.bytes(for: request)
-                var mcpExperts: [ResponderExpert] = []
                 var hasStartedWriting = false
                 var hasSignaledThinking = false
 
@@ -91,18 +107,6 @@ extension ClaudeSession {
 
                     switch eventType {
 
-                    case "response.output_item.added":
-                        // Fire a "Searching..." status when an MCP call item starts
-                        if let item = event["item"] as? [String: Any],
-                           item["type"] as? String == "mcp_call",
-                           let name = item["name"] as? String {
-                            let display = self.processDisplay(for: name, arguments: [:])
-                            DispatchQueue.main.async { [weak self] in
-                                guard let self, !self.isCancellingTurn else { return }
-                                self.onToolUse?(display.title, ["summary": display.summary])
-                            }
-                        }
-
                     case "response.output_text.delta":
                         let delta = (event["delta"] as? String)
                             ?? (event["text"] as? String)
@@ -121,37 +125,11 @@ extension ClaudeSession {
                             }
                         }
 
-                    case "response.mcp_call.completed":
-                        let name = event["name"] as? String ?? "tool"
-                        let rawArgs = event["arguments"]
-                        let arguments: [String: Any]
-                        if let argsDict = rawArgs as? [String: Any] {
-                            arguments = argsDict
-                        } else if let argsStr = rawArgs as? String,
-                                  let d = argsStr.data(using: .utf8),
-                                  let parsed = try? JSONSerialization.jsonObject(with: d) as? [String: Any] {
-                            arguments = parsed
-                        } else {
-                            arguments = [:]
-                        }
-                        let output = event["output"]
-                        let experts = self.expertsFromMCPPayloads(arguments: arguments, output: output)
-                        mcpExperts.append(contentsOf: experts.filter { e in !mcpExperts.contains(where: { $0.name == e.name }) })
-                        let resultSummary = self.processResultDisplay(for: name, arguments: arguments, output: output)
-                        let display = self.processDisplay(for: name, arguments: arguments)
-                        DispatchQueue.main.async { [weak self] in
-                            guard let self, !self.isCancellingTurn else { return }
-                            self.onToolUse?(display.title, ["summary": display.summary, "experts": experts])
-                            self.onToolResult?(resultSummary, false)
-                        }
-
                     case "response.completed":
                         guard let responseObj = event["response"] as? [String: Any] else { continue }
-                        let capturedExperts = mcpExperts
                         DispatchQueue.main.async { [weak self] in
                             guard let self, !self.isCancellingTurn else { return }
                             self.currentStreamingTask = nil
-                            self.pendingExperts = capturedExperts
                             self.handleOpenAICompletedResponse(responseObj, conversationKey: conversationKey)
                         }
                         return
@@ -236,97 +214,5 @@ extension ClaudeSession {
         response.messages.forEach { appendHistory($0, to: conversationKey) }
         onText?(response.displayText)
         finishTurn()
-    }
-
-    func handleOpenAIResponse(_ json: [String: Any], conversationKey: String) {
-        SessionDebugLogger.log("openai", "handleOpenAIResponse() outputItems=\((json["output"] as? [[String: Any]] ?? []).count)")
-        if let error = json["error"] as? [String: Any],
-           let message = error["message"] as? String {
-            SessionDebugLogger.log("openai", "model returned error: \(message)")
-            if let authError = normalizedLennyMCPAuthError(from: message) {
-                failTurn(authError, conversationKey: conversationKey)
-            } else {
-                failTurn("OpenAI error: \(message)", conversationKey: conversationKey)
-            }
-            return
-        }
-
-        if let responseID = json["id"] as? String {
-            var state = conversations[conversationKey] ?? ConversationState()
-            state.previousResponseID = responseID
-            conversations[conversationKey] = state
-        }
-
-        let outputItems = json["output"] as? [[String: Any]] ?? []
-        var experts: [ResponderExpert] = []
-
-        for item in outputItems {
-            guard let type = item["type"] as? String else { continue }
-            switch type {
-            case "mcp_list_tools":
-                let tools = item["tools"] as? [[String: Any]] ?? []
-                let count = tools.count
-                SessionDebugLogger.log("mcp", "mcp_list_tools returned \(count) tool(s)")
-                let summary = "Connected to archive, \(count) tools ready"
-                onToolResult?(summary, false)
-                appendHistory(Message(role: .toolResult, text: summary), to: conversationKey)
-
-            case "mcp_call":
-                let name = item["name"] as? String ?? "mcp_call"
-                let arguments = item["arguments"] as? [String: Any] ?? [:]
-                let output = item["output"]
-                SessionDebugLogger.logMultiline("mcp", header: "mcp_call \(name)", body: "arguments=\(arguments)\noutput=\(String(describing: item["output"]))")
-                let extractedExperts = expertsFromMCPPayloads(arguments: arguments, output: output)
-                let processStep = processDisplay(for: name, arguments: arguments)
-                onToolUse?(processStep.title, ["summary": processStep.summary, "experts": extractedExperts])
-                appendHistory(Message(role: .toolUse, text: "\(processStep.title): \(processStep.summary)"), to: conversationKey)
-
-                for expert in extractedExperts where !experts.contains(expert) {
-                    experts.append(expert)
-                }
-
-                let resultSummary = processResultDisplay(for: name, arguments: arguments, output: output)
-                onToolResult?(resultSummary, false)
-                appendHistory(Message(role: .toolResult, text: resultSummary), to: conversationKey)
-
-            case "message":
-                continue
-
-            default:
-                continue
-            }
-        }
-
-        pendingExperts = experts
-        SessionDebugLogger.log("experts", "staged \(experts.count) MCP-derived expert candidate(s) until response completion")
-
-        let outputText = (json["output_text"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let outputText, !outputText.isEmpty {
-            let response = prepareAssistantResponse(outputText)
-            publishPendingExperts(fallbackText: response.displayText)
-            SessionDebugLogger.logMultiline("assistant", header: "final assistant response", body: response.displayText)
-            let composeSummary = "Composing the final answer"
-            onToolUse?("Writing", ["summary": composeSummary])
-            appendHistory(Message(role: .toolUse, text: "Writing: \(composeSummary)"), to: conversationKey)
-            response.messages.forEach { appendHistory($0, to: conversationKey) }
-            onText?(response.displayText)
-            finishTurn()
-            return
-        }
-
-        if let messageText = extractMessageText(from: outputItems), !messageText.isEmpty {
-            let response = prepareAssistantResponse(messageText)
-            publishPendingExperts(fallbackText: response.displayText)
-            SessionDebugLogger.logMultiline("assistant", header: "final assistant message response", body: response.displayText)
-            let composeSummary = "Composing the final answer"
-            onToolUse?("Writing", ["summary": composeSummary])
-            appendHistory(Message(role: .toolUse, text: "Writing: \(composeSummary)"), to: conversationKey)
-            response.messages.forEach { appendHistory($0, to: conversationKey) }
-            onText?(response.displayText)
-            finishTurn()
-            return
-        }
-
-        failTurn("The model returned no final answer.", conversationKey: conversationKey)
     }
 }

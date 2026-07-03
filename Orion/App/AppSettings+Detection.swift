@@ -1,36 +1,9 @@
 import Foundation
 
 extension AppSettings {
-    // Shared with AppSettings+MCPConfig via resolveShellEnvironment()
-    static let shellEnvironmentMCPTokenKey = "LENNYSDATA_MCP_AUTH_TOKEN"
     private static var cachedShellEnvironment: [String: String]?
     private static var cachedClaudeLogin: Bool?
     private static var cachedCodexLogin: Bool?
-    private static var cachedClaudeOfficialMCP: Bool?
-    private static var cachedCodexOfficialMCP: Bool?
-
-    static var detectedOfficialMCPSources: [OfficialMCPSource] {
-        var sources: [OfficialMCPSource] = []
-
-        if hasDetectedClaudeOfficialMCPConfiguration {
-            sources.append(.claudeGlobalConfig)
-        }
-        if hasDetectedCodexOfficialMCPConfiguration {
-            sources.append(.codexGlobalConfig)
-        }
-        if officialLennyMCPToken != nil {
-            sources.append(.settingsToken)
-        }
-        if shellEnvironmentOfficialMCPToken() != nil {
-            sources.append(.environmentToken)
-        }
-
-        return sources
-    }
-
-    static var hasDetectedOfficialMCPConfiguration: Bool {
-        !detectedOfficialMCPSources.isEmpty
-    }
 
     static var hasDetectedCodexLogin: Bool {
         if let cached = cachedCodexLogin { return cached }
@@ -98,8 +71,6 @@ extension AppSettings {
         cachedShellEnvironment = nil
         cachedClaudeLogin = nil
         cachedCodexLogin = nil
-        cachedClaudeOfficialMCP = nil
-        cachedCodexOfficialMCP = nil
     }
 
     /// Clears all detection caches and repopulates them synchronously (blocks the caller).
@@ -119,16 +90,6 @@ extension AppSettings {
             cachedCodexLogin = detectCodexLogin()
             group.leave()
         }
-        group.enter()
-        DispatchQueue.global(qos: .userInitiated).async {
-            cachedClaudeOfficialMCP = detectClaudeOfficialMCPConfiguration()
-            group.leave()
-        }
-        group.enter()
-        DispatchQueue.global(qos: .userInitiated).async {
-            cachedCodexOfficialMCP = detectCodexOfficialMCPConfiguration()
-            group.leave()
-        }
         group.wait()
     }
 
@@ -138,7 +99,6 @@ extension AppSettings {
         DispatchQueue.global(qos: .userInitiated).async {
             // Shell env first — login checks depend on it
             _ = resolveShellEnvironment()
-            // Run all four checks in parallel
             let group = DispatchGroup()
             group.enter()
             DispatchQueue.global(qos: .userInitiated).async {
@@ -148,17 +108,6 @@ extension AppSettings {
             group.enter()
             DispatchQueue.global(qos: .userInitiated).async {
                 cachedCodexLogin = detectCodexLogin()
-                group.leave()
-            }
-            group.enter()
-            DispatchQueue.global(qos: .userInitiated).async {
-                // `claude mcp list` is slow — prefetch so backend resolution doesn't block
-                cachedClaudeOfficialMCP = detectClaudeOfficialMCPConfiguration()
-                group.leave()
-            }
-            group.enter()
-            DispatchQueue.global(qos: .userInitiated).async {
-                cachedCodexOfficialMCP = detectCodexOfficialMCPConfiguration()
                 group.leave()
             }
             group.wait()
@@ -176,52 +125,6 @@ extension AppSettings {
     static var hasDetectedAnthropicAPIKey: Bool {
         let envValue = resolveShellEnvironment()["ANTHROPIC_API_KEY"]?.trimmingCharacters(in: .whitespacesAndNewlines)
         return envValue?.isEmpty == false
-    }
-
-    static var hasDetectedClaudeOfficialMCPConfiguration: Bool {
-        if let cached = cachedClaudeOfficialMCP { return cached }
-        let result = detectClaudeOfficialMCPConfiguration()
-        cachedClaudeOfficialMCP = result
-        return result
-    }
-
-    private static func detectClaudeOfficialMCPConfiguration() -> Bool {
-        // Check all known Claude Code config file locations first
-        if claudeGlobalConfigURLs.contains(where: containsOfficialMCPConfiguration(at:)) {
-            return true
-        }
-
-        // Also check via `claude mcp list` — handles OAuth/native CLI MCP setup
-        // (user ran `claude mcp add`, which may not write to the JSON files above)
-        guard let executable = executablePathForDetection(named: "claude") else { return false }
-        let result = runCommand(executablePath: executable, arguments: ["mcp", "list"])
-        guard result.status == 0 else { return false }
-
-        let combinedOutput = "\(result.stdout)\n\(result.stderr)".lowercased()
-        return combinedOutput.contains("lennysdata") && combinedOutput.contains(ClaudeSession.Constants.lennyMCPURL.lowercased())
-    }
-
-    static var hasDetectedCodexOfficialMCPConfiguration: Bool {
-        if let cached = cachedCodexOfficialMCP { return cached }
-        let result = detectCodexOfficialMCPConfiguration()
-        cachedCodexOfficialMCP = result
-        return result
-    }
-
-    private static func detectCodexOfficialMCPConfiguration() -> Bool {
-        if containsOfficialMCPConfiguration(at: codexGlobalConfigURL) {
-            return true
-        }
-
-        guard let executable = executablePathForDetection(named: "codex") else { return false }
-        let result = runCommand(executablePath: executable, arguments: ["mcp", "list", "--json"])
-        guard result.status == 0 else { return false }
-
-        let combinedOutput = "\(result.stdout)\n\(result.stderr)".lowercased()
-        if combinedOutput.contains("\"name\":\"lennysdata\"") || combinedOutput.contains("\"lennysdata\"") {
-            return true
-        }
-        return combinedOutput.contains("lennysdata") && combinedOutput.contains(ClaudeSession.Constants.lennyMCPURL.lowercased())
     }
 
     // MARK: - Shell environment

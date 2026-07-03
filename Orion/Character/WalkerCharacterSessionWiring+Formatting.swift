@@ -207,36 +207,10 @@ extension WalkerCharacter {
     }
 
     private func liveExpertJoinStatus(from summary: String) -> String? {
-        guard let session = claudeSession,
-              !summary.isEmpty else {
-            return nil
-        }
-
-        let names = Array(session.expertNames(fromFreeformText: summary).prefix(2))
-        guard let firstExpert = names.first else { return nil }
-
-        let lowered = summary.lowercased()
-        let cues = [
-            "@",
-            "join the conversation",
-            "joining the conversation",
-            "has joined",
-            "is joining",
-            "bring in",
-            "loop in",
-            "call on",
-            "thoughts on this",
-            "i've got",
-            "i have enough from the archive",
-            "based on what i've gathered from",
-            "who've shared"
-        ]
-
-        guard cues.contains(where: { lowered.contains($0) }) else { return nil }
-        if names.count >= 2 {
-            return "\(names[0]) and \(names[1]) are joining the conversation"
-        }
-        return "\(firstExpert) is joining the conversation"
+        // Orion is single-persona: the expert-name extraction subsystem was
+        // removed, so there is never an expert "joining the conversation".
+        _ = summary
+        return nil
     }
 
     private func userFacingPlanningStatus(from summary: String) -> String? {

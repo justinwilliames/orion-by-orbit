@@ -206,12 +206,11 @@ extension TerminalView {
 
     func showWelcomeGreeting(forceRefresh: Bool = false) {
         ensureWelcomeSuggestionSelection(forceRefresh: forceRefresh || !isShowingInitialWelcomeState)
-        let archiveMode = currentWelcomeArchiveMode ?? welcomePreviewArchiveMode
         let welcomeSignature: String
         if requiresInitialConnectionSetup {
             welcomeSignature = "setup-required"
         } else {
-            welcomeSignature = "\(archiveMode.rawValue)|\(shouldPresentStarterPackWelcomeBanner ? "banner" : "chips")"
+            welcomeSignature = "starterPack|\(shouldPresentStarterPackWelcomeBanner ? "banner" : "chips")"
         }
 
         if !forceRefresh,

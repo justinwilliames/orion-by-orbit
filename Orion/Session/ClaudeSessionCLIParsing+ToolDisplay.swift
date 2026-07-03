@@ -38,10 +38,6 @@ extension ClaudeSession {
                 return ("Tool Result", completionStatus)
             }
 
-            if Constants.lennyAllowedTools.contains(normalizedTool) {
-                return processDisplay(for: normalizedTool, arguments: arguments)
-            }
-
             return claudeCLIToolDisplay(for: toolName, arguments: arguments, fallbackText: extractTextPayload(from: item))
         }
 
@@ -114,11 +110,6 @@ extension ClaudeSession {
         }
 
         let normalizedToolName = normalizedTransportToolName(toolName)
-        if Constants.lennyAllowedTools.contains(normalizedToolName) {
-            let output = decodedToolResultPayload(from: content)
-            return ("Tool Result", processResultStatus(for: normalizedToolName, arguments: arguments, output: output))
-        }
-
         switch normalizedToolName.lowercased() {
         case "grep":
             let pattern = (arguments["pattern"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -147,10 +138,6 @@ extension ClaudeSession {
     func claudeCLIToolDisplay(for rawToolName: String, arguments: [String: Any], fallbackText: String? = nil) -> (title: String, summary: String) {
         let tool = rawToolName.trimmingCharacters(in: .whitespacesAndNewlines)
         let normalizedTool = normalizedTransportToolName(tool)
-
-        if Constants.lennyAllowedTools.contains(normalizedTool) {
-            return processDisplay(for: normalizedTool, arguments: arguments)
-        }
 
         switch normalizedTool.lowercased() {
         case "list_mcp_resources":
@@ -212,44 +199,25 @@ extension ClaudeSession {
         return (title, keys.prefix(3).joined(separator: ", "))
     }
 
-    // MARK: - Process result helpers
+    // MARK: - Filename formatting
 
-    func processResultStatus(for toolName: String, arguments: [String: Any], output: Any?) -> String {
-        if toolName == "search_content",
-           let envelope = output as? [String: Any] {
-            let total = (envelope["total_results"] as? NSNumber)?.intValue ?? 0
-            let query = (envelope["query"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "the topic"
-            if total == 0 {
-                return "No direct matches for \(query), broadening the search"
+    /// Turn a filename / URL last-path-component into a readable display name.
+    /// Relocated from the deleted expert-resolution file; still used by the
+    /// surviving GitHub-archive webfetch display branches above.
+    func readableSourceName(from filename: String?) -> String {
+        guard let filename, !filename.isEmpty else { return "source" }
+        let last = URL(fileURLWithPath: filename).deletingPathExtension().lastPathComponent
+        if last.isEmpty { return filename }
+        return last
+            .split(separator: "-")
+            .map { chunk in
+                let word = chunk.replacingOccurrences(of: "_", with: " ")
+                if word.count <= 3 {
+                    return word.uppercased()
+                }
+                return word.prefix(1).uppercased() + word.dropFirst()
             }
-            if total == 1 {
-                return "Found a relevant source for \(query)"
-            }
-            return "Found \(total) relevant sources for \(query)"
-        }
-
-        if toolName == "read_excerpt" || toolName == "read_content",
-           let status = excerptStatus(from: output) {
-            return status
-        }
-
-        return processResultDisplay(for: toolName, arguments: arguments, output: output)
-    }
-
-    private func excerptStatus(from output: Any?) -> String? {
-        let experts = expertsFromMCPPayloads(arguments: [:], output: output).map(\.name)
-        if let first = experts.first {
-            return "Reviewing \(first)'s advice"
-        }
-
-        guard let payload = output as? [String: Any] else { return nil }
-        if let title = payload["title"] as? String, !title.isEmpty {
-            return "Reviewing \(title)"
-        }
-        if let filename = payload["filename"] as? String, !filename.isEmpty {
-            return "Reviewing \(readableSourceName(from: filename))"
-        }
-        return nil
+            .joined(separator: " ")
     }
 
     // MARK: - Tool result parsing helpers
@@ -269,11 +237,6 @@ extension ClaudeSession {
     }
 
     private func completedToolStatus(for toolName: String, arguments: [String: Any], result: Any) -> String? {
-        if Constants.lennyAllowedTools.contains(toolName) {
-            let output = decodedToolResultPayload(from: result)
-            return processResultStatus(for: toolName, arguments: arguments, output: output)
-        }
-
         let normalized = toolName.lowercased()
         let payload = decodedToolResultPayload(from: result)
 

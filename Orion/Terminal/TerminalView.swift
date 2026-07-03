@@ -91,10 +91,8 @@ class TerminalView: NSView {
     /// within the same session, even though the persistent stamp also
     /// suppresses it.
     var businessContextPromptDismissedThisSession = false
-    var currentWelcomeArchiveMode: AppSettings.ArchiveAccessMode?
     var currentWelcomeSuggestions: [(String, String, String)] = []
     var lastRenderedWelcomeSignature: String?
-    var lastObservedWelcomePreviewMode = AppSettings.welcomePreviewMode
     var isShowingOfficialMCPSetupPanel = false
     var requiresInitialConnectionSetup = false
     var lastObservedFirstRunConfigurationSignature: String?

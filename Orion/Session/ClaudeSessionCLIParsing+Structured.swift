@@ -98,10 +98,12 @@ extension ClaudeSession {
     }
 
     func expertSuggestion(named rawName: String) -> ResponderExpert? {
-        guard let canonical = canonicalExpertName(for: rawName),
-              let avatarPath = avatarPath(for: canonical) else { return nil }
-        let context = "Explicitly suggested by the assistant in the latest answer."
-        return makeResponderExpert(name: canonical, avatarPath: avatarPath, archiveContext: context)
+        // Orion is single-persona: the expert catalog (avatars, canonical
+        // names, GuestTitles) was removed with the archive subsystem, so
+        // there are no experts to suggest. Always nil — the structured-JSON
+        // parser then treats every segment as an Orion/system message.
+        _ = rawName
+        return nil
     }
 
     func decodeStructuredAssistantJSONObject(from outputText: String) -> [String: Any]? {

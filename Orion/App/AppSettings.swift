@@ -2,6 +2,29 @@ import Foundation
 
 enum AppSettings {
 
+    // MARK: - General config-path helpers
+    //
+    // Relocated from the deleted AppSettings+MCPConfig.swift. These are
+    // GENERAL Claude Code / Codex CLI locators used by AppSettings+Detection
+    // for login/config detection — they are NOT specific to the removed
+    // official-Lenny-MCP feature, so they survive the subsystem removal.
+
+    static var homeDirectoryURL: URL {
+        FileManager.default.homeDirectoryForCurrentUser
+    }
+
+    static var claudeGlobalConfigURLs: [URL] {
+        [
+            homeDirectoryURL.appendingPathComponent(".claude.json"),
+            homeDirectoryURL.appendingPathComponent(".claude/settings.json"),
+            homeDirectoryURL.appendingPathComponent(".claude/settings.local.json")
+        ]
+    }
+
+    static var codexGlobalConfigURL: URL {
+        homeDirectoryURL.appendingPathComponent(".codex/config.toml")
+    }
+
     /// Single source of truth for the cwd used when spawning Claude /
     /// Codex CLI subprocesses.
     ///
@@ -91,57 +114,15 @@ enum AppSettings {
         case openAIAPI
     }
 
-    enum ArchiveAccessMode: String {
-        case starterPack
-        case officialMCP
-    }
-
-    enum WelcomePreviewMode: String, CaseIterable {
-        case live
-        case starterPackWithBanner
-        case starterPackConnected
-        case officialConnected
-
-        var label: String {
-            switch self {
-            case .live:                 return "Live behavior"
-            case .starterPackWithBanner: return "Starter Pack + banner"
-            case .starterPackConnected: return "Starter Pack, already connected"
-            case .officialConnected:    return "Official MCP connected"
-            }
-        }
-    }
-
-    enum OfficialMCPSource: String, CaseIterable {
-        case claudeGlobalConfig
-        case codexGlobalConfig
-        case settingsToken
-        case environmentToken
-
-        var label: String {
-            switch self {
-            case .claudeGlobalConfig: return "Claude Code"
-            case .codexGlobalConfig:  return "Codex"
-            case .settingsToken:      return "saved token"
-            case .environmentToken:   return "shell token"
-            }
-        }
-    }
-
     // MARK: - UserDefaults keys
 
     static let preferredTransportKey              = "preferredTransport"
     static let hasExplicitPreferredTransportChoiceKey = "hasExplicitPreferredTransportChoice"
-    static let archiveAccessModeKey              = "archiveAccessMode"
-    static let hasExplicitStarterPackChoiceKey   = "hasExplicitStarterPackChoice"
-    static let officialLennyMCPTokenKey          = "officialLennyMCPToken"
     static let openAIAPIKeyKey                   = "openAIAPIKey"
     static let debugLoggingEnabledKey            = "debugLoggingEnabled"
     static let preferredClaudeModelKey           = "preferredClaudeModel"
     static let preferredCodexModelKey            = "preferredCodexModel"
     static let preferredOpenAIModelKey           = "preferredOpenAIModel"
-    static let welcomePreviewModeKey             = "welcomePreviewMode"
-    static let mcpReconnectNeededKey             = "mcpReconnectNeeded"
     static let launchAtLoginKey                  = "launchAtLogin"
     static let useAmbientLLMKey                  = "useAmbientLLM"
 
@@ -195,42 +176,6 @@ enum AppSettings {
         set { UserDefaults.standard.set(newValue, forKey: hasExplicitPreferredTransportChoiceKey) }
     }
 
-    static var archiveAccessMode: ArchiveAccessMode {
-        get {
-            let rawValue = UserDefaults.standard.string(forKey: archiveAccessModeKey) ?? defaultArchiveAccessMode.rawValue
-            return ArchiveAccessMode(rawValue: rawValue) ?? .starterPack
-        }
-        set { UserDefaults.standard.set(newValue.rawValue, forKey: archiveAccessModeKey) }
-    }
-
-    static var hasStoredArchiveAccessModePreference: Bool {
-        UserDefaults.standard.object(forKey: archiveAccessModeKey) != nil
-    }
-
-    /// True only when the user explicitly clicked "Starter Pack" in the source pane.
-    /// Programmatically written defaults do NOT set this flag.
-    static var hasExplicitStarterPackChoice: Bool {
-        get { UserDefaults.standard.bool(forKey: hasExplicitStarterPackChoiceKey) }
-        set { UserDefaults.standard.set(newValue, forKey: hasExplicitStarterPackChoiceKey) }
-    }
-
-    static var officialLennyMCPToken: String? {
-        get {
-            let value = UserDefaults.standard.string(forKey: officialLennyMCPTokenKey)?
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            guard let value, !value.isEmpty else { return nil }
-            return value
-        }
-        set {
-            let trimmed = newValue?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-            if trimmed.isEmpty {
-                UserDefaults.standard.removeObject(forKey: officialLennyMCPTokenKey)
-            } else {
-                UserDefaults.standard.set(trimmed, forKey: officialLennyMCPTokenKey)
-            }
-        }
-    }
-
     static var openAIAPIKey: String? {
         get {
             let value = UserDefaults.standard.string(forKey: openAIAPIKeyKey)?
@@ -246,24 +191,6 @@ enum AppSettings {
                 UserDefaults.standard.set(trimmed, forKey: openAIAPIKeyKey)
             }
         }
-    }
-
-    static var effectiveArchiveAccessMode: ArchiveAccessMode {
-        // An explicit user choice to stay on Starter Pack always wins — but only
-        // if the user actually clicked the radio button (not just an auto-written default).
-        if hasExplicitStarterPackChoice {
-            return .starterPack
-        }
-        // Native CLI MCP config activates official mode automatically.
-        let sources = detectedOfficialMCPSources
-        if sources.contains(.claudeGlobalConfig) || sources.contains(.codexGlobalConfig) {
-            return .officialMCP
-        }
-        return sources.isEmpty ? .starterPack : .officialMCP
-    }
-
-    static var defaultArchiveAccessMode: ArchiveAccessMode {
-        detectedOfficialMCPSources.isEmpty ? .starterPack : .officialMCP
     }
 
     static var debugLoggingEnabled: Bool {
@@ -300,21 +227,6 @@ enum AppSettings {
         set { UserDefaults.standard.set(newValue.rawValue, forKey: preferredOpenAIModelKey) }
     }
 
-    /// Persists across app restarts — set when MCP auth fails, cleared when
-    /// the user saves a token, dismisses the banner with X, or picks Starter Pack.
-    static var mcpReconnectNeeded: Bool {
-        get { UserDefaults.standard.bool(forKey: mcpReconnectNeededKey) }
-        set { UserDefaults.standard.set(newValue, forKey: mcpReconnectNeededKey) }
-    }
-
-    static var welcomePreviewMode: WelcomePreviewMode {
-        get {
-            let rawValue = UserDefaults.standard.string(forKey: welcomePreviewModeKey) ?? WelcomePreviewMode.live.rawValue
-            return WelcomePreviewMode(rawValue: rawValue) ?? .live
-        }
-        set { UserDefaults.standard.set(newValue.rawValue, forKey: welcomePreviewModeKey) }
-    }
-
     static var showsDeveloperTools: Bool {
         ProcessInfo.processInfo.arguments.contains("#debug")
     }
@@ -326,17 +238,12 @@ enum AppSettings {
         let managedKeys = [
             preferredTransportKey,
             hasExplicitPreferredTransportChoiceKey,
-            archiveAccessModeKey,
-            hasExplicitStarterPackChoiceKey,
-            officialLennyMCPTokenKey,
             openAIAPIKeyKey,
             debugLoggingEnabledKey,
             preferredClaudeModelKey,
             preferredCodexModelKey,
             preferredOpenAIModelKey,
-            welcomePreviewModeKey,
-            "hasCompletedOnboarding",
-            mcpReconnectNeededKey
+            "hasCompletedOnboarding"
         ]
 
         for key in managedKeys {
@@ -345,7 +252,6 @@ enum AppSettings {
 
         clearBusinessContextState()
         clearMemoryLayerState()
-        try removeOfficialMCPConfiguration()
         refreshDetectionState()
         NotificationCenter.default.post(name: .liLJustinDidResetData, object: nil)
         NotificationCenter.default.post(name: .liLJustinBusinessContextDidChange, object: nil)

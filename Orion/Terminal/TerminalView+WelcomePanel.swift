@@ -1,35 +1,18 @@
 import AppKit
 
 extension TerminalView {
-    func welcomeSuggestionPool(for archiveMode: AppSettings.ArchiveAccessMode) -> [(String, String, String)] {
-        archiveMode == .starterPack
-            ? WelcomeChipsView.starterPackSuggestionPool
-            : WelcomeChipsView.defaultSuggestionPool
+    var welcomeSuggestionPool: [(String, String, String)] {
+        // Orion is single-persona with no archive switcher — always the
+        // starter-pack pool.
+        WelcomeChipsView.starterPackSuggestionPool
     }
 
     func ensureWelcomeSuggestionSelection(forceRefresh: Bool = false) {
-        let archiveMode = welcomePreviewArchiveMode
-        guard forceRefresh || currentWelcomeArchiveMode != archiveMode || currentWelcomeSuggestions.isEmpty else {
+        guard forceRefresh || currentWelcomeSuggestions.isEmpty else {
             return
         }
 
-        currentWelcomeArchiveMode = archiveMode
-        currentWelcomeSuggestions = Array(welcomeSuggestionPool(for: archiveMode).shuffled().prefix(4))
-    }
-
-    var welcomePreviewMode: AppSettings.WelcomePreviewMode {
-        AppSettings.welcomePreviewMode
-    }
-
-    var welcomePreviewArchiveMode: AppSettings.ArchiveAccessMode {
-        switch welcomePreviewMode {
-        case .live:
-            return AppSettings.effectiveArchiveAccessMode
-        case .starterPackWithBanner, .starterPackConnected:
-            return .starterPack
-        case .officialConnected:
-            return .officialMCP
-        }
+        currentWelcomeSuggestions = Array(welcomeSuggestionPool.shuffled().prefix(4))
     }
 
     var shouldShowStarterPackUpsell: Bool {
@@ -52,10 +35,8 @@ extension TerminalView {
     }
 
     func completeOfficialMCPSetupFlow() {
-        AppSettings.mcpReconnectNeeded = false
         isShowingOfficialMCPSetupPanel = false
         starterPackWelcomeBannerDismissed = true
-        currentWelcomeArchiveMode = nil
         showWelcomeSuggestionsPanel()
     }
 
@@ -63,7 +44,6 @@ extension TerminalView {
         // Orion: the lennysdata.com auth-key card is permanently disabled.
         // Orbit content is free; Orion should never block the user behind
         // an auth prompt for an upstream service it doesn't even use.
-        AppSettings.mcpReconnectNeeded = false
         isShowingOfficialMCPSetupPanel = false
     }
 
@@ -92,25 +72,10 @@ extension TerminalView {
             return
         }
 
-        // MCP reconnect: persisted failure flag from a previous turn.
-        // Proactive: token-based path selected but no token saved yet (first-run / unconfigured).
-        // Native MCP (codex mcp add / codex mcp login) is self-sufficient — no app token needed.
-        let hasNativeMCPConfig = AppSettings.detectedOfficialMCPSources.contains(.claudeGlobalConfig)
-            || AppSettings.detectedOfficialMCPSources.contains(.codexGlobalConfig)
-        let hasWorkingToken = AppSettings.officialLennyMCPToken != nil
-            || AppSettings.shellEnvironmentOfficialMCPToken() != nil
-        let needsTokenSetup = !hasNativeMCPConfig
-            && AppSettings.effectiveArchiveAccessMode == .officialMCP
-            && !hasWorkingToken
-            && !mcpSetupBannerDismissedThisSession
-        let shouldPromptMCPSetup = AppSettings.mcpReconnectNeeded
-            || isShowingOfficialMCPSetupPanel
-            || needsTokenSetup
-
-        if shouldPromptMCPSetup {
-            showOfficialMCPSetupPanel()
-            return
-        }
+        // Orion: the official-Lenny-MCP / archive-token setup flow was
+        // removed with the archive subsystem. Orion never blocks behind an
+        // MCP auth prompt, so we go straight to the business-context nudge
+        // and the welcome chips.
 
         // First-launch (or post-version-bump-with-empty-context) survey
         // nudge. Lives above the chips so users see it the first time
@@ -191,11 +156,7 @@ extension TerminalView {
 
     func firstRunConfigurationSignature() -> String {
         [
-            "welcome:\(welcomePreviewMode.rawValue)",
-            "archive:\(AppSettings.archiveAccessMode.rawValue)",
             "transport:\(AppSettings.preferredTransport.rawValue)",
-            "official:\(AppSettings.hasDetectedOfficialMCPConfiguration ? "1" : "0")",
-            "token:\(AppSettings.officialLennyMCPToken != nil ? "1" : "0")",
             "openai:\(AppSettings.openAIAPIKey != nil ? "1" : "0")",
             "setup:\(requiresInitialConnectionSetup ? "1" : "0")",
             "bizctx:\(AppSettings.businessContext != nil ? "1" : "0")",
@@ -209,10 +170,8 @@ extension TerminalView {
 
         lastObservedFirstRunConfigurationSignature = signature
         starterPackWelcomeBannerDismissed = false
-        currentWelcomeArchiveMode = nil
         currentWelcomeSuggestions = []
         lastRenderedWelcomeSignature = nil
-        lastObservedWelcomePreviewMode = welcomePreviewMode
 
         guard isShowingInitialWelcomeState, !isExpertMode else { return }
 

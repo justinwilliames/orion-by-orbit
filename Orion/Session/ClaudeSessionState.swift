@@ -81,6 +81,36 @@ extension ClaudeSession {
         onTurnComplete?()
     }
 
+    /// Publish any staged expert candidates to the UI once a turn completes.
+    /// Relocated from the deleted ClaudeSessionTransport+Archive.swift. With
+    /// the archive/expert-extraction subsystem removed, `pendingExperts` is
+    /// never populated in Orion, so this is effectively a no-op — but the
+    /// expert-suggestion UI wiring still calls it, so it survives.
+    func publishPendingExperts(fallbackText: String? = nil) {
+        let experts = pendingExperts
+        pendingExperts.removeAll()
+        let assistantRequestedExperts = assistantExplicitlyRequestedExperts
+        assistantExplicitlyRequestedExperts = false
+
+        guard assistantRequestedExperts else {
+            if let fallbackText, fallbackText.contains("\"answer_markdown\"") {
+                SessionDebugLogger.log("experts", "skipping staged experts because assistant output was not parsed cleanly")
+            } else {
+                SessionDebugLogger.log("experts", "skipping staged experts because assistant did not explicitly request them")
+            }
+            return
+        }
+
+        guard !experts.isEmpty else {
+            SessionDebugLogger.log("experts", "no staged experts to publish")
+            return
+        }
+
+        let names = experts.map(\.name).joined(separator: ", ")
+        SessionDebugLogger.log("experts", "publishing \(experts.count) expert candidate(s) after response completion: \(names)")
+        onExpertsUpdated?(experts)
+    }
+
     func failTurn(_ text: String) {
         failTurn(text, conversationKey: key(for: focusedExpert))
     }
@@ -92,6 +122,75 @@ extension ClaudeSession {
         appendHistory(Message(role: .error, text: text), to: conversationKey)
         onError?(text)
         onTurnComplete?()
+    }
+
+    // MARK: - General text helpers
+    //
+    // Relocated from the deleted expert-catalog / expert-resolution files.
+    // These are NOT expert-specific — they back the surviving core chat path
+    // (conversation keying below, structured-JSON cleanup in
+    // ClaudeSessionCLIParsing, CLI-error normalisation) — so they survive the
+    // Lenny subsystem removal.
+
+    /// Lowercase + strip non-alphanumerics. Used to build stable conversation
+    /// keys and to compare speaker names case/punctuation-insensitively.
+    func normalize(_ text: String) -> String {
+        text.lowercased().replacingOccurrences(of: "[^a-z0-9]", with: "", options: .regularExpression)
+    }
+
+    /// Strip structured-JSON remnants and the (now-removed) expert-suggestion
+    /// tags from a raw model output so a degraded fallback shows clean prose
+    /// instead of a leaking JSON envelope.
+    func cleanedAssistantText(_ text: String) -> String {
+        var cleaned = text
+            .replacingOccurrences(
+                of: #"\s*<LIL_AGENTS_EXPERTS>[\s\S]*?</LIL_AGENTS_EXPERTS>\s*"#,
+                with: "\n",
+                options: .regularExpression
+            )
+
+        // Strip structural JSON remnants if the model output malformed JSON chunks
+        // e.g. leading `{ "answer_markdown": "`
+        cleaned = cleaned.replacingOccurrences(
+            of: #"^\s*\{\s*"answer_markdown"\s*:\s*""#,
+            with: "",
+            options: .regularExpression
+        )
+        // e.g. trailing `", "suggested_experts": [...] }`
+        cleaned = cleaned.replacingOccurrences(
+            of: #"\",?\s*"suggested_experts"[\s\S]*$"#,
+            with: "",
+            options: .regularExpression
+        )
+        cleaned = cleaned.replacingOccurrences(
+            of: #"\",?\s*"suggest_expert_prompt"[\s\S]*$"#,
+            with: "",
+            options: .regularExpression
+        )
+
+        // Unescape escaped quotes and newlines if it still looks like a JSON string block
+        cleaned = cleaned.replacingOccurrences(of: "\\\"", with: "\"")
+        cleaned = cleaned.replacingOccurrences(of: "\\n", with: "\n")
+
+        // Run a second cleanup pass after unescaping. Some model outputs leak the
+        // structured JSON tail as plain text.
+        cleaned = cleaned.replacingOccurrences(
+            of: #"\n?\s*",?\s*"suggested_experts"\s*:\s*\[[\s\S]*$"#,
+            with: "",
+            options: .regularExpression
+        )
+        cleaned = cleaned.replacingOccurrences(
+            of: #"\n?\s*",?\s*"suggest_expert_prompt"\s*:\s*(true|false)[\s\S]*$"#,
+            with: "",
+            options: .regularExpression
+        )
+        cleaned = cleaned.replacingOccurrences(
+            of: #"\n?\s*\}\s*$"#,
+            with: "",
+            options: .regularExpression
+        )
+
+        return cleaned.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     func buildInstructions(for expert: ResponderExpert?, expectMCP: Bool) -> String {

@@ -35,7 +35,12 @@ private enum ExpertSwitcherCatalog {
         }
         lock.unlock()
 
-        var entries: [ExpertSwitcherEntry] = [
+        // Orion is single-persona: the guest-expert catalog (avatars, canonical
+        // names, GuestTitles) was removed with the archive subsystem. The
+        // switcher only ever offers the Orion row (its button is hidden +
+        // disabled anyway — see createPopoverWindow()).
+        _ = session
+        let entries: [ExpertSwitcherEntry] = [
             ExpertSwitcherEntry(
                 id: "orion",
                 name: "Orion",
@@ -44,24 +49,6 @@ private enum ExpertSwitcherCatalog {
                 destination: .orion
             )
         ]
-
-        let canonicalNames = session.knownExpertNames()
-            .compactMap { session.canonicalExpertName(for: $0) ?? (session.shouldAllowExpertSuggestionName($0) ? $0 : nil) }
-            .sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
-
-        var seenNames = Set<String>()
-        for name in canonicalNames where seenNames.insert(name).inserted {
-            guard let avatarPath = session.avatarPath(for: name) ?? session.genericExpertAvatarPath() else { continue }
-            entries.append(
-                ExpertSwitcherEntry(
-                    id: "expert:\(name)",
-                    name: name,
-                    title: session.title(forExpertNamed: name),
-                    avatarPath: avatarPath,
-                    destination: .expert(name: name, avatarPath: avatarPath)
-                )
-            )
-        }
 
         lock.lock()
         cachedEntries = entries
@@ -867,21 +854,18 @@ extension WalkerCharacter {
                 guard self.focusedExpert != nil else { return }
                 self.controller?.returnToGenie()
             case .expert(let name, let avatarPath):
-                if let focusedExpert = self.focusedExpert,
-                   focusedExpert.name == name {
+                // Orion is single-persona: the expert catalog was removed, so
+                // the switcher never surfaces expert entries. This branch is
+                // unreachable, but we build a bare ResponderExpert (no
+                // GuestTitles / archive context) to keep the switch exhaustive.
+                if let focusedExpert = self.focusedExpert, focusedExpert.name == name {
                     return
                 }
-                let archiveContext = "Manual expert switch for \(name)."
-                let expert = self.claudeSession?.makeResponderExpert(
+                let expert = ResponderExpert(
                     name: name,
                     avatarPath: avatarPath,
-                    archiveContext: archiveContext
-                ) ?? ResponderExpert(
-                    name: name,
-                    title: self.claudeSession?.title(forExpertNamed: name),
-                    avatarPath: avatarPath,
-                    archiveContext: archiveContext,
-                    responseScript: self.claudeSession?.responseScript(for: name, context: archiveContext) ?? ""
+                    archiveContext: "",
+                    responseScript: ""
                 )
                 self.controller?.focus(on: expert)
             }

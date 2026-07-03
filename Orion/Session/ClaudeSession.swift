@@ -74,8 +74,6 @@ final class ClaudeSession {
     static var shellEnvironment: [String: String]?
     static var shellEnvironmentResolvedAt: Date?
     static var openAIKey: String?
-    private(set) var cachedOfficialArchiveToken: String?
-    private(set) var cachedOfficialArchiveClient: LennyArchiveClient?
 
     func selectedClaudeModel() -> String? {
         let model = AppSettings.preferredClaudeModel
@@ -101,21 +99,5 @@ final class ClaudeSession {
 
     func selectedOpenAIModelLabel() -> String {
         AppSettings.preferredOpenAIModel.label
-    }
-
-    func officialArchiveClient(token: String) throws -> LennyArchiveClient {
-        if cachedOfficialArchiveToken == token, let cachedOfficialArchiveClient {
-            return cachedOfficialArchiveClient
-        }
-
-        let client = try LennyArchiveClient(token: token)
-        cachedOfficialArchiveToken = token
-        cachedOfficialArchiveClient = client
-        return client
-    }
-
-    func resetOfficialArchiveClient() {
-        cachedOfficialArchiveToken = nil
-        cachedOfficialArchiveClient = nil
     }
 }

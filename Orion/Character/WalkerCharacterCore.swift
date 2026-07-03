@@ -1,6 +1,24 @@
 import AppKit
 
 extension WalkerCharacter {
+    // PHASE 2 / Lenny-removal — the floating "Ask <Expert>" name tag was a
+    // sprite decoration (a borderless window pinned above the walking
+    // character's head). The visible sprite is gone and the guest-expert
+    // subsystem was removed, so the tag has nothing to anchor and no
+    // purpose. These are inert no-ops retained so the many call sites in the
+    // kept chat/session code keep resolving without edits. Relocated here
+    // from the deleted WalkerCharacterExpertTag.swift; `expertNameWindow` is
+    // never created, so both are cheap.
+    func updateExpertNameTag() {
+        // No-op: the sprite name-tag window is gone.
+    }
+
+    func hideExpertNameTag() {
+        if expertNameWindow?.isVisible ?? false {
+            expertNameWindow?.orderOut(nil)
+        }
+    }
+
     func setup() {
         // PHASE 2 — the visible walking sprite has been removed. Orion is
         // now a HEADLESS chat host: the chat popover is summoned from the

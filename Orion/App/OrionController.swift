@@ -90,21 +90,11 @@ class OrionController {
     }
 
     func debugExpertSuggestions() -> [ResponderExpert] {
-        let session = ClaudeSession()
-        let names = ["Claire Butler", "Madhavan Ramanujam", "Patrick Campbell"]
-
-        let experts = names.compactMap { name -> ResponderExpert? in
-            guard let avatarPath = session.avatarPath(for: name) ?? session.genericExpertAvatarPath() else { return nil }
-            return ResponderExpert(
-                name: name,
-                avatarPath: avatarPath,
-                archiveContext: "Debug expert suggestion preview for \(name).",
-                responseScript: "Debug expert handoff for \(name)."
-            )
-        }
-
-        updateExperts(experts)
-        return experts
+        // Orion is single-persona: the guest-expert catalog (avatars, GuestTitles)
+        // was removed with the archive subsystem, so there are no expert
+        // suggestions to preview. Returns empty.
+        updateExperts([])
+        return []
     }
 
     func clearDebugExpertSuggestions() {

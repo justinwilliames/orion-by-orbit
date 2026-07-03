@@ -249,8 +249,10 @@ extension WalkerCharacter {
     }
 
     func detectedLiveExperts(from text: String) -> [ResponderExpert] {
-        guard let session = claudeSession else { return [] }
-        return session.expertsFromAssistantText(text)
+        // Orion is single-persona: the expert-extraction subsystem was removed,
+        // so no experts are ever detected from assistant text.
+        _ = text
+        return []
     }
 
     func mergedLiveExperts(_ explicitExperts: [ResponderExpert], from text: String) -> [ResponderExpert] {
