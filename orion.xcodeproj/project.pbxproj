@@ -60,7 +60,6 @@
 		A10000010000000000000066 /* HoverButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000066 /* HoverButton.swift */; };
 		A10000010000000000000067 /* TerminalView+WelcomePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000067 /* TerminalView+WelcomePanel.swift */; };
 		A10000010000000000000068 /* TerminalView+LiveStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000068 /* TerminalView+LiveStatus.swift */; };
-		A10000010000000000000071 /* ClaudeSessionGitHubFetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000071 /* ClaudeSessionGitHubFetch.swift */; };
 		A10000010000000000000072 /* AppSettings+Detection.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000072 /* AppSettings+Detection.swift */; };
 		A10000010000000000000076 /* ClaudeSessionTransport+Diagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000020000000000000076 /* ClaudeSessionTransport+Diagnostics.swift */; };
 		A10000110000000000000002 /* ExpertAvatars in Resources */ = {isa = PBXBuildFile; fileRef = A10000120000000000000002 /* ExpertAvatars */; };
@@ -155,7 +154,6 @@
 		A10000020000000000000066 /* HoverButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HoverButton.swift; sourceTree = "<group>"; };
 		A10000020000000000000067 /* TerminalView+WelcomePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+WelcomePanel.swift"; sourceTree = "<group>"; };
 		A10000020000000000000068 /* TerminalView+LiveStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TerminalView+LiveStatus.swift"; sourceTree = "<group>"; };
-		A10000020000000000000071 /* ClaudeSessionGitHubFetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaudeSessionGitHubFetch.swift; sourceTree = "<group>"; };
 		A10000020000000000000072 /* AppSettings+Detection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettings+Detection.swift"; sourceTree = "<group>"; };
 		A10000020000000000000076 /* ClaudeSessionTransport+Diagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ClaudeSessionTransport+Diagnostics.swift"; sourceTree = "<group>"; };
 		A10000030000000000000001 /* Orion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Orion.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -299,7 +297,6 @@
 				2AD260B3BA9C4BCF90E35E5E /* ClaudeSessionCLIParsing+ValueExtraction.swift */,
 				A10000020000000000000050 /* ClaudeSessionOpenAI.swift */,
 				A10000020000000000000052 /* ClaudeSessionSupport.swift */,
-				A10000020000000000000071 /* ClaudeSessionGitHubFetch.swift */,
 				A10000020000000000000044 /* SessionDebugLogger.swift */,
 				BC0000020000000000000005 /* MarkdownToSlack.swift */,
 				BC0000020000000000000013 /* MarkdownToHTML.swift */,
@@ -507,7 +504,6 @@
 				A10000010000000000000036 /* ClaudeSessionModels.swift in Sources */,
 				A10000010000000000000037 /* ClaudeSessionState.swift in Sources */,
 				A10000010000000000000050 /* ClaudeSessionOpenAI.swift in Sources */,
-				A10000010000000000000071 /* ClaudeSessionGitHubFetch.swift in Sources */,
 				A10000010000000000000052 /* ClaudeSessionSupport.swift in Sources */,
 				A10000010000000000000039 /* ClaudeSessionTransport.swift in Sources */,
 				A10000010000000000000076 /* ClaudeSessionTransport+Diagnostics.swift in Sources */,
