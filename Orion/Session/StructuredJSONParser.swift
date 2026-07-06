@@ -121,6 +121,44 @@ enum StructuredJSONParser {
         return unescapeJSONString(String(outputText[captureRange]))
     }
 
+    /// Streaming-safe display text. While a structured response streams
+    /// in, the `markdown` value has no closing quote yet, so the
+    /// complete-match fallbacks return nil and the raw JSON envelope
+    /// leaks to the user. This peels the `markdown` value out even when
+    /// it's still open — extracting everything after `"markdown":"` up
+    /// to the first unescaped quote (or end of stream), unescaping as it
+    /// goes. Non-structured prose (doesn't start with `{`, or has no
+    /// `markdown` field) is returned unchanged, so it's a safe no-op on
+    /// the final clean displayText too.
+    static func streamingDisplayText(from raw: String) -> String {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard trimmed.hasPrefix("{"),
+              let marker = trimmed.range(of: #"\"markdown\"\s*:\s*\""#, options: .regularExpression) else {
+            return raw
+        }
+        var result = ""
+        var escaping = false
+        for ch in trimmed[marker.upperBound...] {
+            if escaping {
+                switch ch {
+                case "n": result.append("\n")
+                case "r": result.append("\r")
+                case "t": result.append("\t")
+                case "\"": result.append("\"")
+                case "\\": result.append("\\")
+                case "/": result.append("/")
+                default: result.append(ch)
+                }
+                escaping = false
+                continue
+            }
+            if ch == "\\" { escaping = true; continue }
+            if ch == "\"" { break }   // closing quote → end of the markdown value
+            result.append(ch)
+        }
+        return result.isEmpty ? raw : result
+    }
+
     // MARK: - Internal helpers (visible for testing)
 
     /// Single-candidate parse with strict-then-sanitised retry.

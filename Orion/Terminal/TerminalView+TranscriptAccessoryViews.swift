@@ -162,14 +162,12 @@ class TranscriptStatusView: NSView {
             return
         }
 
-        guard let image = resolvedLennyAvatarImage() else { return }
+        guard let image = NSImage(named: "OrbitBadge") ?? NSImage(named: NSImage.applicationIconName) else { return }
 
         let avatarShell = NSView()
         avatarShell.wantsLayer = true
-        avatarShell.layer?.cornerRadius = avatarSize / 2
+        avatarShell.layer?.cornerRadius = 7
         avatarShell.layer?.masksToBounds = true
-        avatarShell.layer?.borderWidth = 1.5
-        avatarShell.layer?.borderColor = theme.inputBg.cgColor
         avatarShell.translatesAutoresizingMaskIntoConstraints = false
         avatarContainer.addSubview(avatarShell)
 

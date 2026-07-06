@@ -38,8 +38,11 @@ extension WalkerCharacter {
             tv.appendStreamingText(delta)
         }
 
-        session.onText = { [weak self] text in
+        session.onText = { [weak self] rawText in
             guard let self, let tv = self.terminalView else { return }
+            // Peel the streaming `markdown` value out of the structured
+            // JSON envelope so raw JSON never shows while a reply streams.
+            let text = StructuredJSONParser.streamingDisplayText(from: rawText)
             let trimmedIncoming = text.trimmingCharacters(in: .whitespacesAndNewlines)
             let trimmedCurrent = tv.currentAssistantText.trimmingCharacters(in: .whitespacesAndNewlines)
 
