@@ -273,7 +273,7 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
         if let avatarPath = speaker.avatarPath {
             image = resolvedAvatarImage(at: avatarPath)
         } else if speaker.kind == .orion {
-            image = NSImage(named: NSImage.applicationIconName) ?? NSImage(named: "AppIcon")
+            image = NSImage(named: "OrbitBadge") ?? NSImage(named: NSImage.applicationIconName)
             isOrbitBadge = (image != nil)
         } else {
             image = nil
@@ -287,9 +287,12 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
             avatarView.translatesAutoresizingMaskIntoConstraints = false
             if isOrbitBadge {
                 // Drop the container's circle border + clip to a rounded
-                // squircle so the app icon shows as an Orbit badge.
+                // squircle so the Orbit badge (planet filling an indigo
+                // square) reads as a tidy rounded logo.
+                avatarView.imageScaling = .scaleAxesIndependently
                 avatarContainer.layer?.borderWidth = 0
                 avatarContainer.layer?.cornerRadius = 7
+                avatarContainer.layer?.masksToBounds = true
             }
             avatarContainer.addSubview(avatarView)
             NSLayoutConstraint.activate([

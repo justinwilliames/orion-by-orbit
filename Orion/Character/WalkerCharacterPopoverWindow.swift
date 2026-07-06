@@ -635,8 +635,8 @@ extension WalkerCharacter {
         // The running app's icon = the indigo Orbit squircle. applicationIconName
         // is the reliable runtime handle (an .appiconset isn't loadable by its
         // catalog name); fall back to a named asset just in case.
-        iconBadge.image = NSImage(named: NSImage.applicationIconName) ?? NSImage(named: "AppIcon")
-        iconBadge.imageScaling = .scaleProportionallyUpOrDown
+        iconBadge.image = NSImage(named: "OrbitBadge") ?? NSImage(named: NSImage.applicationIconName)
+        iconBadge.imageScaling = .scaleAxesIndependently
         iconBadge.wantsLayer = true
         iconBadge.layer?.cornerRadius = 9
         iconBadge.layer?.masksToBounds = true
