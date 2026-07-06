@@ -638,8 +638,10 @@ extension WalkerCharacter {
         iconBadge.image = NSImage(named: NSImage.applicationIconName) ?? NSImage(named: "AppIcon")
         iconBadge.imageScaling = .scaleProportionallyUpOrDown
         iconBadge.wantsLayer = true
-        iconBadge.layer?.cornerRadius = 8
+        iconBadge.layer?.cornerRadius = 9
         iconBadge.layer?.masksToBounds = true
+        iconBadge.layer?.borderWidth = 1
+        iconBadge.layer?.borderColor = t.textDim.withAlphaComponent(0.5).cgColor
         iconBadge.isHidden = (focusedExpert != nil)
         popoverIconBadge = iconBadge
 
@@ -705,8 +707,8 @@ extension WalkerCharacter {
             switcherButton.widthAnchor.constraint(equalToConstant: 18),
             switcherButton.heightAnchor.constraint(equalToConstant: 18),
 
-            iconBadge.widthAnchor.constraint(equalToConstant: 25),
-            iconBadge.heightAnchor.constraint(equalToConstant: 25),
+            iconBadge.widthAnchor.constraint(equalToConstant: 38),
+            iconBadge.heightAnchor.constraint(equalToConstant: 38),
 
             headerStack.leadingAnchor.constraint(equalTo: titleBar.leadingAnchor, constant: 18),
             headerStack.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -12),
