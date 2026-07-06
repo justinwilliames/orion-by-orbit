@@ -640,8 +640,6 @@ extension WalkerCharacter {
         iconBadge.wantsLayer = true
         iconBadge.layer?.cornerRadius = 9
         iconBadge.layer?.masksToBounds = true
-        iconBadge.layer?.borderWidth = 1
-        iconBadge.layer?.borderColor = t.textDim.withAlphaComponent(0.5).cgColor
         iconBadge.isHidden = (focusedExpert != nil)
         popoverIconBadge = iconBadge
 
