@@ -298,12 +298,10 @@ struct PopoverTheme {
     /// stand-in). Falls back to plain system semibold if the rounded
     /// design descriptor is unavailable.
     static func wordmarkFont(size: CGFloat = 15) -> NSFont {
-        let base = NSFont.systemFont(ofSize: size, weight: .semibold)
-        if let rounded = base.fontDescriptor.withDesign(.rounded),
-           let font = NSFont(descriptor: rounded, size: size) {
-            return font
-        }
-        return base
+        // Plain SF Pro semibold — same face as the bubble speaker label
+        // ("Orbit"), so the two never read as different fonts. Sharp, not
+        // rounded, which also sits closer to get-orbit's grotesque wordmark.
+        NSFont.systemFont(ofSize: size, weight: .semibold)
     }
 
     static let allThemes: [PopoverTheme] = [.orbitDark, .orbitLight]
