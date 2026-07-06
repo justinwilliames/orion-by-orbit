@@ -59,7 +59,10 @@ class HoverChipView: NSView {
         let textLabel = NSTextField(labelWithString: label)
         textLabel.font = NSFont.systemFont(ofSize: 12.5, weight: .regular)
         textLabel.textColor = theme.textPrimary
-        textLabel.lineBreakMode = .byWordWrapping
+        // Clamp to 2 lines and let AppKit truncate cleanly at a word
+        // boundary with a trailing ellipsis, rather than showing a raw
+        // mid-phrase cut baked into the source string.
+        textLabel.lineBreakMode = .byTruncatingTail
         textLabel.maximumNumberOfLines = 2
         textLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         textLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -261,7 +264,12 @@ class WelcomeChipsView: NSView {
             rowStack.translatesAutoresizingMaskIntoConstraints = false
 
             for (symbol, label, sendText) in pair {
-                let chip = HoverChipView(symbol: symbol, label: label, theme: theme)
+                // The middle tuple element is a hand-truncated preview that
+                // ends in a raw mid-phrase "…"; the third element is the full
+                // clean title. Show the full title and let the label clamp
+                // it cleanly (see HoverChipView) — never the pre-mangled cut.
+                _ = label
+                let chip = HoverChipView(symbol: symbol, label: sendText, theme: theme)
                 chip.onTapped = { [weak self] in self?.onChipTapped?(sendText) }
                 rowStack.addArrangedSubview(chip)
             }

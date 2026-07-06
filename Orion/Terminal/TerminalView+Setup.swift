@@ -199,9 +199,9 @@ extension TerminalView {
         attachButton.autoresizingMask = [.minXMargin]
         attachButton.isBordered = false
         attachButton.wantsLayer = true
-        attachButton.normalBg = t.separatorColor.withAlphaComponent(0.14).cgColor
-        attachButton.hoverBg = t.separatorColor.withAlphaComponent(0.28).cgColor
-        attachButton.layer?.backgroundColor = t.separatorColor.withAlphaComponent(0.14).cgColor
+        attachButton.normalBg = NSColor.clear.cgColor
+        attachButton.hoverBg = t.separatorColor.withAlphaComponent(0.16).cgColor
+        attachButton.layer?.backgroundColor = NSColor.clear.cgColor
         attachButton.layer?.cornerRadius = controlButtonSize / 2
         if let img = NSImage(systemSymbolName: "paperclip", accessibilityDescription: "Attach file") {
             let config = NSImage.SymbolConfiguration(pointSize: 12, weight: .medium)

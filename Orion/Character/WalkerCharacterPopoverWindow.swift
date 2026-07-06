@@ -576,9 +576,9 @@ extension WalkerCharacter {
         settingsButton.autoresizingMask = .minXMargin
         settingsButton.isBordered = false
         settingsButton.wantsLayer = true
-        settingsButton.normalBg = t.separatorColor.withAlphaComponent(0.10).cgColor
-        settingsButton.hoverBg = t.separatorColor.withAlphaComponent(0.22).cgColor
-        settingsButton.layer?.backgroundColor = t.separatorColor.withAlphaComponent(0.10).cgColor
+        settingsButton.normalBg = NSColor.clear.cgColor
+        settingsButton.hoverBg = t.separatorColor.withAlphaComponent(0.16).cgColor
+        settingsButton.layer?.backgroundColor = NSColor.clear.cgColor
         settingsButton.layer?.cornerRadius = controlButtonSize / 2
         if let image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: "Open settings") {
             let config = NSImage.SymbolConfiguration(pointSize: 10, weight: .medium)
@@ -600,9 +600,9 @@ extension WalkerCharacter {
         toolboxButton.autoresizingMask = .minXMargin
         toolboxButton.isBordered = false
         toolboxButton.wantsLayer = true
-        toolboxButton.normalBg = t.separatorColor.withAlphaComponent(0.10).cgColor
-        toolboxButton.hoverBg = t.separatorColor.withAlphaComponent(0.22).cgColor
-        toolboxButton.layer?.backgroundColor = t.separatorColor.withAlphaComponent(0.10).cgColor
+        toolboxButton.normalBg = NSColor.clear.cgColor
+        toolboxButton.hoverBg = t.separatorColor.withAlphaComponent(0.16).cgColor
+        toolboxButton.layer?.backgroundColor = NSColor.clear.cgColor
         toolboxButton.layer?.cornerRadius = controlButtonSize / 2
         if let image = NSImage(systemSymbolName: "wrench.and.screwdriver", accessibilityDescription: "Quick tools") {
             let config = NSImage.SymbolConfiguration(pointSize: 11, weight: .medium)
@@ -656,9 +656,9 @@ extension WalkerCharacter {
         clearButton.autoresizingMask = .minXMargin
         clearButton.isBordered = false
         clearButton.wantsLayer = true
-        clearButton.normalBg = t.separatorColor.withAlphaComponent(0.10).cgColor
-        clearButton.hoverBg = t.separatorColor.withAlphaComponent(0.22).cgColor
-        clearButton.layer?.backgroundColor = t.separatorColor.withAlphaComponent(0.10).cgColor
+        clearButton.normalBg = NSColor.clear.cgColor
+        clearButton.hoverBg = t.separatorColor.withAlphaComponent(0.16).cgColor
+        clearButton.layer?.backgroundColor = NSColor.clear.cgColor
         clearButton.layer?.cornerRadius = controlButtonSize / 2
         // Prefer the modern "new message" SF Symbol; fall back to the
         // older compose glyph; fall back again to a literal "+" title
@@ -687,9 +687,9 @@ extension WalkerCharacter {
         closeButton.autoresizingMask = .minXMargin
         closeButton.isBordered = false
         closeButton.wantsLayer = true
-        closeButton.normalBg = t.separatorColor.withAlphaComponent(0.10).cgColor
+        closeButton.normalBg = NSColor.clear.cgColor
         closeButton.hoverBg = t.errorColor.withAlphaComponent(0.20).cgColor
-        closeButton.layer?.backgroundColor = t.separatorColor.withAlphaComponent(0.10).cgColor
+        closeButton.layer?.backgroundColor = NSColor.clear.cgColor
         closeButton.layer?.cornerRadius = controlButtonSize / 2
         if let image = NSImage(systemSymbolName: "xmark", accessibilityDescription: "Close") {
             let config = NSImage.SymbolConfiguration(pointSize: 9, weight: .bold)

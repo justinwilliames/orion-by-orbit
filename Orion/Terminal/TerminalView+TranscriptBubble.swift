@@ -256,11 +256,25 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
         avatarContainer.subviews.forEach { $0.removeFromSuperview() }
         guard !isUser else { return }
 
+        // Reset to the default bordered-circle look each time so a prior
+        // Orbit-badge population (border off, tighter radius) doesn't leak
+        // into a re-populated expert avatar in the same bubble.
+        avatarContainer.layer?.cornerRadius = 14
+        avatarContainer.layer?.borderWidth = 1
+        avatarContainer.layer?.borderColor = theme.separatorColor.withAlphaComponent(0.30).cgColor
+
+        // Assistant (.orion) replies wear the Orbit identity: the app's own
+        // indigo squircle icon, rendered as a small rounded badge (matching
+        // the header badge). No border/stroke and no template tint so the
+        // full-colour icon reads cleanly. Expert speakers keep their explicit
+        // avatarPath; the character sprite is no longer used as the badge.
         let image: NSImage?
+        var isOrbitBadge = false
         if let avatarPath = speaker.avatarPath {
             image = resolvedAvatarImage(at: avatarPath)
         } else if speaker.kind == .orion {
-            image = resolvedLennyAvatarImage()
+            image = NSImage(named: NSImage.applicationIconName) ?? NSImage(named: "AppIcon")
+            isOrbitBadge = (image != nil)
         } else {
             image = nil
         }
@@ -271,6 +285,12 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
             avatarView.imageScaling = .scaleProportionallyUpOrDown
             avatarView.imageAlignment = .alignCenter
             avatarView.translatesAutoresizingMaskIntoConstraints = false
+            if isOrbitBadge {
+                // Drop the container's circle border + clip to a rounded
+                // squircle so the app icon shows as an Orbit badge.
+                avatarContainer.layer?.borderWidth = 0
+                avatarContainer.layer?.cornerRadius = 7
+            }
             avatarContainer.addSubview(avatarView)
             NSLayoutConstraint.activate([
                 avatarView.topAnchor.constraint(equalTo: avatarContainer.topAnchor),
@@ -282,7 +302,7 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
         }
 
         let icon = NSImageView()
-        let symbolName = speaker.kind == .orion ? "sparkles" : "person.crop.circle.fill"
+        let symbolName = speaker.kind == .orion ? "app.badge" : "person.crop.circle.fill"
         if let image = NSImage(systemSymbolName: symbolName, accessibilityDescription: nil) {
             let config = NSImage.SymbolConfiguration(pointSize: 13, weight: .medium)
             icon.image = image.withSymbolConfiguration(config)
