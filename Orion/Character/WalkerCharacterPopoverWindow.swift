@@ -708,7 +708,7 @@ extension WalkerCharacter {
             iconBadge.widthAnchor.constraint(equalToConstant: 38),
             iconBadge.heightAnchor.constraint(equalToConstant: 38),
 
-            headerStack.leadingAnchor.constraint(equalTo: titleBar.leadingAnchor, constant: 18),
+            headerStack.leadingAnchor.constraint(equalTo: titleBar.leadingAnchor, constant: 16),
             headerStack.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -12),
             headerStack.centerYAnchor.constraint(equalTo: titleBar.centerYAnchor, constant: -1)
         ])

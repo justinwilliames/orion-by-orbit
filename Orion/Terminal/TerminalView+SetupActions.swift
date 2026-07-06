@@ -10,10 +10,9 @@ extension TerminalView {
         }
 
         if isShowingInitialWelcomeState {
-            transcriptStack.arrangedSubviews.forEach { view in
-                transcriptStack.removeArrangedSubview(view)
-                view.removeFromSuperview()
-            }
+            // Keep the intro greeting bubble as the conversation's first
+            // message so what the user sends flows beneath it — instead of
+            // wiping the transcript and feeling like a brand-new window.
             transcriptSuggestionView = nil
             transcriptLiveStatusView = nil
             currentAssistantText = ""
