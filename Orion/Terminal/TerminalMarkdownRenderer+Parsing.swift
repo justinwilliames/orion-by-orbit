@@ -26,9 +26,11 @@ extension TerminalMarkdownRenderer {
                 result.append(NSAttributedString(
                     string: code,
                     attributes: [
+                        // Inline code: SF Mono, soft-indigo #818CF8 tint on a
+                        // faint indigo wash.
                         .font: NSFont.monospacedSystemFont(ofSize: t.font.pointSize - 0.5, weight: .regular),
-                        .foregroundColor: t.accentColor,
-                        .backgroundColor: t.inputBg
+                        .foregroundColor: PopoverTheme.softAccent,
+                        .backgroundColor: t.accentColor.withAlphaComponent(0.12)
                     ]
                 ))
                 index = text.index(after: closeIndex)
@@ -62,7 +64,7 @@ extension TerminalMarkdownRenderer {
             if let linkRange = markdownLink(in: text, from: index) {
                 var attributes: [NSAttributedString.Key: Any] = [
                     .font: t.font,
-                    .foregroundColor: t.accentColor,
+                    .foregroundColor: PopoverTheme.softAccent,   // links in soft-indigo
                     .underlineStyle: NSUnderlineStyle.single.rawValue
                 ]
                 if let url = URL(string: linkRange.url) {
@@ -77,7 +79,7 @@ extension TerminalMarkdownRenderer {
             if let urlRange = rawURL(in: text, from: index) {
                 var attributes: [NSAttributedString.Key: Any] = [
                     .font: t.font,
-                    .foregroundColor: t.accentColor,
+                    .foregroundColor: PopoverTheme.softAccent,   // raw URLs in soft-indigo
                     .underlineStyle: NSUnderlineStyle.single.rawValue
                 ]
                 if let url = URL(string: urlRange.url) {

@@ -78,7 +78,8 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
         headerRow.addArrangedSubview(avatarContainer)
 
         headerLabel.font = NSFont.systemFont(ofSize: 11, weight: .semibold)
-        headerLabel.textColor = isUser ? theme.textDim : theme.accentColor
+        // Assistant speaker label ("Orbit") in soft-indigo #818CF8.
+        headerLabel.textColor = isUser ? theme.textDim : PopoverTheme.softAccent
         headerLabel.alignment = .left
         headerLabel.lineBreakMode = .byTruncatingTail
         headerLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
@@ -102,11 +103,14 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
 
         bubbleBackground.wantsLayer = true
         bubbleBackground.layer?.cornerRadius = theme.bubbleCornerRadius
+        // User bubble: solid indigo fill (#6366F1), white text (applied in
+        // populate). Assistant bubble: subtle surface + hairline border,
+        // uniform radius. No asymmetric tail corner.
         bubbleBackground.layer?.backgroundColor = isUser
-            ? theme.accentColor.withAlphaComponent(0.10).cgColor
+            ? theme.accentColor.cgColor
             : theme.bubbleBg.cgColor
-        bubbleBackground.layer?.borderWidth = isUser ? 0 : 0.75
-        bubbleBackground.layer?.borderColor = theme.separatorColor.withAlphaComponent(0.36).cgColor
+        bubbleBackground.layer?.borderWidth = isUser ? 0 : 1.0
+        bubbleBackground.layer?.borderColor = theme.bubbleBorder.cgColor
         bubbleBackground.translatesAutoresizingMaskIntoConstraints = false
         contentColumn.addArrangedSubview(bubbleBackground)
 
@@ -117,8 +121,10 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
         textView.textContainerInset = textInsets
         textView.translatesAutoresizingMaskIntoConstraints = false
         textView.delegate = self
+        // Links in soft-indigo #818CF8. On the solid-indigo user bubble a
+        // soft-indigo link would vanish, so use white there.
         textView.linkTextAttributes = [
-            .foregroundColor: theme.accentColor,
+            .foregroundColor: isUser ? NSColor.white : PopoverTheme.softAccent,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
 
@@ -223,6 +229,13 @@ class ChatBubbleView: NSView, NSTextViewDelegate {
         configureHeaderVisibility()
         configureTextContainer()
         textView.textStorage?.setAttributedString(text)
+        // User bubble is a solid indigo fill — force the copy white for
+        // contrast (the renderer bakes in textPrimary, which is dark in
+        // light mode and near-white in dark; on indigo we always want white).
+        if isUser, let storage = textView.textStorage {
+            storage.addAttribute(.foregroundColor, value: NSColor.white,
+                                 range: NSRange(location: 0, length: storage.length))
+        }
         updateTextAlignment()
         configureActions(for: speaker)
         recalculateSize()

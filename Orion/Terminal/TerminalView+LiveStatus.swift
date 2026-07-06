@@ -135,7 +135,7 @@ extension TerminalView {
         inputField.isHidden = isBusy
         attachButton.isHidden = isBusy
         composerStatusLabel.isHidden = !isBusy
-        composerStatusLabel.stringValue = isBusy ? "Generating..." : ""
+        composerStatusLabel.stringValue = isBusy ? "Orbit is thinking…" : ""
         sendButton.isHidden = false
         sendButton.toolTip = isBusy ? "Stop" : "Send"
         if let img = NSImage(systemSymbolName: isBusy ? "stop.fill" : "arrow.up", accessibilityDescription: isBusy ? "Stop generation" : "Send message") {
@@ -154,7 +154,7 @@ extension TerminalView {
     func clearLiveStatus() {
         clearTranscriptLiveStatus()
         clearTranscriptApproval()
-        composerStatusLabel.stringValue = "Generating..."
+        composerStatusLabel.stringValue = "Orbit is thinking…"
         composerStatusLabel.isHidden = true
         inputField.isHidden = false
         sendButton.isHidden = false

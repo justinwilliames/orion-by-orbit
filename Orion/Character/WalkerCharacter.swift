@@ -58,6 +58,7 @@ final class WalkerCharacter {
     var expertNameWindow: NSWindow?
     var popoverTitleLabel: NSTextField?
     var popoverSubtitleLabel: NSTextField?
+    var popoverIconBadge: NSImageView?
     var popoverExpertSwitcherButton: HoverButton?
     var popoverReturnButton: NSButton?
     var popoverSettingsButton: HoverButton?

@@ -415,7 +415,11 @@ extension WalkerCharacter {
 
     func refreshPopoverHeader() {
         popoverTitleLabel?.stringValue = focusedExpert?.name ?? resolvedTheme.titleString
-        popoverSubtitleLabel?.stringValue = focusedExpert?.title ?? "Orbit's menu-bar lifecycle assistant."
+        // Confident home header = icon badge + "Orbit" + actions. Only a
+        // focused expert gets a subtitle; the Orbit home has none.
+        popoverSubtitleLabel?.stringValue = focusedExpert?.title ?? ""
+        popoverSubtitleLabel?.isHidden = (focusedExpert?.title == nil)
+        popoverIconBadge?.isHidden = (focusedExpert != nil)
         popoverReturnButton?.isHidden = (focusedExpert == nil)
         terminalView?.setReturnToLennyVisible(focusedExpert != nil)
         updatePopoverExpertSwitcherState()
@@ -514,7 +518,8 @@ extension WalkerCharacter {
 
         let titleLabel = NSTextField(labelWithString: focusedExpert?.name ?? t.titleString)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.font = NSFont.systemFont(ofSize: 17, weight: .semibold)
+        // Wordmark in the theme title font (SF Pro Rounded semibold ≈ 15).
+        titleLabel.font = t.titleFont
         titleLabel.textColor = t.titleText
         titleLabel.lineBreakMode = .byTruncatingTail
         titleLabel.usesSingleLineMode = true
@@ -536,12 +541,17 @@ extension WalkerCharacter {
         switcherButton.isEnabled = false
         popoverExpertSwitcherButton = switcherButton
 
-        let subtitle = NSTextField(labelWithString: focusedExpert?.title ?? "Orbit's menu-bar lifecycle assistant.")
+        // Subtitle retained (an expert focus still shows a title) but the
+        // default "Orbit's menu-bar assistant" clutters a confident header —
+        // when there's no focused expert it stays empty. Header is just the
+        // icon badge + "Orbit" wordmark + quiet actions.
+        let subtitle = NSTextField(labelWithString: focusedExpert?.title ?? "")
         subtitle.translatesAutoresizingMaskIntoConstraints = false
         subtitle.font = NSFont.systemFont(ofSize: 11, weight: .regular)
         subtitle.textColor = t.textDim.withAlphaComponent(0.75)
         subtitle.lineBreakMode = .byTruncatingTail
         subtitle.usesSingleLineMode = true
+        subtitle.isHidden = (focusedExpert?.title == nil)
         popoverSubtitleLabel = subtitle
 
         let controlButtonSize: CGFloat = 28
@@ -616,7 +626,30 @@ extension WalkerCharacter {
         titleTextStack.alignment = .leading
         titleTextStack.spacing = 0
         titleTextStack.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
-        titleBar.addSubview(titleTextStack)
+
+        // App-icon badge — the indigo Orbit squircle at ~25pt, drawn in a
+        // rounded 8pt image view next to the wordmark. Only shown for the
+        // Orbit home header (not when a specific expert is focused).
+        let iconBadge = NSImageView()
+        iconBadge.translatesAutoresizingMaskIntoConstraints = false
+        // The running app's icon = the indigo Orbit squircle. applicationIconName
+        // is the reliable runtime handle (an .appiconset isn't loadable by its
+        // catalog name); fall back to a named asset just in case.
+        iconBadge.image = NSImage(named: NSImage.applicationIconName) ?? NSImage(named: "AppIcon")
+        iconBadge.imageScaling = .scaleProportionallyUpOrDown
+        iconBadge.wantsLayer = true
+        iconBadge.layer?.cornerRadius = 8
+        iconBadge.layer?.masksToBounds = true
+        iconBadge.isHidden = (focusedExpert != nil)
+        popoverIconBadge = iconBadge
+
+        let headerStack = NSStackView(views: [iconBadge, titleTextStack])
+        headerStack.translatesAutoresizingMaskIntoConstraints = false
+        headerStack.orientation = .horizontal
+        headerStack.alignment = .centerY
+        headerStack.spacing = 10
+        headerStack.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        titleBar.addSubview(headerStack)
 
         let clearButton = HoverButton(title: "", target: self, action: #selector(clearConversationTapped))
         clearButton.frame = NSRect(x: clearButtonX, y: (titleBarHeight - controlButtonSize) / 2, width: controlButtonSize, height: controlButtonSize)
@@ -672,9 +705,12 @@ extension WalkerCharacter {
             switcherButton.widthAnchor.constraint(equalToConstant: 18),
             switcherButton.heightAnchor.constraint(equalToConstant: 18),
 
-            titleTextStack.leadingAnchor.constraint(equalTo: titleBar.leadingAnchor, constant: 20),
-            titleTextStack.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -12),
-            titleTextStack.centerYAnchor.constraint(equalTo: titleBar.centerYAnchor, constant: -1)
+            iconBadge.widthAnchor.constraint(equalToConstant: 25),
+            iconBadge.heightAnchor.constraint(equalToConstant: 25),
+
+            headerStack.leadingAnchor.constraint(equalTo: titleBar.leadingAnchor, constant: 18),
+            headerStack.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -12),
+            headerStack.centerYAnchor.constraint(equalTo: titleBar.centerYAnchor, constant: -1)
         ])
 
         let returnPill = HoverButton(title: "", target: self, action: #selector(returnToGenieTapped))

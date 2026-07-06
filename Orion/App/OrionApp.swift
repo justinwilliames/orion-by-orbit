@@ -89,6 +89,53 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
         controller?.start()
         chatPopoverController = ChatPopoverController(controller: controller)
         setupMenuBar()
+
+        // Follow the system light/dark appearance live. The active Orbit
+        // theme (PopoverTheme.current) resolves dark/light from the
+        // effective appearance at popover-creation time; when the user
+        // flips the system theme while a popover is open we rebuild it
+        // through the same proven recreate path used by the Style menu.
+        DistributedNotificationCenter.default.addObserver(
+            self,
+            selector: #selector(systemAppearanceChanged),
+            name: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
+            object: nil
+        )
+    }
+
+    @objc private func systemAppearanceChanged() {
+        // The distributed notification can arrive before NSApp's
+        // effectiveAppearance updates; hop to the next runloop so the
+        // resolver reads the new appearance.
+        DispatchQueue.main.async { [weak self] in
+            guard PopoverTheme._currentOverride == nil else { return }
+            self?.rebuildOpenPopovers()
+        }
+    }
+
+    /// Tear down and recreate any open chat popover so it re-reads the
+    /// active theme. Shared by the Style menu and the system-appearance
+    /// observer.
+    func rebuildOpenPopovers() {
+        controller?.characters.forEach { char in
+            let wasOpen = char.isIdleForPopover
+            if wasOpen { char.popoverWindow?.orderOut(nil) }
+            char.popoverWindow = nil
+            char.terminalView = nil
+            char.thinkingBubbleWindow = nil
+            if wasOpen {
+                char.createPopoverWindow()
+                if let session = char.claudeSession, !session.history.isEmpty {
+                    char.terminalView?.replayHistory(session.history)
+                }
+                char.updatePopoverPosition()
+                char.popoverWindow?.orderFrontRegardless()
+                char.popoverWindow?.makeKey()
+                if let terminal = char.terminalView {
+                    char.popoverWindow?.makeFirstResponder(terminal.inputField)
+                }
+            }
+        }
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -263,25 +310,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
             }
         }
 
-        controller?.characters.forEach { char in
-            let wasOpen = char.isIdleForPopover
-            if wasOpen { char.popoverWindow?.orderOut(nil) }
-            char.popoverWindow = nil
-            char.terminalView = nil
-            char.thinkingBubbleWindow = nil
-            if wasOpen {
-                char.createPopoverWindow()
-                if let session = char.claudeSession, !session.history.isEmpty {
-                    char.terminalView?.replayHistory(session.history)
-                }
-                char.updatePopoverPosition()
-                char.popoverWindow?.orderFrontRegardless()
-                char.popoverWindow?.makeKey()
-                if let terminal = char.terminalView {
-                    char.popoverWindow?.makeFirstResponder(terminal.inputField)
-                }
-            }
-        }
+        rebuildOpenPopovers()
     }
 
     @objc func switchDisplay(_ sender: NSMenuItem) {

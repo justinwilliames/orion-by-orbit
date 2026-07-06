@@ -20,6 +20,10 @@ struct PopoverTheme {
     let accentColor: NSColor
     let errorColor: NSColor
     let successColor: NSColor
+    // Amber #F59E0B — MEANING = active / in-progress. Defaulted so the
+    // legacy presets don't need to be rewritten; the Orbit themes set it
+    // explicitly. Signals carry meaning, never decoration.
+    var activeColor: NSColor = NSColor(red: 0.961, green: 0.620, blue: 0.043, alpha: 1.0)
     let inputBg: NSColor
     let inputCornerRadius: CGFloat
     // Bubble
@@ -213,8 +217,116 @@ struct PopoverTheme {
         bubbleCornerRadius: 18
     )
 
-    static let allThemes: [PopoverTheme] = [.harbor]
-    static var current: PopoverTheme = .harbor
+    // MARK: - Orbit brand themes (get-orbit design tokens)
+    //
+    // One accent — indigo #6366F1. Amber #F59E0B and emerald #10B981 carry
+    // MEANING only (active / complete). Flat surfaces, hairline borders,
+    // restrained rounding. Fonts: SF Pro body (≈ Inter), SF Mono code
+    // (≈ JetBrains Mono), SF Pro Rounded semibold wordmark (≈ Bricolage).
+    //
+    // Hex → RGB reference:
+    //   indigo #6366F1 (0.388, 0.400, 0.945) · strong #4F46E5 (0.310, 0.275, 0.898)
+    //   soft   #818CF8 (0.506, 0.549, 0.973) · amber  #F59E0B (0.961, 0.620, 0.043)
+    //   emerald #10B981 (0.063, 0.725, 0.506) · red #EF4444 (0.937, 0.267, 0.267)
+
+    static let orbitDark = PopoverTheme(
+        name: "Orbit Dark",
+        popoverBg: NSColor(red: 0.043, green: 0.043, blue: 0.051, alpha: 1.0),       // #0B0B0D
+        popoverBorder: NSColor(white: 1.0, alpha: 0.08),                             // white hairline @ 8%
+        popoverBorderWidth: 1.0,
+        popoverCornerRadius: 15,
+        titleBarBg: NSColor(red: 0.043, green: 0.043, blue: 0.051, alpha: 1.0),      // same near-black, flat
+        titleText: NSColor(red: 0.949, green: 0.949, blue: 0.953, alpha: 1.0),       // #F2F2F3
+        titleFont: PopoverTheme.wordmarkFont(size: 15),
+        titleString: "Orbit",
+        separatorColor: NSColor(white: 1.0, alpha: 0.07),                            // white hairline @ 7%
+        font: NSFont.systemFont(ofSize: 13.5, weight: .regular),
+        fontBold: NSFont.systemFont(ofSize: 13.5, weight: .semibold),
+        textPrimary: NSColor(red: 0.949, green: 0.949, blue: 0.953, alpha: 1.0),     // #F2F2F3
+        textDim: NSColor(red: 0.420, green: 0.420, blue: 0.451, alpha: 1.0),         // #6B6B73 dim/muted
+        accentColor: NSColor(red: 0.388, green: 0.400, blue: 0.945, alpha: 1.0),     // #6366F1 indigo
+        errorColor: NSColor(red: 0.937, green: 0.267, blue: 0.267, alpha: 1.0),      // #EF4444
+        successColor: NSColor(red: 0.063, green: 0.725, blue: 0.506, alpha: 1.0),    // #10B981 emerald
+        activeColor: NSColor(red: 0.961, green: 0.620, blue: 0.043, alpha: 1.0),     // #F59E0B amber
+        inputBg: NSColor(red: 0.078, green: 0.078, blue: 0.086, alpha: 1.0),         // #141416 lifted surface
+        inputCornerRadius: 11,
+        bubbleBg: NSColor(red: 0.078, green: 0.078, blue: 0.086, alpha: 1.0),        // #141416
+        bubbleBorder: NSColor(white: 1.0, alpha: 0.08),                              // white hairline @ 8%
+        bubbleText: NSColor(red: 0.839, green: 0.839, blue: 0.855, alpha: 1.0),      // #D6D6DA body
+        bubbleCompletionBorder: NSColor(red: 0.063, green: 0.725, blue: 0.506, alpha: 0.45), // emerald
+        bubbleCompletionText: NSColor(red: 0.063, green: 0.725, blue: 0.506, alpha: 1.0),    // emerald
+        bubbleFont: NSFont.systemFont(ofSize: 13.5, weight: .regular),
+        bubbleCornerRadius: 13
+    )
+
+    static let orbitLight = PopoverTheme(
+        name: "Orbit Light",
+        popoverBg: NSColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0),             // #FFFFFF
+        popoverBorder: NSColor(white: 0.0, alpha: 0.08),                             // black hairline @ 8%
+        popoverBorderWidth: 1.0,
+        popoverCornerRadius: 15,
+        titleBarBg: NSColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0),            // white, flat
+        titleText: NSColor(red: 0.063, green: 0.063, blue: 0.071, alpha: 1.0),       // #101012
+        titleFont: PopoverTheme.wordmarkFont(size: 15),
+        titleString: "Orbit",
+        separatorColor: NSColor(white: 0.0, alpha: 0.07),                            // black hairline @ 7%
+        font: NSFont.systemFont(ofSize: 13.5, weight: .regular),
+        fontBold: NSFont.systemFont(ofSize: 13.5, weight: .semibold),
+        textPrimary: NSColor(red: 0.063, green: 0.063, blue: 0.071, alpha: 1.0),     // #101012
+        textDim: NSColor(red: 0.541, green: 0.541, blue: 0.576, alpha: 1.0),         // #8A8A93 dim
+        accentColor: NSColor(red: 0.388, green: 0.400, blue: 0.945, alpha: 1.0),     // #6366F1 indigo
+        errorColor: NSColor(red: 0.937, green: 0.267, blue: 0.267, alpha: 1.0),      // #EF4444
+        successColor: NSColor(red: 0.063, green: 0.725, blue: 0.506, alpha: 1.0),    // #10B981 emerald
+        activeColor: NSColor(red: 0.961, green: 0.620, blue: 0.043, alpha: 1.0),     // #F59E0B amber
+        inputBg: NSColor(red: 0.965, green: 0.965, blue: 0.969, alpha: 1.0),         // #F6F6F7 field
+        inputCornerRadius: 11,
+        bubbleBg: NSColor(red: 0.965, green: 0.965, blue: 0.969, alpha: 1.0),        // #F6F6F7 surface
+        bubbleBorder: NSColor(white: 0.0, alpha: 0.08),                              // black hairline @ 8%
+        bubbleText: NSColor(red: 0.247, green: 0.247, blue: 0.275, alpha: 1.0),      // #3F3F46 body
+        bubbleCompletionBorder: NSColor(red: 0.063, green: 0.725, blue: 0.506, alpha: 0.45), // emerald
+        bubbleCompletionText: NSColor(red: 0.040, green: 0.588, blue: 0.408, alpha: 1.0),    // emerald (darker for contrast)
+        bubbleFont: NSFont.systemFont(ofSize: 13.5, weight: .regular),
+        bubbleCornerRadius: 13
+    )
+
+    /// Soft-indigo #818CF8 — secondary accent (speaker label, links, inline
+    /// code tint). Not part of the memberwise init; derived so both Orbit
+    /// themes (and the legacy ones, harmlessly) expose it.
+    static let softAccent = NSColor(red: 0.506, green: 0.549, blue: 0.973, alpha: 1.0)
+
+    /// Confident rounded-design wordmark font (SF Pro Rounded ≈ Bricolage
+    /// stand-in). Falls back to plain system semibold if the rounded
+    /// design descriptor is unavailable.
+    static func wordmarkFont(size: CGFloat = 15) -> NSFont {
+        let base = NSFont.systemFont(ofSize: size, weight: .semibold)
+        if let rounded = base.fontDescriptor.withDesign(.rounded),
+           let font = NSFont(descriptor: rounded, size: size) {
+            return font
+        }
+        return base
+    }
+
+    static let allThemes: [PopoverTheme] = [.orbitDark, .orbitLight]
+
+    /// Active theme resolves to Orbit dark/light by the system's effective
+    /// appearance. `_currentOverride` lets the Style menu still pin a theme
+    /// if ever needed, but by default we FOLLOW the system.
+    static var _currentOverride: PopoverTheme? = nil
+    static var current: PopoverTheme {
+        get {
+            if let override = _currentOverride { return override }
+            return resolvedForSystemAppearance()
+        }
+        set { _currentOverride = newValue }
+    }
+
+    /// Pick Orbit dark vs light from the app's effective appearance.
+    static func resolvedForSystemAppearance() -> PopoverTheme {
+        let appearance = NSApp?.effectiveAppearance ?? NSAppearance.currentDrawing()
+        let isDark = appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        return isDark ? .orbitDark : .orbitLight
+    }
+
     static var customFontName: String? = nil
     static var customFontSize: CGFloat = 14
 

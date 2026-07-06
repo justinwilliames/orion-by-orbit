@@ -7,9 +7,9 @@ extension TerminalView {
         layer?.backgroundColor = NSColor.clear.cgColor
         isExpertMode = false
 
-        // Corner radius design system:
-        //   Window: 18  ·  Composer shell: 18  ·  Attachment strip: full pill  ·  Buttons: circle
-        let composerRadius: CGFloat = 18
+        // Corner radius design system: composer shell reads the theme's
+        // input radius token (Orbit ≈ 11 — restrained rounding).
+        let composerRadius: CGFloat = t.inputCornerRadius
         let attachmentRadius = Layout.attachmentStripHeight / 2
         scrollView.frame = NSRect(
             x: Layout.padding,
@@ -181,7 +181,9 @@ extension TerminalView {
         sendButton.normalBg = t.accentColor.cgColor
         sendButton.hoverBg = t.accentColor.withAlphaComponent(0.80).cgColor
         sendButton.layer?.backgroundColor = t.accentColor.cgColor
-        sendButton.layer?.cornerRadius = controlButtonSize / 2
+        // Indigo rounded square (radius ~11, echoing the input field's
+        // rounding) with a white up-arrow.
+        sendButton.layer?.cornerRadius = 11
         if let img = NSImage(systemSymbolName: "arrow.up", accessibilityDescription: "Send message") {
             let config = NSImage.SymbolConfiguration(pointSize: 11, weight: .bold)
             sendButton.image = img.withSymbolConfiguration(config)
