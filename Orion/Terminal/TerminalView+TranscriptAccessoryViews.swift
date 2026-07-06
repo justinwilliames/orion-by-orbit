@@ -49,10 +49,10 @@ class TranscriptStatusView: NSView {
 
         activityBadge.wantsLayer = true
         activityBadge.translatesAutoresizingMaskIntoConstraints = false
-        activityBadge.layer?.backgroundColor = theme.inputBg.withAlphaComponent(0.72).cgColor
-        activityBadge.layer?.borderWidth = 0.75
-        activityBadge.layer?.borderColor = theme.separatorColor.withAlphaComponent(0.18).cgColor
-        activityBadge.layer?.cornerRadius = 18
+        activityBadge.layer?.backgroundColor = NSColor.clear.cgColor
+        activityBadge.layer?.borderWidth = 0
+        activityBadge.layer?.borderColor = NSColor.clear.cgColor
+        activityBadge.layer?.cornerRadius = 0
         addSubview(activityBadge)
 
         activityStack.orientation = .horizontal
@@ -69,8 +69,8 @@ class TranscriptStatusView: NSView {
         spinnerView.translatesAutoresizingMaskIntoConstraints = false
         activityStack.addArrangedSubview(spinnerView)
 
-        textLabel.font = NSFont.systemFont(ofSize: 14, weight: .semibold)
-        textLabel.textColor = theme.textPrimary
+        textLabel.font = NSFont.systemFont(ofSize: 12.5, weight: .regular)
+        textLabel.textColor = theme.textDim
         textLabel.lineBreakMode = .byWordWrapping
         textLabel.maximumNumberOfLines = 2
         textLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
@@ -80,10 +80,10 @@ class TranscriptStatusView: NSView {
         NSLayoutConstraint.activate([
             avatarContainer.heightAnchor.constraint(equalToConstant: 28),
 
-            activityStack.topAnchor.constraint(equalTo: activityBadge.topAnchor, constant: 10),
-            activityStack.leadingAnchor.constraint(equalTo: activityBadge.leadingAnchor, constant: 14),
-            activityStack.trailingAnchor.constraint(equalTo: activityBadge.trailingAnchor, constant: -16),
-            activityStack.bottomAnchor.constraint(equalTo: activityBadge.bottomAnchor, constant: -10),
+            activityStack.topAnchor.constraint(equalTo: activityBadge.topAnchor, constant: 2),
+            activityStack.leadingAnchor.constraint(equalTo: activityBadge.leadingAnchor, constant: 2),
+            activityStack.trailingAnchor.constraint(equalTo: activityBadge.trailingAnchor, constant: -2),
+            activityStack.bottomAnchor.constraint(equalTo: activityBadge.bottomAnchor, constant: -2),
 
             spinnerView.widthAnchor.constraint(equalToConstant: 16),
             spinnerView.heightAnchor.constraint(equalToConstant: 16),
