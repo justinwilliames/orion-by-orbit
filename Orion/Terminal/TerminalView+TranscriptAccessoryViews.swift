@@ -197,7 +197,7 @@ class TranscriptStatusView: NSView {
         let names = experts.map(\.name)
         switch names.count {
         case 0:
-            return "Orion"
+            return "Orbit"
         case 1:
             return names[0]
         case 2:

@@ -35,11 +35,11 @@ extension WalkerCharacter {
         let trimmedAssistant = String(assistantReply.prefix(900))
 
         let prompt = """
-        You are Orion's follow-up suggester. Given the conversation excerpt below, output exactly TWO short follow-up questions the user might ask next, in their voice. Each ≤ 7 words. Practical and specific to the topic — not generic ("Tell me more"). Output ONLY a JSON array of two strings, no prose, no code fences, no surrounding quotes inside the strings.
+        You are Orbit's follow-up suggester. Given the conversation excerpt below, output exactly TWO short follow-up questions the user might ask next, in their voice. Each ≤ 7 words. Practical and specific to the topic — not generic ("Tell me more"). Output ONLY a JSON array of two strings, no prose, no code fences, no surrounding quotes inside the strings.
 
         User asked: \(trimmedUser)
 
-        Orion replied: \(trimmedAssistant)
+        Orbit replied: \(trimmedAssistant)
 
         Output:
         """

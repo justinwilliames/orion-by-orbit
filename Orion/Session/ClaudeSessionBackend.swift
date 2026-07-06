@@ -278,7 +278,7 @@ extension ClaudeSession {
         let hasAnthropicKey = !(environment["ANTHROPIC_API_KEY"] ?? "").isEmpty
 
         var lines = [
-            "Orion is not connected yet.",
+            "Orbit is not connected yet.",
             "",
             "Open Settings to connect one of these:",
             "1. Claude Code",

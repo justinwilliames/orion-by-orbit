@@ -231,15 +231,15 @@ extension TerminalView {
         let t = theme
         let greeting: String
         if requiresInitialConnectionSetup {
-            greeting = "Orion here — Orbit's menu-bar lifecycle assistant. Connect Claude Code or Codex in Settings and we'll get into it."
+            greeting = "Orbit here — your menu-bar lifecycle assistant. Connect Claude Code or Codex in Settings and we'll get into it."
         } else {
-            greeting = "Orion here — Orbit's menu-bar lifecycle assistant. Ask about lifecycle, deliverability, Braze, retention economics — anything from the Orbit playbook. I'll lead with the sharpest answer and go deeper if you want it."
+            greeting = "Orbit here — your menu-bar lifecycle assistant. Ask about deliverability, Braze, retention, win-back — anything from the Orbit playbook. I'll lead with the sharpest answer and go deeper if you want it."
         }
         let attrText = NSAttributedString(string: greeting, attributes: [
             .font: t.font,
             .foregroundColor: t.textPrimary,
         ])
-        appendBubble(text: attrText, isUser: false, speaker: TranscriptSpeaker(name: "Orion", avatarPath: nil, kind: .orion))
+        appendBubble(text: attrText, isUser: false, speaker: TranscriptSpeaker(name: "Orbit", avatarPath: nil, kind: .orion))
 
         lastObservedFirstRunConfigurationSignature = firstRunConfigurationSignature()
         lastRenderedWelcomeSignature = welcomeSignature
@@ -332,7 +332,7 @@ extension TerminalView {
         // still around for backwards-compat) routed the bubble to
         // `.system`, which renders with a person icon instead of
         // the sparkle. Single-persona app — no reason to detect.
-        let labelName = (name?.isEmpty == false) ? name! : "Orion"
+        let labelName = (name?.isEmpty == false) ? name! : "Orbit"
         let speaker = TranscriptSpeaker(name: labelName, avatarPath: nil, kind: .orion)
         appendBubble(text: NSAttributedString(string: ""), isUser: false, speaker: speaker)
     }

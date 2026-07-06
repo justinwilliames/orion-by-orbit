@@ -28,7 +28,7 @@ extension WalkerCharacter {
         }
 
         let welcome = """
-        Orion — Orbit's menu-bar lifecycle assistant.
+        Orbit — your menu-bar lifecycle assistant.
 
         Ask about lifecycle, deliverability, Braze, retention. The Orbit playbook, in your menu bar.
         """

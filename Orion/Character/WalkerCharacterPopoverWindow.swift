@@ -43,8 +43,8 @@ private enum ExpertSwitcherCatalog {
         let entries: [ExpertSwitcherEntry] = [
             ExpertSwitcherEntry(
                 id: "orion",
-                name: "Orion",
-                title: "Orbit's assistant",
+                name: "Orbit",
+                title: "your lifecycle assistant",
                 avatarPath: nil,
                 destination: .orion
             )
@@ -690,13 +690,13 @@ extension WalkerCharacter {
         returnPill.layer?.borderWidth = 0.75
         returnPill.layer?.borderColor = t.separatorColor.withAlphaComponent(0.55).cgColor
         returnPill.attributedTitle = NSAttributedString(
-            string: "Back to Orion",
+            string: "Back to Orbit",
             attributes: [
                 .font: NSFont.systemFont(ofSize: 11, weight: .medium),
                 .foregroundColor: t.accentColor
             ]
         )
-        returnPill.toolTip = "Return to Orion"
+        returnPill.toolTip = "Return to Orbit"
         returnPill.isHidden = true
         titleBar.addSubview(returnPill)
         popoverReturnButton = returnPill

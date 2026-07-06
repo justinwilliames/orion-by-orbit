@@ -1,11 +1,11 @@
-name: Build Orion
+name: Build Orbit
 
-# Builds an unsigned Orion.app, wraps it in a .dmg, and (when triggered by
+# Builds an unsigned Orbit.app, wraps it in a .dmg, and (when triggered by
 # a v*.*.* tag) attaches the .dmg to a GitHub Release.
 #
 # No Apple Developer ID required. The output is unsigned — users will see a
 # Gatekeeper prompt on first launch and need to bypass it once with
-# `xattr -dr com.apple.quarantine /Applications/Orion.app` (documented in
+# `xattr -dr com.apple.quarantine /Applications/Orbit.app` (documented in
 # the README and in each release's auto-generated body).
 
 on:
@@ -114,9 +114,9 @@ jobs:
           BUILD_NUMBER="${{ github.run_number }}"
           echo "marketing_version=$MARKETING_VERSION" >> "$GITHUB_OUTPUT"
           echo "build_number=$BUILD_NUMBER" >> "$GITHUB_OUTPUT"
-          echo "Building Orion $MARKETING_VERSION (build $BUILD_NUMBER)"
+          echo "Building Orbit $MARKETING_VERSION (build $BUILD_NUMBER)"
 
-      - name: Build Orion (unsigned, Release configuration)
+      - name: Build Orbit (unsigned, Release configuration)
         run: |
           xcodebuild build \
             -project orion.xcodeproj \
@@ -127,7 +127,7 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGN_REQUIRED=NO \
             CODE_SIGN_ENTITLEMENTS="" \
-            PRODUCT_NAME=Orion \
+            PRODUCT_NAME=Orbit \
             PRODUCT_BUNDLE_IDENTIFIER=team.yourorbit.Orion \
             MARKETING_VERSION="${{ steps.version.outputs.marketing_version }}" \
             CURRENT_PROJECT_VERSION="${{ steps.version.outputs.build_number }}" \
@@ -137,9 +137,9 @@ jobs:
         id: locate
         run: |
           set -e
-          APP_PATH=$(find build -name "Orion.app" -type d | head -n 1)
+          APP_PATH=$(find build -name "Orbit.app" -type d | head -n 1)
           if [ -z "$APP_PATH" ]; then
-            echo "::error::Could not find Orion.app under build/"
+            echo "::error::Could not find Orbit.app under build/"
             find build -name "*.app" -type d
             exit 1
           fi
@@ -153,14 +153,14 @@ jobs:
           set -e
           APP_PATH="${{ steps.locate.outputs.app_path }}"
           VERSION="${GITHUB_REF_NAME:-dev-$(date +%Y%m%d-%H%M%S)}"
-          DMG_NAME="Orion-${VERSION}.dmg"
+          DMG_NAME="Orbit-${VERSION}.dmg"
 
           mkdir -p dist dmg-staging
           cp -R "$APP_PATH" dmg-staging/
           ln -s /Applications dmg-staging/Applications
 
           hdiutil create \
-            -volname "Orion" \
+            -volname "Orbit" \
             -srcfolder dmg-staging \
             -ov \
             -format UDZO \
@@ -178,7 +178,7 @@ jobs:
           retention-days: 30
 
       # ── Sparkle appcast generation ─────────────────────────────────
-      # Sparkle (the macOS auto-update framework bundled into Orion)
+      # Sparkle (the macOS auto-update framework bundled into Orbit)
       # needs two things to verify and install an update:
       #   1. An Ed25519 signature on the .dmg, made with the private key
       #      that pairs with SUPublicEDKey in Info.plist.
@@ -276,12 +276,12 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle">
             <channel>
-              <title>Orion by Orbit</title>
+              <title>Orbit</title>
               <link>https://github.com/${GITHUB_REPOSITORY}/releases/latest</link>
-              <description>Orion by Orbit — the founder, on your desktop.</description>
+              <description>Orbit — your menu-bar lifecycle assistant.</description>
               <language>en</language>
               <item>
-                <title>Orion by Orbit ${SHORT_VERSION}</title>
+                <title>Orbit ${SHORT_VERSION}</title>
                 <link>https://github.com/${GITHUB_REPOSITORY}/releases/tag/${GITHUB_REF_NAME}</link>
                 <sparkle:version>${VERSION}</sparkle:version>
                 <sparkle:shortVersionString>${SHORT_VERSION}</sparkle:shortVersionString>
@@ -310,20 +310,20 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
-          name: "Orion — latest dev build"
+          name: "Orbit — latest dev build"
           files: |
             ${{ steps.dmg.outputs.dmg_path }}
             ${{ steps.appcast.outputs.appcast_path }}
           prerelease: true
           make_latest: "false"  # don't displace tagged semver releases as 'Latest' on the repo homepage
           body: |
-            **Orion — Orbit's assistant for your macOS dock.** This is the rolling latest dev build, refreshed on every push to `main`. For tagged stable releases see the [Releases list](https://github.com/justinwilliames/orion-by-orbit/releases).
+            **Orbit — your assistant for your macOS dock.** This is the rolling latest dev build, refreshed on every push to `main`. For tagged stable releases see the [Releases list](https://github.com/justinwilliames/orion-by-orbit/releases).
 
             Built from commit [`${{ github.sha }}`](https://github.com/justinwilliames/orion-by-orbit/commit/${{ github.sha }}).
 
             > [!IMPORTANT]
             > **You MUST run a Terminal command before this app will open.**
-            > Orion is unsigned (free side-project, no Apple Developer ID), so macOS Gatekeeper will refuse to launch it with an error like "*Orion can't be opened because Apple cannot check it for malicious software*" or "*Orion is damaged and can't be opened*".
+            > Orbit is unsigned (free side-project, no Apple Developer ID), so macOS Gatekeeper will refuse to launch it with an error like "*Orbit can't be opened because Apple cannot check it for malicious software*" or "*Orbit is damaged and can't be opened*".
             >
             > **The fix is one command. Skip it and the app will not open.**
 
@@ -331,21 +331,21 @@ jobs:
 
             ### 1. Download the .dmg below
 
-            ### 2. Drag Orion into Applications
+            ### 2. Drag Orbit into Applications
 
-            Open the `.dmg`, drag the **Orion** icon into the **Applications** shortcut.
+            Open the `.dmg`, drag the **Orbit** icon into the **Applications** shortcut.
 
             ### 3. ⚠️ REQUIRED — run this in Terminal
 
             ```bash
-            xattr -dr com.apple.quarantine /Applications/Orion.app
+            xattr -dr com.apple.quarantine /Applications/Orbit.app
             ```
 
             One-time per install. Right-click → **Open** also works, as does System Settings → Privacy & Security → "Open Anyway".
 
             ### 4. Launch from Applications
 
-            Orion will appear above your Dock as an animated character.
+            Orbit will appear above your Dock as an animated character.
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -356,7 +356,7 @@ jobs:
           files: |
             ${{ steps.dmg.outputs.dmg_path }}
             ${{ steps.appcast.outputs.appcast_path }}
-          name: Orion ${{ github.ref_name }}
+          name: Orbit ${{ github.ref_name }}
           generate_release_notes: true
           # Tagged semver releases must be non-prerelease so GitHub's
           # /releases/latest/download/* redirect resolves correctly.
@@ -370,11 +370,11 @@ jobs:
           prerelease: false
           make_latest: "true"
           body: |
-            **Orion — Orbit's assistant for your macOS dock.**
+            **Orbit — your assistant for your macOS dock.**
 
             > [!IMPORTANT]
             > **You MUST run a Terminal command before this app will open.**
-            > Orion is unsigned (free side-project, no Apple Developer ID), so macOS Gatekeeper will refuse to launch it with an error like "*Orion can't be opened because Apple cannot check it for malicious software*" or "*Orion is damaged and can't be opened*".
+            > Orbit is unsigned (free side-project, no Apple Developer ID), so macOS Gatekeeper will refuse to launch it with an error like "*Orbit can't be opened because Apple cannot check it for malicious software*" or "*Orbit is damaged and can't be opened*".
             >
             > **The fix is one command. Skip it and the app will not open.**
 
@@ -384,33 +384,33 @@ jobs:
 
             Click `${{ steps.dmg.outputs.dmg_name }}` below.
 
-            ### 2. Drag Orion into Applications
+            ### 2. Drag Orbit into Applications
 
-            Open the `.dmg`, drag the **Orion** icon into the **Applications** shortcut.
+            Open the `.dmg`, drag the **Orbit** icon into the **Applications** shortcut.
 
             ### 3. ⚠️ REQUIRED — run this in Terminal to allow the app to open
 
             Open the **Terminal** app (Spotlight → "Terminal") and paste this exact command, then press Enter:
 
             ```bash
-            xattr -dr com.apple.quarantine /Applications/Orion.app
+            xattr -dr com.apple.quarantine /Applications/Orbit.app
             ```
 
-            This removes Apple's "downloaded from internet" quarantine flag from the app. **Without this step, double-clicking Orion will fail.** It's a one-time command per install — you don't need to do it again unless you re-download.
+            This removes Apple's "downloaded from internet" quarantine flag from the app. **Without this step, double-clicking Orbit will fail.** It's a one-time command per install — you don't need to do it again unless you re-download.
 
             **Alternatives if you can't use Terminal:**
-            - Right-click `Orion` in Applications → choose **Open** → confirm the warning. Repeat once and macOS remembers the choice.
-            - System Settings → **Privacy & Security** → scroll down → click "**Open Anyway**" next to the Orion block.
+            - Right-click `Orbit` in Applications → choose **Open** → confirm the warning. Repeat once and macOS remembers the choice.
+            - System Settings → **Privacy & Security** → scroll down → click "**Open Anyway**" next to the Orbit block.
 
             ### 4. Launch from Applications
 
-            Open Orion from your Applications folder. He'll appear above your Dock as an animated character.
+            Open Orbit from your Applications folder. It'll appear above your Dock as an animated character.
 
             ---
 
             ## Setup
 
-            Orion needs a model provider. Open **Settings → Models** and pick one:
+            Orbit needs a model provider. Open **Settings → Models** and pick one:
 
             - **Claude Code** — if you already have the CLI installed and logged in, it'll be auto-detected.
             - **Codex / ChatGPT** — same deal, auto-detected if logged in.
@@ -418,7 +418,7 @@ jobs:
 
             ## What this is
 
-            A free, open-source easter-egg companion to the main [Orbit MCP extension](https://get.yourorbit.team/download). Click the dock character to chat with the founder about lifecycle marketing, deliverability, Braze, retention. Direct, no-fluff, in Justin's voice.
+            A free, open-source easter-egg companion to the main [Orbit MCP extension](https://get.yourorbit.team/download). Click the dock character to chat about lifecycle marketing, deliverability, Braze, retention — in the Orbit voice. Direct, no-fluff.
 
             For the deeper, structured Orbit tooling (95 guides, 50+ skills, native Braze integration) install the full [Orbit MCP](https://get.yourorbit.team/download).
         env:

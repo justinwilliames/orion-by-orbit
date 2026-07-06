@@ -111,7 +111,7 @@ struct SettingsView: View {
                 selectedPane = .models
             }
         }
-        .alert("Reset Orion data?", isPresented: $showResetConfirmation) {
+        .alert("Reset Orbit data?", isPresented: $showResetConfirmation) {
             Button("Reset All Data", role: .destructive) {
                 do {
                     try AppSettings.resetAllData()
@@ -122,7 +122,7 @@ struct SettingsView: View {
             }
             Button("Cancel", role: .cancel) {}
         } message: {
-            Text("This clears Orion's saved token, API keys, model/runtime settings, onboarding state, and removes the archive MCP config it wrote for Claude and Codex.")
+            Text("This clears Orbit's saved token, API keys, model/runtime settings, onboarding state, and removes the archive MCP config it wrote for Claude and Codex.")
         }
         .alert("Reset Failed", isPresented: Binding(
             get: { resetErrorMessage != nil },

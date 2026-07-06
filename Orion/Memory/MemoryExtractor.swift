@@ -122,7 +122,7 @@ enum MemoryExtractor {
             : ""
 
         return """
-        You are extracting durable facts about a CRM/lifecycle marketing operator from their last conversation turn, for long-term memory used by Orion (a desktop companion that grounds future answers in remembered context).
+        You are extracting durable facts about a CRM/lifecycle marketing operator from their last conversation turn, for long-term memory used by Orbit (a desktop companion that grounds future answers in remembered context).
 
         Read the exchange below. Output JSON listing 0–2 facts worth remembering for future conversations. Quality > quantity. If nothing about this turn is worth remembering, return an empty list.
 

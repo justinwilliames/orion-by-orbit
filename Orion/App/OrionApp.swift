@@ -124,7 +124,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
     func setupMenuBar() {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         if let button = statusItem?.button {
-            button.image = NSImage(named: "MenuBarIcon") ?? NSImage(systemSymbolName: "sparkles", accessibilityDescription: "Orion")
+            button.image = NSImage(named: "MenuBarIcon") ?? NSImage(systemSymbolName: "sparkles", accessibilityDescription: "Orbit")
             // isTemplate = true → AppKit auto-tints the alpha channel
             // black in light-mode menu bars, white in dark-mode menu
             // bars. macOS standard. Without this the icon stays a fixed
@@ -132,7 +132,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
             // wallpaper. Requires the MenuBarIcon asset to be monochrome
             // (alpha-only); SF Symbols already template-render correctly.
             button.image?.isTemplate = true
-            button.toolTip = "Open Orion chat"
+            button.toolTip = "Open Orbit chat"
             // Left-click → toggle the chat popover; right-click → the
             // classic menu. We do NOT assign statusItem.menu (that makes
             // AppKit pop the menu on every click and never fire the button

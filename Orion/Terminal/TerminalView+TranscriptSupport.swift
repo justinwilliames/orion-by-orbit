@@ -376,7 +376,7 @@ class ConnectionSetupCardView: NSView {
         stack.addArrangedSubview(title)
         title.widthAnchor.constraint(equalTo: stack.widthAnchor).isActive = true
 
-        let body = NSTextField(wrappingLabelWithString: "Open Settings to connect Claude, Codex/ChatGPT, or OpenAI. Once one is connected, Orion is ready to chat.")
+        let body = NSTextField(wrappingLabelWithString: "Open Settings to connect Claude, Codex/ChatGPT, or OpenAI. Once one is connected, Orbit is ready to chat.")
         body.font = NSFont.systemFont(ofSize: 12, weight: .regular)
         body.textColor = theme.textDim
         body.maximumNumberOfLines = 0

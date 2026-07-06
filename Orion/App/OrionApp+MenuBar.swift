@@ -44,10 +44,10 @@ extension AppDelegate {
 
     func updateFocusedExpert(_ expert: ResponderExpert?) {
         focusedExpert = expert
-        char1Item?.title = expert?.name ?? "Show Orion"
+        char1Item?.title = expert?.name ?? "Show Orbit"
         backToCharacterItem?.isEnabled = expert != nil
         if let button = statusItem?.button {
-            button.toolTip = expert == nil ? "Open Orion" : "Current guide: \(expert!.name)"
+            button.toolTip = expert == nil ? "Open Orbit" : "Current guide: \(expert!.name)"
         }
     }
 

@@ -121,7 +121,7 @@ struct NotesBrowserView: View {
                     Text("No notes yet")
                         .font(.callout)
                         .foregroundStyle(.secondary)
-                    Text("Right-click Orion → Quick note…")
+                    Text("Right-click Orbit → Quick note…")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                     Spacer()
@@ -247,7 +247,7 @@ final class NotesBrowserController: NSObject, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        panel.title = "Orion · Notes"
+        panel.title = "Orbit · Notes"
         panel.titlebarAppearsTransparent = true
         panel.isReleasedWhenClosed = false
         panel.level = .floating

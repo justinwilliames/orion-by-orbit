@@ -14,7 +14,7 @@ extension ClaudeSession {
                 if kind == "expert", let expert = expertSuggestion(named: speakerName) {
                     segments.append(AssistantSegment(speaker: speaker(for: expert), markdown: linkified, followUpExpert: expert))
                 } else {
-                    let speakerValue = normalize(speakerName) == normalize("Orion")
+                    let speakerValue = normalize(speakerName) == normalize("Orbit")
                         ? justinSpeaker()
                         : TranscriptSpeaker(name: speakerName, avatarPath: nil, kind: .system)
                     segments.append(AssistantSegment(speaker: speakerValue, markdown: linkified, followUpExpert: nil))

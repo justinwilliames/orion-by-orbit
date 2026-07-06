@@ -10,9 +10,9 @@
          INFOPLIST_KEY_CFBundleDisplayName from project.pbxproj OVERRIDES
          this static value. Both must match to avoid drift. -->
     <key>CFBundleDisplayName</key>
-    <string>Orion by Orbit</string>
+    <string>Orbit</string>
     <key>CFBundleName</key>
-    <string>Orion by Orbit</string>
+    <string>Orbit</string>
 
     <!-- Sparkle compares the running app's CFBundleShortVersionString
          to sparkle:shortVersionString in the appcast. The CI workflow
@@ -70,22 +70,22 @@
          so every Sparkle update wipes prior Allows. Signing the app
          would persist the grants across updates. -->
     <key>NSDownloadsFolderUsageDescription</key>
-    <string>Orion spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files in Downloads when you mention them.</string>
+    <string>Orbit spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files in Downloads when you mention them.</string>
     <key>NSDocumentsFolderUsageDescription</key>
-    <string>Orion spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files in Documents when you mention them.</string>
+    <string>Orbit spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files in Documents when you mention them.</string>
     <key>NSDesktopFolderUsageDescription</key>
-    <string>Orion spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files on the Desktop when you mention them.</string>
+    <string>Orbit spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files on the Desktop when you mention them.</string>
     <key>NSRemovableVolumesUsageDescription</key>
-    <string>Orion spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files on external drives when you mention them.</string>
+    <string>Orbit spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files on external drives when you mention them.</string>
     <key>NSNetworkVolumesUsageDescription</key>
-    <string>Orion spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files on network shares when you mention them.</string>
+    <string>Orbit spawns the Claude Code / Codex CLI to answer your questions. The CLI may need to read or write files on network shares when you mention them.</string>
     <!-- Voice dictation via SFSpeechRecognizer. Required by macOS for the
          microphone-input prompt and the speech-recognition-permission prompt.
          Triggered only when the user clicks the dictation mic button in the
          composer; Orion never opens the mic on its own. -->
     <key>NSMicrophoneUsageDescription</key>
-    <string>Orion records audio only while you hold the dictation button in the composer, so you can speak your message instead of typing it.</string>
+    <string>Orbit records audio only while you hold the dictation button in the composer, so you can speak your message instead of typing it.</string>
     <key>NSSpeechRecognitionUsageDescription</key>
-    <string>Orion uses Apple's on-device speech recognition to transcribe what you say into the chat box. Audio is processed locally on your Mac whenever the OS supports it.</string>
+    <string>Orbit uses Apple's on-device speech recognition to transcribe what you say into the chat box. Audio is processed locally on your Mac whenever the OS supports it.</string>
 </dict>
 </plist>

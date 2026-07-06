@@ -35,7 +35,7 @@ class TerminalView: NSView {
     var dictationBaselineText: String = ""
     var isDictating: Bool = false
     let composerStatusLabel = NSTextField(labelWithString: "Generating...")
-    let returnButton = NSButton(title: "Back to Orion", target: nil, action: nil)
+    let returnButton = NSButton(title: "Back to Orbit", target: nil, action: nil)
     var onSendMessage: ((String, [SessionAttachment]) -> Void)?
     var onStopRequested: (() -> Void)?
     var onReturnToLenny: (() -> Void)?

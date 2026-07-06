@@ -25,15 +25,15 @@ private struct MemoryPaneRoot: View {
         VStack(alignment: .leading, spacing: 20) {
             SettingsHeader(
                 title: "Memory",
-                subtitle: "Durable facts Orion remembers about you between conversations. Stored on your Mac. Never includes specific names, emails, phone numbers, exact financials, or anything that looks like a secret. Conversation transcripts are deliberately not stored — chats are fleeting by design."
+                subtitle: "Durable facts Orbit remembers about you between conversations. Stored on your Mac. Never includes specific names, emails, phone numbers, exact financials, or anything that looks like a secret. Conversation transcripts are deliberately not stored — chats are fleeting by design."
             )
 
-            SettingsSectionCard(title: "Behaviour", subtitle: "How Orion uses memory.") {
+            SettingsSectionCard(title: "Behaviour", subtitle: "How Orbit uses memory.") {
                 Toggle(isOn: $autoExtractEnabled) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Auto-remember durable facts")
                             .font(.subheadline.weight(.medium))
-                        Text("After each substantive answer, run a one-shot extraction call on the connected provider to identify 0–2 facts worth saving. PII filter and prompt-side guidance keep sensitive specifics out. Off = Orion never adds memories on its own; you can still capture them manually with phrases like 'remember that…'")
+                        Text("After each substantive answer, run a one-shot extraction call on the connected provider to identify 0–2 facts worth saving. PII filter and prompt-side guidance keep sensitive specifics out. Off = Orbit never adds memories on its own; you can still capture them manually with phrases like 'remember that…'")
                             .settingsCaption()
                     }
                 }

@@ -306,7 +306,7 @@ extension WalkerCharacter {
         if let expert = focusedExpert ?? representedExpert {
             tooltip = "Ask \(expert.name)"
         } else {
-            tooltip = "Ask Orion"
+            tooltip = "Ask Orbit"
         }
         window.contentView?.toolTip = tooltip
     }
