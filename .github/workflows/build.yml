@@ -166,8 +166,18 @@ jobs:
             -format UDZO \
             "dist/${DMG_NAME}"
 
+          # Stable-name aliases: the get-orbit site downloads via
+          # /releases/latest/download/Orbit.dmg (versionless, never goes
+          # stale). Orion.dmg is kept one more cycle as a legacy alias so
+          # pre-rebrand links keep resolving; drop it once nothing 302s
+          # to it any more.
+          cp "dist/${DMG_NAME}" "dist/Orbit.dmg"
+          cp "dist/${DMG_NAME}" "dist/Orion.dmg"
+
           echo "dmg_path=dist/${DMG_NAME}" >> "$GITHUB_OUTPUT"
           echo "dmg_name=${DMG_NAME}" >> "$GITHUB_OUTPUT"
+          echo "dmg_stable=dist/Orbit.dmg" >> "$GITHUB_OUTPUT"
+          echo "dmg_legacy=dist/Orion.dmg" >> "$GITHUB_OUTPUT"
           ls -la dist/
 
       - name: Upload .dmg as workflow artifact
@@ -355,6 +365,8 @@ jobs:
         with:
           files: |
             ${{ steps.dmg.outputs.dmg_path }}
+            ${{ steps.dmg.outputs.dmg_stable }}
+            ${{ steps.dmg.outputs.dmg_legacy }}
             ${{ steps.appcast.outputs.appcast_path }}
           name: Orbit ${{ github.ref_name }}
           generate_release_notes: true
