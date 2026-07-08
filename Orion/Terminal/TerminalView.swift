@@ -94,6 +94,16 @@ class TerminalView: NSView {
     var requiresInitialConnectionSetup = false
     var lastObservedFirstRunConfigurationSignature: String?
     var settingsObserver: NSObjectProtocol?
+    /// Session-only dismiss flag for the MCP upsell card. "Not now"
+    /// (b4) sets this so the card doesn't reappear for the rest of the
+    /// app session even if the 24h persisted cap would otherwise allow
+    /// it again. Persisted cap lives in AppSettings.lastMCPUpsellShownAt.
+    var mcpUpsellDismissedThisSession = false
+    /// True once the MCP upsell card has been shown at least once in
+    /// this app session — the "at most 1 per app session" half of the
+    /// frequency cap. The cross-session half is the 24h persisted
+    /// timestamp in AppSettings.
+    var mcpUpsellShownThisSession = false
 
     override init(frame: NSRect) {
         super.init(frame: frame)

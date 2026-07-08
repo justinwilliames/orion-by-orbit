@@ -53,6 +53,7 @@ struct SettingsView: View {
     @AppStorage(AppSettings.preferredOpenAIModelKey) var preferredOpenAIModel = AppSettings.OpenAIModel.gpt5Nano.rawValue
     @AppStorage(AppSettings.launchAtLoginKey) var launchAtLogin: Bool = true
     @AppStorage(AppSettings.useAmbientLLMKey) var useAmbientLLM: Bool = true
+    @AppStorage(AppSettings.suggestOrbitMCPEnabledKey) var suggestOrbitMCP: Bool = true
 
     @State var selectedPane: SettingsPane = .models
     @State var showResetConfirmation = false

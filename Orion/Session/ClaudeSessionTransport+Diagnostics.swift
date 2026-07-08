@@ -34,7 +34,7 @@ extension ClaudeSession {
             // ── Print ────────────────────────────────────────────────────────
             var lines: [String] = []
             lines.append("╔══════════════════════════════════════════════════╗")
-            lines.append("║           Orion startup diagnostics          ║")
+            lines.append("║           Orbit startup diagnostics          ║")
             lines.append("╚══════════════════════════════════════════════════╝")
 
             lines.append("")

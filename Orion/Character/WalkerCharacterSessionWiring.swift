@@ -104,6 +104,22 @@ extension WalkerCharacter {
             }
             self.terminalView?.deferredExpertSuggestions = []
 
+            // MCP upsell card (see TerminalView+TranscriptBehavior.swift):
+            // must run AFTER replayConversation() above, since that call
+            // tears down and rebuilds the entire transcript stack (and
+            // resets currentAssistantText to "") — appending any earlier
+            // would just get wiped, and the answer text has to come from
+            // session history rather than currentAssistantText for the
+            // same reason. This is also the genuine "answer fully
+            // finished" signal (endStreaming() alone fires too early,
+            // e.g. mid-turn on tool use).
+            if let session = self.claudeSession {
+                let history = session.history(for: self.focusedExpert)
+                let lastUserQuestion = history.last(where: { $0.role == .user })?.text ?? ""
+                let lastAssistantAnswer = history.last(where: { $0.role == .assistant })?.text ?? ""
+                self.terminalView?.presentMCPUpsellCardIfEligible(question: lastUserQuestion, answer: lastAssistantAnswer)
+            }
+
             // Sir's report: "I can't send follow up messages after the
             // initial response from Orion." Root cause: replayConversation
             // tears down and rebuilds every transcript bubble, and the

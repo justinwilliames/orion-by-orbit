@@ -41,6 +41,19 @@ extension SettingsView {
                     }
                     .toggleStyle(.switch)
                     .controlSize(.small)
+
+                    Divider()
+
+                    Toggle(isOn: $suggestOrbitMCP) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Suggest the Orbit MCP")
+                                .font(.subheadline.weight(.medium))
+                            Text("Show a card under answers that would be better handled by Claude with the MCP. Off means answers only, no suggestions.")
+                                .settingsCaption()
+                        }
+                    }
+                    .toggleStyle(.switch)
+                    .controlSize(.small)
                 }
             }
 

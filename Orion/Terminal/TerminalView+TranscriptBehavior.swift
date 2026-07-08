@@ -341,6 +341,62 @@ extension TerminalView {
         isStreaming = false
     }
 
+    /// Appends the MCP upsell card (MCPUpsellCardView) under the
+    /// just-finished answer, when all of the following hold:
+    ///   - the settings toggle (AppSettings.suggestOrbitMCPEnabled) is on
+    ///   - the card hasn't already been dismissed ("Not now") this session
+    ///   - the frequency cap allows it (≤1/session AND ≤1/24h across
+    ///     sessions, persisted via AppSettings.lastMCPUpsellShownAt)
+    ///   - the just-answered question classifies as a BUILD, DEEP-WORK,
+    ///     or LIMIT moment (MCPUpsellTrigger)
+    ///   - we're not replaying history (never re-inject the card into a
+    ///     restored transcript — it's a live, one-shot nudge)
+    ///
+    /// Deliberately NOT called from endStreaming() — endStreaming() also
+    /// fires mid-turn (e.g. appendToolUse) before the answer is final,
+    /// and session.onTurnComplete (WalkerCharacterSessionWiring.swift)
+    /// calls replayConversation() right after endStreaming(), which
+    /// tears down and rebuilds the whole transcript stack. Call this
+    /// AFTER that rebuild — see the call site at the end of
+    /// session.onTurnComplete — so the card survives the rebuild and
+    /// never delays or gates the answer above it (the answer has
+    /// already fully rendered by the time this runs).
+    func presentMCPUpsellCardIfEligible(question: String, answer: String) {
+        guard !isReplayingTranscript else { return }
+        guard AppSettings.suggestOrbitMCPEnabled else { return }
+        guard !mcpUpsellDismissedThisSession else { return }
+        guard !mcpUpsellShownThisSession else { return }
+        guard AppSettings.mcpUpsellFrequencyCapAllows else { return }
+
+        guard let moment = MCPUpsellTrigger.classify(
+            question: question,
+            answer: answer
+        ) else { return }
+
+        let card = MCPUpsellCardView(theme: theme, moment: moment)
+        card.onCTATapped = { [weak self] in
+            guard let url = URL(string: "https://yourorbit.team/pricing") else { return }
+            NSWorkspace.shared.open(url)
+            self?.mcpUpsellShownThisSession = true
+        }
+        card.onNotNowTapped = { [weak self] in
+            guard let self else { return }
+            self.mcpUpsellDismissedThisSession = true
+            self.transcriptStack.removeArrangedSubview(card)
+            card.removeFromSuperview()
+            self.resizeTranscriptToFitContent()
+        }
+        transcriptStack.addArrangedSubview(card)
+        card.widthAnchor.constraint(equalTo: transcriptStack.widthAnchor).isActive = true
+
+        mcpUpsellShownThisSession = true
+        AppSettings.lastMCPUpsellShownAt = Date()
+
+        if isTranscriptNearBottom(threshold: 72) {
+            scrollTranscriptViewIntoView(card, topPadding: 8, bottomPadding: 20, preferBottomEdge: true)
+        }
+    }
+
     func appendError(_ text: String) {
         let t = theme
         let errorText = NSAttributedString(string: text, attributes: [

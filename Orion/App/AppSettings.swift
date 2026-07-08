@@ -125,6 +125,8 @@ enum AppSettings {
     static let preferredOpenAIModelKey           = "preferredOpenAIModel"
     static let launchAtLoginKey                  = "launchAtLogin"
     static let useAmbientLLMKey                  = "useAmbientLLM"
+    static let suggestOrbitMCPEnabledKey         = "suggestOrbitMCPEnabled"
+    static let lastMCPUpsellShownAtKey           = "lastMCPUpsellShownAt"
 
     // MARK: - Preferences
 
@@ -229,6 +231,48 @@ enum AppSettings {
 
     static var showsDeveloperTools: Bool {
         ProcessInfo.processInfo.arguments.contains("#debug")
+    }
+
+    /// Whether to show the dismissible "Orbit MCP" upsell card under an
+    /// answer when the just-answered question is a BUILD, DEEP-WORK, or
+    /// LIMIT moment (see MCPUpsellTrigger). Default ON. Off = answers
+    /// only, no suggestions.
+    static var suggestOrbitMCPEnabled: Bool {
+        get {
+            if UserDefaults.standard.object(forKey: suggestOrbitMCPEnabledKey) == nil {
+                return true
+            }
+            return UserDefaults.standard.bool(forKey: suggestOrbitMCPEnabledKey)
+        }
+        set { UserDefaults.standard.set(newValue, forKey: suggestOrbitMCPEnabledKey) }
+    }
+
+    /// Timestamp of the last time the MCP upsell card was shown, persisted
+    /// across app launches/sessions so the 24h frequency cap holds even
+    /// after a relaunch. nil = never shown.
+    static var lastMCPUpsellShownAt: Date? {
+        get {
+            let interval = UserDefaults.standard.double(forKey: lastMCPUpsellShownAtKey)
+            guard interval > 0 else { return nil }
+            return Date(timeIntervalSince1970: interval)
+        }
+        set {
+            guard let newValue else {
+                UserDefaults.standard.removeObject(forKey: lastMCPUpsellShownAtKey)
+                return
+            }
+            UserDefaults.standard.set(newValue.timeIntervalSince1970, forKey: lastMCPUpsellShownAtKey)
+        }
+    }
+
+    /// True when the card is allowed to show again: the persisted
+    /// last-shown timestamp is nil or more than 24h old. This is the
+    /// cross-session half of the frequency cap; the session half
+    /// (at most 1 per app session) lives in TerminalView as a local
+    /// flag, since UserDefaults has no notion of "current session".
+    static var mcpUpsellFrequencyCapAllows: Bool {
+        guard let last = lastMCPUpsellShownAt else { return true }
+        return Date().timeIntervalSince(last) >= 24 * 60 * 60
     }
 
     // MARK: - Reset

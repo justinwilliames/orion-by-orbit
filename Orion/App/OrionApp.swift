@@ -390,7 +390,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
                 backing: .buffered,
                 defer: false
             )
-            window.title = "Orion Settings"
+            window.title = "Orbit for macOS Settings"
             window.level = NSWindow.Level(rawValue: NSWindow.Level.statusBar.rawValue + 11)
             window.collectionBehavior = [.canJoinAllSpaces]
             let hostingController = NSHostingController(rootView: SettingsView())
@@ -445,12 +445,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, SPUStandardUserDriverDelegat
     }
 
     private func showPostUpdateGatekeeperHelpDialog(previous: String, current: String) {
-        let command = "xattr -dr com.apple.quarantine /Applications/Orion.app"
+        let command = "xattr -dr com.apple.quarantine /Applications/Orbit.app"
 
         let alert = NSAlert()
-        alert.messageText = "Orion updated to \(current)"
+        alert.messageText = "Orbit for macOS updated to \(current)"
         alert.informativeText = """
-            macOS may quarantine the new build the first time it relaunches and refuse to open it (you'll see "Orion can't be opened because Apple cannot check it for malicious software" or similar).
+            macOS may quarantine the new build the first time it relaunches and refuse to open it (you'll see "Orbit can't be opened because Apple cannot check it for malicious software" or similar).
 
             Run this command in Terminal once to allow it through:
 
