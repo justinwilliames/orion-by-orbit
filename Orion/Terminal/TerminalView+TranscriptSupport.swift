@@ -56,15 +56,21 @@ class HoverChipView: NSView {
         iconView.heightAnchor.constraint(equalToConstant: 16).isActive = true
         hStack.addArrangedSubview(iconView)
 
-        let textLabel = NSTextField(labelWithString: label)
+        let textLabel = NSTextField(wrappingLabelWithString: label)
         textLabel.font = NSFont.systemFont(ofSize: 12.5, weight: .regular)
         textLabel.textColor = theme.textPrimary
-        // Clamp to 2 lines and let AppKit truncate cleanly at a word
-        // boundary with a trailing ellipsis, rather than showing a raw
-        // mid-phrase cut baked into the source string.
-        textLabel.lineBreakMode = .byTruncatingTail
-        textLabel.maximumNumberOfLines = 2
-        textLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        // Founder-flagged defect fix: NEVER truncate a chip label. The demo
+        // shows the FULL suggestion text, wrapping to more rows as needed.
+        // wrappingLabelWithString + word-wrap + unlimited lines lets a long
+        // guide title flow onto multiple lines; the chip grows vertically
+        // to fit (intrinsicContentSize below reads the wrapped height) —
+        // no trailing ellipsis, no baked-in mid-phrase cut.
+        textLabel.lineBreakMode = .byWordWrapping
+        textLabel.maximumNumberOfLines = 0
+        textLabel.cell?.wraps = true
+        textLabel.cell?.isScrollable = false
+        textLabel.setContentCompressionResistancePriority(.required, for: .vertical)
+        textLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         hStack.addArrangedSubview(textLabel)
 

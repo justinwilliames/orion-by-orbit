@@ -415,10 +415,12 @@ extension WalkerCharacter {
 
     func refreshPopoverHeader() {
         popoverTitleLabel?.stringValue = focusedExpert?.name ?? resolvedTheme.titleString
-        // Confident home header = icon badge + "Orbit" + actions. Only a
-        // focused expert gets a subtitle; the Orbit home has none.
-        popoverSubtitleLabel?.stringValue = focusedExpert?.title ?? ""
-        popoverSubtitleLabel?.isHidden = (focusedExpert?.title == nil)
+        // Demo header anatomy = indigo planet badge + "Orbit" title +
+        // "Lifecycle Assistant" muted subtitle. The Orbit home always
+        // shows the subtitle (matching the browser mock); a focused
+        // expert swaps in its own title.
+        popoverSubtitleLabel?.stringValue = focusedExpert?.title ?? "Lifecycle Assistant"
+        popoverSubtitleLabel?.isHidden = false
         popoverIconBadge?.isHidden = (focusedExpert != nil)
         popoverReturnButton?.isHidden = (focusedExpert == nil)
         terminalView?.setReturnToLennyVisible(focusedExpert != nil)
@@ -541,17 +543,16 @@ extension WalkerCharacter {
         switcherButton.isEnabled = false
         popoverExpertSwitcherButton = switcherButton
 
-        // Subtitle retained (an expert focus still shows a title) but the
-        // default "Orbit's menu-bar assistant" clutters a confident header —
-        // when there's no focused expert it stays empty. Header is just the
-        // icon badge + "Orbit" wordmark + quiet actions.
-        let subtitle = NSTextField(labelWithString: focusedExpert?.title ?? "")
+        // Subtitle — demo shows "Lifecycle Assistant" (11px, neutral-400)
+        // under the "Orbit" title on the home header, always. A focused
+        // expert swaps in its own title.
+        let subtitle = NSTextField(labelWithString: focusedExpert?.title ?? "Lifecycle Assistant")
         subtitle.translatesAutoresizingMaskIntoConstraints = false
         subtitle.font = NSFont.systemFont(ofSize: 11, weight: .regular)
-        subtitle.textColor = t.textDim.withAlphaComponent(0.75)
+        subtitle.textColor = t.textDim
         subtitle.lineBreakMode = .byTruncatingTail
         subtitle.usesSingleLineMode = true
-        subtitle.isHidden = (focusedExpert?.title == nil)
+        subtitle.isHidden = false
         popoverSubtitleLabel = subtitle
 
         let controlButtonSize: CGFloat = 28
@@ -627,19 +628,29 @@ extension WalkerCharacter {
         titleTextStack.spacing = 0
         titleTextStack.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
-        // App-icon badge — the indigo Orbit squircle at ~25pt, drawn in a
-        // rounded 8pt image view next to the wordmark. Only shown for the
-        // Orbit home header (not when a specific expert is focused).
+        // Header planet badge — the demo's flat indigo squircle:
+        //   `w-7 h-7 rounded-[10px] bg-[#6366F1]` with a white 16pt Orbit
+        //   mark centred inside. A FLAT indigo fill (not the multi-colour
+        //   app-icon bitmap) so it reads exactly like the browser mock.
+        //   28pt box, 10pt corner. Only shown for the Orbit home header
+        //   (hidden when a specific expert is focused).
         let iconBadge = NSImageView()
         iconBadge.translatesAutoresizingMaskIntoConstraints = false
-        // The running app's icon = the indigo Orbit squircle. applicationIconName
-        // is the reliable runtime handle (an .appiconset isn't loadable by its
-        // catalog name); fall back to a named asset just in case.
-        iconBadge.image = NSImage(named: "OrbitBadge") ?? NSImage(named: NSImage.applicationIconName)
-        iconBadge.imageScaling = .scaleAxesIndependently
         iconBadge.wantsLayer = true
-        iconBadge.layer?.cornerRadius = 9
+        iconBadge.layer?.backgroundColor = t.accentColor.cgColor   // #6366F1 flat fill
+        iconBadge.layer?.cornerRadius = 10                          // rounded-[10px]
         iconBadge.layer?.masksToBounds = true
+        // White Orbit mark centred inside the indigo square. OrbitLogo is
+        // the white-on-transparent wordmark glyph; tint white and scale
+        // down so it sits ~16pt in the 28pt badge (matching the demo's
+        // 16px icon in a 28px badge).
+        if let mark = NSImage(named: "OrbitLogo") {
+            let tinted = mark.copy() as! NSImage
+            tinted.isTemplate = true
+            iconBadge.image = tinted
+            iconBadge.contentTintColor = .white
+            iconBadge.imageScaling = .scaleProportionallyDown
+        }
         iconBadge.isHidden = (focusedExpert != nil)
         popoverIconBadge = iconBadge
 
@@ -705,8 +716,8 @@ extension WalkerCharacter {
             switcherButton.widthAnchor.constraint(equalToConstant: 18),
             switcherButton.heightAnchor.constraint(equalToConstant: 18),
 
-            iconBadge.widthAnchor.constraint(equalToConstant: 38),
-            iconBadge.heightAnchor.constraint(equalToConstant: 38),
+            iconBadge.widthAnchor.constraint(equalToConstant: 28),   // demo w-7
+            iconBadge.heightAnchor.constraint(equalToConstant: 28),  // demo h-7
 
             headerStack.leadingAnchor.constraint(equalTo: titleBar.leadingAnchor, constant: 16),
             headerStack.trailingAnchor.constraint(lessThanOrEqualTo: settingsButton.leadingAnchor, constant: -12),
